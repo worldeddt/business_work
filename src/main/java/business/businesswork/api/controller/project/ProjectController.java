@@ -1,4 +1,4 @@
-package business.businesswork.api.controller;
+package business.businesswork.api.controller.project;
 
 
 import business.businesswork.domain.Project;

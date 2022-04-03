@@ -1,6 +1,7 @@
 package business.businesswork.api.controller.task;
 
 import business.businesswork.enumerate.StatusType;
+import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +24,9 @@ import java.util.List;
 public class TaskController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(name = "/regist", method = {RequestMethod.GET})
+    @RequestMapping(name = "/register", method = {RequestMethod.GET})
     public String regist(@RequestBody RegisterTask registerTask) throws Exception {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("");
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -61,8 +62,6 @@ public class TaskController {
             project.addSection(section);
             section.addTask(task);
 
-            em.persist(task);
-
         } catch (Exception e) {
             tx.rollback();
         } finally {
@@ -75,13 +74,45 @@ public class TaskController {
     }
 
     @RequestMapping(name = "/delete", method = {RequestMethod.POST})
-    public void delete() {
+    public void delete(ModifyTask modifyTask) throws Exception {
 
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            Task task = new Task();
+            task.setIndex(modifyTask.getIndex());
+            em.persist(task);
+
+
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
     }
 
     @RequestMapping(name = "/update", method = {RequestMethod.POST})
     public void update() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
+        try {
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
     }
 
     @RequestMapping(value="/test", method = {RequestMethod.GET})
@@ -97,7 +128,7 @@ public class TaskController {
             em.persist(project);
 
             Section section = new Section();
-            section.setName("in sprint");
+            section.setTitle("in sprint");
             em.persist(section);
 
             Member member = new Member();
@@ -142,8 +173,6 @@ public class TaskController {
             for(Member member1 : result) {
                 System.out.println("query member = " + member1.getName());
             }
-
-//
 
 //            Project findProject = em.find(Project.class, project.getIndex());
 //
