@@ -92,7 +92,6 @@ public class TaskController {
         tx.begin();
 
         try {
-
             Project project = new Project();
             project.setTitle("정기 프로젝트");
             em.persist(project);
