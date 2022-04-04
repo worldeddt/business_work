@@ -20,11 +20,11 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-@RequestMapping(name = "/task")
+@RequestMapping("/task")
 public class TaskController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(name = "/register", method = {RequestMethod.GET})
+    @RequestMapping(value = "/register", method = {RequestMethod.GET})
     public String regist(@RequestBody RegisterTask registerTask) throws Exception {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("");
         EntityManager em = emf.createEntityManager();
@@ -73,7 +73,7 @@ public class TaskController {
         return "regist";
     }
 
-    @RequestMapping(name = "/delete", method = {RequestMethod.POST})
+    @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public void delete(ModifyTask modifyTask) throws Exception {
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
@@ -97,7 +97,7 @@ public class TaskController {
         emf.close();
     }
 
-    @RequestMapping(name = "/update", method = {RequestMethod.POST})
+    @RequestMapping(value = "/update", method = {RequestMethod.POST})
     public void update() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
         EntityManager em = emf.createEntityManager();

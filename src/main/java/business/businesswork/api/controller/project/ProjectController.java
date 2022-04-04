@@ -3,6 +3,8 @@ package business.businesswork.api.controller.project;
 
 import business.businesswork.domain.Project;
 import business.businesswork.vo.RegistProject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,27 +15,27 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
 @RestController
-@RequestMapping(name = "project")
+@RequestMapping("/project")
 public class ProjectController {
 
-    @RequestMapping(name = "regist")
-    public void regist(@RequestBody RegistProject registProject) throws Exception {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    @RequestMapping(value = "/register")
+    public void register(@RequestBody RegistProject registProject) throws Exception {
+        logger.info("============================= registProject"+registProject);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
         EntityManager em = emf.createEntityManager();
         EntityTransaction ex = em.getTransaction();
         ex.begin();
 
         try {
-
             Project project = new Project();
-
             project.setTitle(registProject.getTitle());
             project.setDescription(registProject.getDescription());
 
-
-
             em.flush();
             em.close();
+
 
         } catch (Exception e) {
             ex.rollback();
@@ -44,22 +46,27 @@ public class ProjectController {
         emf.close();
     }
 
-    @RequestMapping(name = "update")
-    public void update() throws Exception {
+//    @RequestMapping(value = "/update")
+//    public void update() throws Exception {
+//
+//    }
 
-    }
-
-    @RequestMapping(name = "delete")
+    @RequestMapping(value = "/delete")
     public void delete(@RequestBody String projectId) throws Exception {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("");
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
 
         try {
 
         } catch (Exception e) {
-
+            tx.rollback();
         } finally {
-
+            em.close();
         }
-        projectId
+
+        emf.close();
     }
 
 }

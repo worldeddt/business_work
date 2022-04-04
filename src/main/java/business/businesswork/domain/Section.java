@@ -15,6 +15,8 @@ public class Section {
 
     public String title;
 
+    public String description;
+
     @ManyToOne
     @JoinColumn(name = "projectId")
     public Project project;

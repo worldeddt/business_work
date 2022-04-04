@@ -1,13 +1,12 @@
 package business.businesswork.vo;
 
-import business.businesswork.enumerate.StatusType;
+import business.businesswork.enumerate.SectionStatus;
+import lombok.Data;
 
+@Data
 public class ModifySection {
     private Long index;
     private String title;
-    private String description;
-    private String sectionId;
     private String projectId;
-    private StatusType status;
-    private String memberId;
+    private SectionStatus sectionStatus;
 }
