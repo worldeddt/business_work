@@ -9,21 +9,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
+import java.util.List;
+import java.util.Queue;
 
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
     @RequestMapping(value = "/register")
     public void register(@RequestBody RegistProject registProject) throws Exception {
         logger.info("============================= registProject"+registProject);
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction ex = em.getTransaction();
         ex.begin();
@@ -32,15 +32,24 @@ public class ProjectController {
             Project project = new Project();
             project.setTitle(registProject.getTitle());
             project.setDescription(registProject.getDescription());
+            em.persist(project);
 
             em.flush();
             em.close();
 
+            logger.info("=============================ㅇㅇ=====");
+            TypedQuery<Project> query = em.createQuery("SELECT count(p) FROM Project p ORDER BY p.index DESC", Project.class);
+            logger.info("============================= ㅁㅁ====="+query.getResultList());
+            logger.info("============================= ㅋㅋ====="+query.getSingleResult());
+
+            System.out.println("=========project list======"+query.getResultList());
+
+            ex.commit();
 
         } catch (Exception e) {
             ex.rollback();
         } finally {
-            em.close();
+//            em.close();
         }
 
         emf.close();
@@ -59,6 +68,19 @@ public class ProjectController {
         tx.begin();
 
         try {
+            Project project = em.find(Project.class, projectId);
+            em.persist(project);
+
+            em.remove(project);
+            em.flush();
+            em.clear();
+
+            Project project1 = em.createQuery("select p from Project p where p.index = :index", Project.class)
+                    .setParameter("index", projectId)
+                    .getSingleResult();
+
+            logger.info("project1______"+project1);
+
 
         } catch (Exception e) {
             tx.rollback();

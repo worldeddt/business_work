@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,13 +28,20 @@ class ProjectControllerTest {
         Gson gson = new Gson();
         RegistProject registProject = new RegistProject();
         registProject.setTitle("첫 번째 프로젝트");
-        registProject.setDescription("");
+        registProject.setDescription("ㅇㅇㅇㅇㅇ");
 
         this.mockMvc.perform(
-                post("/register")
+                post("/project/register")
                 .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(registProject)))
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void test() throws Exception  {
+        this.mockMvc.perform(
+                post("/test")
+        ).andDo(print());
     }
 }
