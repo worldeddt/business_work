@@ -1,5 +1,6 @@
 package business.businesswork.domain;
 
+import business.businesswork.enumerate.SectionStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +17,8 @@ public class Section {
     public String title;
 
     public String description;
+
+    public SectionStatus status;
 
     @ManyToOne
     @JoinColumn(name = "projectId")

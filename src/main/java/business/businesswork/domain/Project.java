@@ -1,5 +1,6 @@
 package business.businesswork.domain;
 
+import business.businesswork.enumerate.ProjectStatus;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +17,8 @@ public class Project {
     public String title;
 
     public String description;
+
+    public ProjectStatus status;
 
     @OneToMany(mappedBy = "project")
     List<Section> sections = new ArrayList<Section>();
