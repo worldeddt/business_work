@@ -3,6 +3,7 @@ package business.businesswork.api.controller.section;
 import business.businesswork.config.CommonConfig;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
+import business.businesswork.service.section.SectionService;
 import business.businesswork.util.KakaoApi;
 import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
@@ -22,29 +23,13 @@ public class SectionController {
 
     private static final Logger logger = LoggerFactory.getLogger(KakaoApi.class);
 
+    @Autowired
+    private SectionService sectionService;
+
     @ResponseBody
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(@RequestBody RegisterSection registerSection) throws Exception {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(commonConfig.getPersistenceName());
-        EntityManager em =  entityManagerFactory.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-            Section section = new Section();
-            section.setTitle(registerSection.getTitle());
-            em.persist(section);
-
-            Project project = em.find(Project.class, registerSection.getProjectId());
-            project.addSection(section);
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-
-        entityManagerFactory.close();
+        sectionService.register(registerSection);
     }
 
     @ResponseBody
@@ -90,7 +75,6 @@ public class SectionController {
         tx.begin();
 
         try {
-
 
 
         } catch (Exception e) {
