@@ -19,11 +19,6 @@ import javax.persistence.*;
 public class SectionController {
 
     @Autowired
-    private CommonConfig commonConfig;
-
-    private static final Logger logger = LoggerFactory.getLogger(KakaoApi.class);
-
-    @Autowired
     private SectionService sectionService;
 
     @ResponseBody
@@ -35,52 +30,12 @@ public class SectionController {
     @ResponseBody
     @RequestMapping(value =  "/delete", method = RequestMethod.POST)
     public void delete(@RequestParam("sectionIndex") String index) throws Exception {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(commonConfig.getPersistenceName());
-        EntityManager em = entityManagerFactory.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-            Section section = em.find(Section.class, index);
-            em.remove(section);
-
-            em.flush();
-            em.clear();
-
-//            List<Member> result = em.createQuery("select m from Member m order by m.index desc", Member.class)
-//                    .setFirstResult(0)
-//                    .setMaxResults(10)
-//                    .getResultList();
-
-            Section result = em.createQuery("select s from Section s where s.index = :index", Section.class)
-                    .setParameter("index", index)
-                    .getSingleResult();
-
-            logger.info("section query result"+result);
-
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
+        sectionService.delete(index);
     }
 
     @ResponseBody
     @RequestMapping(value =  "/update")
     public void update(@RequestParam ModifySection modifySection) throws Exception {
-        EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(commonConfig.getPersistenceName());
-        EntityManager em = entityManagerFactory.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
+        sectionService.update(modifySection);
     }
 }
