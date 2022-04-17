@@ -1,118 +1,43 @@
 package business.businesswork.api.controller.task;
 
+import business.businesswork.domain.*;
 import business.businesswork.enumerate.StatusType;
+import business.businesswork.service.task.TaskService;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import business.businesswork.domain.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @RestController
 @RequestMapping("/task")
 public class TaskController {
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @RequestMapping(value = "/register", method = {RequestMethod.GET})
-    public String regist(@RequestBody RegisterTask registerTask) throws Exception {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    @Autowired
+    private TaskService taskService;
 
-        try {
-            Date date = new Date();
-
-            LocalDateTime now = LocalDateTime.now();
-            String nowDateTime = String.format(
-                    "%04d-%02d-%02d %02d:%02d:%02d",
-                    now.getYear(),
-                    now.getMonthValue(),
-                    now.getDayOfMonth(),
-                    now.getHour(),
-                    now.getMinute(),
-                    now.getSecond()
-            );
-
-            logger.info("now date : "+date);
-            logger.info("now datetime : "+now);
-            logger.info("now datetime string : "+nowDateTime);
-
-            Task task = new Task();
-            task.setTitle(registerTask.getTitle());
-            task.setDescription(registerTask.getDescription());
-            task.setRegisterDate(date);
-            task.setStatusType(registerTask.getStatus());
-            em.persist(task);
-
-            Project project = em.find(Project.class, registerTask.getProjectId());
-            Section section = em.find(Section.class, registerTask.getSectionId());
-
-            project.addSection(section);
-            section.addTask(task);
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-
-        emf.close();
-
-        return "regist";
+    @RequestMapping(value = "/register", method = {RequestMethod.POST})
+    public void register(@RequestBody RegisterTask registerTask) throws Exception {
+        taskService.register(registerTask);
     }
 
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public void delete(ModifyTask modifyTask) throws Exception {
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-            Task task = new Task();
-            task.setIndex(modifyTask.getIndex());
-            em.persist(task);
-
-
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-
-        emf.close();
+    public void delete(@RequestParam("taskIndex") String taskIndex) throws Exception {
+        this.taskService.delete(taskIndex);
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
-    public void update() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-
-        emf.close();
+    public void update(@RequestBody ModifyTask modifyTask) {
+        this.taskService.update(modifyTask);
     }
 
     @RequestMapping(value="/test", method = {RequestMethod.GET})

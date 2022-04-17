@@ -18,6 +18,7 @@ public class Project {
 
     public String description;
 
+    @Column(columnDefinition = "enum default 'ACTIVE'")
     public ProjectStatus status;
 
     @OneToMany(mappedBy = "project")

@@ -21,7 +21,6 @@ public class SectionController {
     @Autowired
     private SectionService sectionService;
 
-    @ResponseBody
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(@RequestBody RegisterSection registerSection) throws Exception {
         sectionService.register(registerSection);
@@ -33,9 +32,8 @@ public class SectionController {
         sectionService.delete(index);
     }
 
-    @ResponseBody
-    @RequestMapping(value =  "/update")
-    public void update(@RequestParam ModifySection modifySection) throws Exception {
+    @RequestMapping(value =  "/update", method = RequestMethod.POST)
+    public void update(@RequestBody ModifySection modifySection) throws Exception {
         sectionService.update(modifySection);
     }
 }
