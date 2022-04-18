@@ -18,7 +18,7 @@ import javax.persistence.*;
 @RequestMapping("/section")
 public class SectionController {
 
-    @Autowired
+    @Autowired(required = false)
     private SectionService sectionService;
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

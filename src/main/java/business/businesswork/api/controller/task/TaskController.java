@@ -22,7 +22,7 @@ public class TaskController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
+    @Autowired(required = false)
     private TaskService taskService;
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST})

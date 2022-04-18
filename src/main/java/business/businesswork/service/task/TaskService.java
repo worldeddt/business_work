@@ -18,12 +18,9 @@ import java.util.Date;
 @Service
 public class TaskService {
 
-    @Autowired
-    private CommonConfig commonConfig;
-
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(commonConfig.getPersistenceName());
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
     public void register(RegisterTask registerTask)
     {
@@ -53,7 +50,7 @@ public class TaskService {
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
             task.setStatusType(registerTask.getStatus());
-            task.setRegisterDate(nowDateTime);
+            task.setRegisterDate(date);
 
             Section section = em.find(Section.class, registerTask.getSectionId());
             section.addTask(task);
@@ -91,23 +88,23 @@ public class TaskService {
 
             Date date = new Date();
 
-            LocalDateTime now = LocalDateTime.now();
-            String nowDateTime = String.format(
-                    "%04d-%02d-%02d %02d:%02d:%02d",
-                    now.getYear(),
-                    now.getMonthValue(),
-                    now.getDayOfMonth(),
-                    now.getHour(),
-                    now.getMinute(),
-                    now.getSecond()
-            );
+//            LocalDateTime now = LocalDateTime.now();
+//            String nowDateTime = String.format(
+//                    "%04d-%02d-%02d %02d:%02d:%02d",
+//                    now.getYear(),
+//                    now.getMonthValue(),
+//                    now.getDayOfMonth(),
+//                    now.getHour(),
+//                    now.getMinute(),
+//                    now.getSecond()
+//            );
 
             Task task = em.find(Task.class, modifyTask.getIndex());
             Section section = em.find(Section.class, modifyTask.getSectionId());
             task.setSection(section);
             task.setStatusType(modifyTask.getStatus());
             task.setDescription(modifyTask.getDescription());
-            task.setLastModifyDate(nowDateTime);
+            task.setLastModifyDate(date);
 
             em.persist(modifyTask);
 

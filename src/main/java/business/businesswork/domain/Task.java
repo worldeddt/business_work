@@ -2,6 +2,7 @@ package business.businesswork.domain;
 
 import business.businesswork.enumerate.StatusType;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,8 +50,10 @@ public class Task {
     public StatusType statusType;
 
     @Temporal(TemporalType.TIMESTAMP)
-    public String registerDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date registerDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    public String lastModifyDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date lastModifyDate;
 }

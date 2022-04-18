@@ -21,6 +21,7 @@ import java.util.List;
 public class ProjectService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
     public void deleteProject(String projectId)
@@ -62,6 +63,8 @@ public class ProjectService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
+
+        System.out.printf("dddddd============");
 
         try {
             Project project = new Project();

@@ -9,4 +9,12 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("business")
 public class CommonConfig {
     private String persistenceName;
+
+    public String getPersistenceName() {
+        return persistenceName;
+    }
+
+    public void setPersistenceName(String persistenceName) {
+        this.persistenceName = persistenceName;
+    }
 }

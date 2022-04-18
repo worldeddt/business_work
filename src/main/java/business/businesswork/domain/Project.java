@@ -18,8 +18,8 @@ public class Project {
 
     public String description;
 
-    @Column(columnDefinition = "enum default 'ACTIVE'")
-    public ProjectStatus status;
+    @Column( columnDefinition="enum('ACTIVE' , 'DELETE') default 'ACTIVE'")
+    public ProjectStatus status = ProjectStatus.valueOf("ACTIVE");
 
     @OneToMany(mappedBy = "project")
     List<Section> sections = new ArrayList<Section>();

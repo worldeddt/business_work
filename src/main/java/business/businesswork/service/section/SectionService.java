@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 import javax.persistence.*;
 
 
@@ -22,13 +21,15 @@ public class SectionService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory(commonConfig.getPersistenceName());
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
     public void register(RegisterSection registerSection)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
+
+        logger.info("common config persistence name : "+commonConfig.getPersistenceName());
 
         try {
             Project project = em.find(Project.class, registerSection.getProjectId());
@@ -40,7 +41,6 @@ public class SectionService {
             em.persist(section);
 
             em.flush();
-
             tx.commit();
         } catch (Exception e) {
             tx.rollback();

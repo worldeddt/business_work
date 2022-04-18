@@ -23,7 +23,7 @@ public class ProjectController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
-    @Autowired
+    @Autowired(required = false)
     private ProjectService projectService;
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST})

@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication(scanBasePackages={
-        "business.businesswork.api.controller", "business.businesswork.config", "business.businesswork.util"})
+        "business.businesswork.*"})
 public class BusinessWorkApplication {
 
     public static void main(String[] args) {
