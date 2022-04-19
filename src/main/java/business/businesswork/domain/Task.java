@@ -25,14 +25,6 @@ public class Task {
     @OneToMany(mappedBy = "task")
     List<Review> reviewList = new ArrayList<Review>();
 
-    public List<Review> getReviewList() {
-        return reviewList;
-    }
-
-    public void setReviewList(List<Review> reviewList) {
-        this.reviewList = reviewList;
-    }
-
     public void addReivew(Review review) {
         review.setTask(this);
         reviewList.add(review);

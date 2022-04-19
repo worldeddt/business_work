@@ -2,6 +2,7 @@ package business.businesswork.domain;
 
 import business.businesswork.enumerate.ProjectStatus;
 import lombok.Data;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class Project {
 
     public String description;
 
-    @Column( columnDefinition="enum('ACTIVE' , 'DELETE') default 'ACTIVE'")
-    public ProjectStatus status = ProjectStatus.valueOf("ACTIVE");
+    @Enumerated(EnumType.STRING)
+    public ProjectStatus status;
 
     @OneToMany(mappedBy = "project")
     List<Section> sections = new ArrayList<Section>();

@@ -9,10 +9,7 @@ import business.businesswork.vo.RegistProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.*;
 
@@ -37,7 +34,12 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public void delete(@RequestBody String projectId) throws Exception {
+    public void delete(@RequestParam(required = false ,name = "projectId") Long projectId) throws Exception {
         projectService.deleteProject(projectId);
+    }
+
+    @RequestMapping(value = "/", method = {RequestMethod.GET})
+    public void findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+        projectService.findById(projectId);
     }
 }

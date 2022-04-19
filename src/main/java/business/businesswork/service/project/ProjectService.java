@@ -11,11 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -24,31 +22,26 @@ public class ProjectService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
-    public void deleteProject(String projectId)
+    public void deleteProject(Long projectId)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Project project = em.find(Project.class, projectId);
+            Project project = em.find(Project.class, 1L);
             project.setStatus(ProjectStatus.DELETE);
+            em.persist(project);
 
             List<Section> sections = project.getSections();
-
             for (Section section : sections) {
-                (em.find(Section.class, section.getIndex())).setStatus(SectionStatus.DELETE);
+                Section section1 = em.find(Section.class, section.getIndex());
+                section1.setStatus(SectionStatus.DELETE);
+                em.persist(section1);
             }
 
             em.flush();
-            em.clear();
-
-            Project project1 = em.createQuery("select p from Project p where p.index = :index", Project.class)
-                    .setParameter("index", projectId)
-                    .getSingleResult();
-
-            logger.info("project1______"+project1);
-
+            tx.commit();
         } catch (Exception e) {
             tx.rollback();
         } finally {
@@ -63,8 +56,6 @@ public class ProjectService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-
-        System.out.printf("dddddd============");
 
         try {
             Project project = new Project();
@@ -106,4 +97,50 @@ public class ProjectService {
 
         emf.close();
     }
+
+    public void findById(Long id)
+    {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            logger.info("================== project id : "+ id);
+            Project project = em.find(Project.class, id);
+
+            logger.info("================== project class : " + project);
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+
+
+        emf.close();
+    }
+
+//    public List<Project> findAll()
+//    {
+//        EntityManager em = emf.createEntityManager();
+//        EntityTransaction tx = em.getTransaction();
+//        tx.begin();
+//
+//        try {
+//            List<Project> query = em.createQuery("select p from Project p where p.status = :status", Project.class)
+//                    .setParameter("status",ProjectStatus.ACTIVE)
+//                    .getResultList();
+//            return query;
+//
+//            tx.commit();
+//        } catch (Exception e) {
+//            tx.rollback();
+//        } finally {
+//            em.close();
+//        }
+//
+//        emf.close();
+//    }
 }

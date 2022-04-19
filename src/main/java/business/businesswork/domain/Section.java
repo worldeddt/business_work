@@ -18,6 +18,7 @@ public class Section {
 
     public String description;
 
+    @Enumerated(EnumType.STRING)
     public SectionStatus status;
 
     @ManyToOne
