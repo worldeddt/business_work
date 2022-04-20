@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -42,5 +43,10 @@ public class ProjectController {
     @RequestMapping(value = "/", method = {RequestMethod.GET})
     public Optional<Project> findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return projectService.findById(projectId);
+    }
+
+    @RequestMapping(value = "/all", method = {RequestMethod.GET})
+    public List<Project> findAll() throws Exception {
+        return projectService.findAll();
     }
 }

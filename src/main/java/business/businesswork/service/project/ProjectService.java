@@ -133,6 +133,28 @@ public class ProjectService {
         return Optional.of(project);
     }
 
+    public List<Project> findAll()
+    {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            return em.createQuery("select p from Project p where p.status = :status", Project.class)
+                    .setParameter("status", ProjectStatus.ACTIVE)
+                    .getResultList();
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
+
+        return null;
+    }
+
 //    public List<Project> findAll()
 //    {
 //        EntityManager em = emf.createEntityManager();
