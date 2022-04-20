@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/project")
@@ -39,7 +40,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})
-    public void findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
-        projectService.findById(projectId);
+    public Optional<Project> findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+        return projectService.findById(projectId);
     }
 }

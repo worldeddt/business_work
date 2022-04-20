@@ -98,28 +98,39 @@ public class ProjectService {
         emf.close();
     }
 
-    public void findById(Long id)
+    public Optional<Project> findById(Long id)
     {
+        Project project = new Project();
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-
         try {
+
             logger.info("================== project id : "+ id);
-            Project project = em.find(Project.class, id);
 
-            logger.info("================== project class : " + project);
+            TypedQuery<Project> query =
+                    em.createQuery("select p from Project p where p.index = :index and p.status = :status", Project.class)
+                            .setParameter("index", id)
+                            .setParameter("status", ProjectStatus.ACTIVE);
 
-            tx.commit();
+            Project project1 = query.getSingleResult();
+
+            project.setIndex(project1.getIndex());
+            project.setDescription(project1.getDescription());
+            project.setTitle(project1.getTitle());
+            project.setSections(project1.getSections());
+
+            return Optional.of(project);
+
         } catch (Exception e) {
             tx.rollback();
         } finally {
             em.close();
         }
 
-
-
         emf.close();
+
+        return Optional.of(project);
     }
 
 //    public List<Project> findAll()
