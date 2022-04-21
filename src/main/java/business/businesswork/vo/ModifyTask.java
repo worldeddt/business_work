@@ -1,6 +1,6 @@
 package business.businesswork.vo;
 
-import business.businesswork.enumerate.StatusType;
+import business.businesswork.enumerate.TaskStatusType;
 
 public class ModifyTask {
     private Long index;
@@ -8,7 +8,7 @@ public class ModifyTask {
     private String description;
     private String sectionId;
     private String projectId;
-    private StatusType status;
+    private TaskStatusType status;
     private String memberId;
 
     public Long getIndex() {
@@ -51,11 +51,11 @@ public class ModifyTask {
         this.sectionId = sectionId;
     }
 
-    public StatusType getStatus() {
+    public TaskStatusType getStatus() {
         return status;
     }
 
-    public void setStatus(StatusType status) {
+    public void setStatus(TaskStatusType status) {
         this.status = status;
     }
 

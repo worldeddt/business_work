@@ -29,7 +29,7 @@ public class ProjectService {
         tx.begin();
 
         try {
-            Project project = em.find(Project.class, 1L);
+            Project project = em.find(Project.class, projectId);
             project.setStatus(ProjectStatus.DELETE);
             em.persist(project);
 
@@ -154,26 +154,4 @@ public class ProjectService {
 
         return null;
     }
-
-//    public List<Project> findAll()
-//    {
-//        EntityManager em = emf.createEntityManager();
-//        EntityTransaction tx = em.getTransaction();
-//        tx.begin();
-//
-//        try {
-//            List<Project> query = em.createQuery("select p from Project p where p.status = :status", Project.class)
-//                    .setParameter("status",ProjectStatus.ACTIVE)
-//                    .getResultList();
-//            return query;
-//
-//            tx.commit();
-//        } catch (Exception e) {
-//            tx.rollback();
-//        } finally {
-//            em.close();
-//        }
-//
-//        emf.close();
-//    }
 }

@@ -2,9 +2,11 @@ package business.businesswork.domain;
 
 import business.businesswork.enumerate.SectionStatus;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -27,6 +29,18 @@ public class Section {
 
     @OneToMany(mappedBy = "section")
     List<Task> tasks = new ArrayList<Task>();
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date registerDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date lastModifyDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date deleteDate;
 
     public void addTask(Task task) {
         task.setSection(this);

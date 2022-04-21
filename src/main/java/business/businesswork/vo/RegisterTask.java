@@ -1,6 +1,6 @@
 package business.businesswork.vo;
 
-import business.businesswork.enumerate.StatusType;
+import business.businesswork.enumerate.TaskStatusType;
 import lombok.Data;
 
 @Data
@@ -9,6 +9,6 @@ public class RegisterTask {
     private String description;
     private Long sectionId;
     private Long projectId;
-    private StatusType status;
+    private TaskStatusType status;
     private String memberId;
 }

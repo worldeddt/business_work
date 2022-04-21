@@ -1,6 +1,6 @@
 package business.businesswork.domain;
 
-import business.businesswork.enumerate.StatusType;
+import business.businesswork.enumerate.TaskStatusType;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -39,7 +39,7 @@ public class Task {
     public Section section;
 
     @Enumerated(EnumType.STRING)
-    public StatusType statusType;
+    public TaskStatusType taskStatusType;
 
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -48,4 +48,8 @@ public class Task {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date lastModifyDate;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    public Date deleteDate;
 }

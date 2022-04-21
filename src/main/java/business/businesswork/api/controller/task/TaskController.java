@@ -1,7 +1,7 @@
 package business.businesswork.api.controller.task;
 
 import business.businesswork.domain.*;
-import business.businesswork.enumerate.StatusType;
+import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.service.task.TaskService;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
@@ -61,7 +61,7 @@ public class TaskController {
             em.persist(member);
 
             Task task = new Task();
-            task.setStatusType(StatusType.TODO);
+            task.setTaskStatusType(TaskStatusType.TODO);
             task.setDescription("erp 정기 업무");
             em.persist(task);
 

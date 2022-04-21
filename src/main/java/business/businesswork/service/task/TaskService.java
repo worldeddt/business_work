@@ -1,14 +1,12 @@
 package business.businesswork.service.task;
 
-import business.businesswork.config.CommonConfig;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
-import business.businesswork.enumerate.StatusType;
+import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -49,7 +47,7 @@ public class TaskService {
             Task task = new Task();
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
-            task.setStatusType(registerTask.getStatus());
+            task.setTaskStatusType(registerTask.getStatus());
             task.setRegisterDate(date);
 
             Section section = em.find(Section.class, registerTask.getSectionId());
@@ -102,7 +100,7 @@ public class TaskService {
             Task task = em.find(Task.class, modifyTask.getIndex());
             Section section = em.find(Section.class, modifyTask.getSectionId());
             task.setSection(section);
-            task.setStatusType(modifyTask.getStatus());
+            task.setTaskStatusType(modifyTask.getStatus());
             task.setDescription(modifyTask.getDescription());
             task.setLastModifyDate(date);
 
@@ -128,9 +126,8 @@ public class TaskService {
         tx.begin();
 
         try {
-
             Task task = em.find(Task.class, taskIndex);
-            task.setStatusType(StatusType.DELETE);
+            task.setTaskStatusType(TaskStatusType.DELETE);
 
             em.persist(task);
             em.flush();
@@ -138,7 +135,7 @@ public class TaskService {
 
             Task task1 = em.find(Task.class, taskIndex);
 
-            logger.info("task after delete request = "+ task1.getStatusType());
+            logger.info("task after delete request = "+ task1.getTaskStatusType());
 
             tx.commit();
         } catch (Exception e) {
