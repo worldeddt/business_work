@@ -2,6 +2,7 @@ package business.businesswork.service.task;
 
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
+import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -145,5 +148,61 @@ public class TaskService {
         }
 
         emf.close();
+    }
+
+    public Optional<Task> findById(Long id)
+    {
+        Task task = new Task();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            logger.info("================== section id : "+ id);
+
+            TypedQuery<Task> query =
+                    em.createQuery("select t from Task t where t.index = :index and t.taskStatusType not in (:status)", Task.class)
+                            .setParameter("index", id)
+                            .setParameter("status", TaskStatusType.DELETE);
+
+            Task task1 = query.getSingleResult();
+
+            task.setIndex(task1.getIndex());
+            task.setDescription(task1.getDescription());
+            task.setTitle(task1.getTitle());
+
+            return Optional.of(task);
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
+
+        return Optional.of(task);
+    }
+
+    public List<Task> findAll()
+    {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            return em.createQuery("select t from Task t where t.taskStatusType not in (:status)", Task.class)
+                    .setParameter("status", TaskStatusType.DELETE)
+                    .getResultList();
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
+
+        return null;
     }
 }
