@@ -9,6 +9,6 @@ public class RegisterTask {
     private String description;
     private Long sectionId;
     private Long projectId;
-    private TaskStatusType status;
+    private TaskStatusType status = TaskStatusType.TODO;
     private String memberId;
 }

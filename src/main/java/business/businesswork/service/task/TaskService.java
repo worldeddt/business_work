@@ -31,39 +31,44 @@ public class TaskService {
 
         try {
             Date date = new Date();
+//
+//            LocalDateTime now = LocalDateTime.now();
+//            String nowDateTime = String.format(
+//                    "%04d-%02d-%02d %02d:%02d:%02d",
+//                    now.getYear(),
+//                    now.getMonthValue(),
+//                    now.getDayOfMonth(),
+//                    now.getHour(),
+//                    now.getMinute(),
+//                    now.getSecond()
+//            );
+//
+//            logger.info("now date : "+date);
+//            logger.info("now datetime : "+now);
+//            logger.info("now datetime string : "+nowDateTime);
+            logger.info("============== section Id : "+registerTask.getSectionId());
 
-            LocalDateTime now = LocalDateTime.now();
-            String nowDateTime = String.format(
-                    "%04d-%02d-%02d %02d:%02d:%02d",
-                    now.getYear(),
-                    now.getMonthValue(),
-                    now.getDayOfMonth(),
-                    now.getHour(),
-                    now.getMinute(),
-                    now.getSecond()
-            );
+            Section section = em.find(Section.class, registerTask.getSectionId());
 
-            logger.info("now date : "+date);
-            logger.info("now datetime : "+now);
-            logger.info("now datetime string : "+nowDateTime);
-
+            logger.info("============== section class : "+section);
             Task task = new Task();
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
             task.setTaskStatusType(registerTask.getStatus());
             task.setRegisterDate(date);
-
-            Section section = em.find(Section.class, registerTask.getSectionId());
-            section.addTask(task);
-
+            task.setSection(section);
             em.persist(task);
-            em.persist(section);
+
+//            section.addTask(task);
+
+
+//            em.persist(section);
 
             em.flush();
             em.clear();
 
-            Query query =
-                    em.createQuery("select t from Task t where t.section.index = :sectionIndex")
+            TypedQuery<Task> query =
+                    em.createQuery("select t from Task t where t.section.index = :sectionIndex", Task.class)
                             .setParameter("sectionIndex", registerTask.getSectionId());
 
             logger.info("=========================== registered task = "+query.getResultList());

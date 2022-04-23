@@ -32,7 +32,7 @@ class TaskServiceTest {
         registerTask.setSectionId(1L);
 
         this.mockMvc.perform(
-                        MockMvcRequestBuilders.post("/project/register")
+                        MockMvcRequestBuilders.post("/task/register")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(gson.toJson(registerTask)))
                 .andDo(print())
