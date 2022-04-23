@@ -1,12 +1,10 @@
 package business.businesswork.domain;
 
 import business.businesswork.enumerate.SectionStatus;
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -15,12 +13,14 @@ public class Section {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long index;
 
+    @Column(nullable = false)
     public String title;
 
     public String description;
 
     @Enumerated(EnumType.STRING)
-    public SectionStatus status;
+    @Column(nullable = false)
+    public SectionStatus status = SectionStatus.ACTIVE;
 
     @ManyToOne
     @JoinColumn(name = "projectId")
@@ -29,17 +29,12 @@ public class Section {
     @OneToMany(mappedBy = "section")
     List<Task> tasks = new ArrayList<Task>();
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date registerDate;
+    @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
+    public LocalDateTime registerDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date lastModifyDate;
+    public LocalDateTime lastModifyDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date deleteDate;
+    public LocalDateTime deleteDate;
 
     public void addTask(Task task) {
         task.setSection(this);
@@ -94,27 +89,27 @@ public class Section {
         this.tasks = tasks;
     }
 
-    public Date getRegisterDate() {
+    public LocalDateTime getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
+    public void setRegisterDate(LocalDateTime registerDate) {
         this.registerDate = registerDate;
     }
 
-    public Date getLastModifyDate() {
+    public LocalDateTime getLastModifyDate() {
         return lastModifyDate;
     }
 
-    public void setLastModifyDate(Date lastModifyDate) {
+    public void setLastModifyDate(LocalDateTime lastModifyDate) {
         this.lastModifyDate = lastModifyDate;
     }
 
-    public Date getDeleteDate() {
+    public LocalDateTime getDeleteDate() {
         return deleteDate;
     }
 
-    public void setDeleteDate(Date deleteDate) {
+    public void setDeleteDate(LocalDateTime deleteDate) {
         this.deleteDate = deleteDate;
     }
 }

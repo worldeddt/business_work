@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -58,9 +60,15 @@ public class ProjectService {
         tx.begin();
 
         try {
+
+            LocalDateTime now = LocalDateTime.now();
+
+            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             Project project = new Project();
             project.setTitle(registProject.getTitle());
             project.setDescription(registProject.getDescription());
+            project.setRegisterDate(datetime);
+
             em.persist(project);
             em.flush();
             tx.commit();
@@ -154,4 +162,18 @@ public class ProjectService {
 
         return null;
     }
+
+    private String dateFormatter(LocalDateTime date)
+    {
+        return String.format(
+                "%04d-%02d-%02d %02d:%02d:%02d",
+                date.getYear(),
+                date.getMonthValue(),
+                date.getDayOfMonth(),
+                date.getHour(),
+                date.getMinute(),
+                date.getSecond()
+        );
+    }
+
 }

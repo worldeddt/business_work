@@ -1,5 +1,6 @@
 package business.businesswork.api.controller.section;
 
+import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.RegisterSection;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,7 @@ class SectionControllerTest {
         registerSection.setDescription("첫 번째 섹션");
         registerSection.setTitle("section title");
         registerSection.setProjectId(1L);
+        registerSection.setSectionStatus(SectionStatus.ACTIVE);
 
         this.mockMvc.perform(
                         post("/section/register")

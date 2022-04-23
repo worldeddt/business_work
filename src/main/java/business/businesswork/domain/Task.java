@@ -1,8 +1,6 @@
 package business.businesswork.domain;
 
 import business.businesswork.enumerate.TaskStatusType;
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,6 +17,7 @@ public class Task {
     @Column(name="descriptionName")
     public String description;
 
+    @Column(nullable = false)
     public String title;
 
     @OneToMany(mappedBy = "task")
@@ -38,18 +37,15 @@ public class Task {
     public Section section;
 
     @Enumerated(EnumType.STRING)
-    public TaskStatusType taskStatusType;
+    public TaskStatusType taskStatusType = TaskStatusType.TODO;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date registerDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date lastModifyDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     public Date deleteDate;
 
 

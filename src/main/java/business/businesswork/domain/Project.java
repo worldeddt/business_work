@@ -2,12 +2,10 @@ package business.businesswork.domain;
 
 import business.businesswork.enumerate.ProjectStatus;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Data
@@ -17,12 +15,13 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long index;
 
+    @Column(nullable = false)
     public String title;
 
-    public String description;
+    public String description = "";
 
     @Enumerated(EnumType.STRING)
-    public ProjectStatus status;
+    public ProjectStatus status = ProjectStatus.ACTIVE;
 
     @OneToMany(mappedBy = "project")
     List<Section> sections = new ArrayList<Section>();
@@ -32,15 +31,10 @@ public class Project {
         sections.add(section);
     }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date registerDate;
+    @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
+    public LocalDateTime registerDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date lastModifyDate;
+    public LocalDateTime lastModifyDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    public Date deleteDate;
+    public LocalDateTime deleteDate;
 }

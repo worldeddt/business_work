@@ -210,4 +210,17 @@ public class TaskService {
 
         return null;
     }
+
+    private String dateFormatter(LocalDateTime date)
+    {
+        return String.format(
+                "%04d-%02d-%02d %02d:%02d:%02d",
+                date.getYear(),
+                date.getMonthValue(),
+                date.getDayOfMonth(),
+                date.getHour(),
+                date.getMinute(),
+                date.getSecond()
+        );
+    }
 }
