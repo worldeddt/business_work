@@ -3,6 +3,7 @@ package business.businesswork.domain;
 import business.businesswork.enumerate.TaskStatusType;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,15 +40,14 @@ public class Task {
     @Enumerated(EnumType.STRING)
     public TaskStatusType taskStatusType = TaskStatusType.TODO;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date registerDate;
+    @Column(columnDefinition = "datetime DEFAULT ''", nullable = false)
+    public LocalDateTime registerDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date lastModifyDate;
+    @Column(columnDefinition = "datetime DEFAULT ''")
+    public LocalDateTime lastModifyDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date deleteDate;
-
+    @Column(columnDefinition = "datetime DEFAULT ''")
+    public LocalDateTime deleteDate;
 
     public Long getIndex() {
         return index;
@@ -105,27 +105,27 @@ public class Task {
         this.taskStatusType = taskStatusType;
     }
 
-    public Date getRegisterDate() {
+    public LocalDateTime getRegisterDate() {
         return registerDate;
     }
 
-    public void setRegisterDate(Date registerDate) {
+    public void setRegisterDate(LocalDateTime registerDate) {
         this.registerDate = registerDate;
     }
 
-    public Date getLastModifyDate() {
+    public LocalDateTime getLastModifyDate() {
         return lastModifyDate;
     }
 
-    public void setLastModifyDate(Date lastModifyDate) {
+    public void setLastModifyDate(LocalDateTime lastModifyDate) {
         this.lastModifyDate = lastModifyDate;
     }
 
-    public Date getDeleteDate() {
+    public LocalDateTime getDeleteDate() {
         return deleteDate;
     }
 
-    public void setDeleteDate(Date deleteDate) {
+    public void setDeleteDate(LocalDateTime deleteDate) {
         this.deleteDate = deleteDate;
     }
 }

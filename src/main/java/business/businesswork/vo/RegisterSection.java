@@ -9,5 +9,5 @@ public class RegisterSection {
     private String title;
     private String Description = "";
     private Long projectId;
-    private SectionStatus sectionStatus;
+    private SectionStatus sectionStatus = SectionStatus.ACTIVE;
 }

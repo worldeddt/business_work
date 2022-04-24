@@ -1,5 +1,6 @@
 package business.businesswork.api.controller.project;
 
+import business.businesswork.vo.ModifyProject;
 import business.businesswork.vo.RegistProject;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
@@ -55,6 +56,22 @@ class ProjectControllerTest {
     @Test
     public void findAll() throws Exception {
         this.mockMvc.perform(get("/project/all"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void update() throws Exception {
+        Gson gson = new Gson();
+        ModifyProject modifyProject = new ModifyProject();
+        modifyProject.setIndex(1L);
+        modifyProject.setTitle("첫 번째 프로젝트");
+        modifyProject.setDescription("천재노창");
+
+        this.mockMvc.perform(
+                        post("/project/update")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(modifyProject)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

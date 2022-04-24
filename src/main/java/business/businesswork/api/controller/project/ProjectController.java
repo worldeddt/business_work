@@ -6,6 +6,7 @@ import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.service.project.ProjectService;
 import business.businesswork.vo.ModifyProject;
 import business.businesswork.vo.RegistProject;
+import business.businesswork.vo.ResponseProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})
-    public Optional<Project> findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+    public ResponseProject findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return projectService.findById(projectId);
     }
 

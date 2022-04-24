@@ -16,6 +16,7 @@ public class Section {
     @Column(nullable = false)
     public String title;
 
+    @Column(columnDefinition = "CHARACTER LARGE OBJECT default ''", nullable = false)
     public String description;
 
     @Enumerated(EnumType.STRING)

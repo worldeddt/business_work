@@ -11,5 +11,5 @@ public class ModifySection {
     private String projectId;
     private String description;
     private Task task;
-    private SectionStatus sectionStatus;
+    private SectionStatus sectionStatus = SectionStatus.ACTIVE;
 }

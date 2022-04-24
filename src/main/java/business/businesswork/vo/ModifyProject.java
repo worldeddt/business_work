@@ -9,5 +9,5 @@ public class ModifyProject {
     public Long index;
     public String title;
     public String description;
-    public ProjectStatus status;
+    public ProjectStatus status = ProjectStatus.ACTIVE;
 }

@@ -8,7 +8,7 @@ public class ModifyTask {
     private String description;
     private String sectionId;
     private String projectId;
-    private TaskStatusType status;
+    private TaskStatusType status = TaskStatusType.TODO;
     private String memberId;
 
     public Long getIndex() {

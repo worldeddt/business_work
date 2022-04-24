@@ -7,13 +7,17 @@ import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.ModifyProject;
 import business.businesswork.vo.RegistProject;
+import business.businesswork.vo.ResponseProject;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,7 +66,6 @@ public class ProjectService {
         try {
 
             LocalDateTime now = LocalDateTime.now();
-
             LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             Project project = new Project();
             project.setTitle(registProject.getTitle());
@@ -89,6 +92,9 @@ public class ProjectService {
 
         try {
             Project project = em.find(Project.class, modifyProject.getIndex());
+
+            if (project.getStatus() == ProjectStatus.DELETE) return;
+
             project.setTitle(modifyProject.getTitle());
             project.setDescription(modifyProject.getDescription());
 
@@ -106,9 +112,11 @@ public class ProjectService {
         emf.close();
     }
 
-    public Optional<Project> findById(Long id)
+    public ResponseProject findById(Long id)
     {
-        Project project = new Project();
+        ResponseProject responseProject = new ResponseProject();
+        responseProject.result = 2;
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -123,12 +131,15 @@ public class ProjectService {
 
             Project project1 = query.getSingleResult();
 
-            project.setIndex(project1.getIndex());
-            project.setDescription(project1.getDescription());
-            project.setTitle(project1.getTitle());
-            project.setSections(project1.getSections());
+            if (project1 == null) return responseProject;
 
-            return Optional.of(project);
+            responseProject.result = 1;
+            responseProject.setIndex(project1.getIndex());
+            responseProject.setDescription(project1.getDescription());
+            responseProject.setTitle(project1.getTitle());
+            responseProject.setSections(project1.getSections());
+
+            return responseProject;
 
         } catch (Exception e) {
             tx.rollback();
@@ -138,7 +149,7 @@ public class ProjectService {
 
         emf.close();
 
-        return Optional.of(project);
+        return responseProject;
     }
 
     public List<Project> findAll()

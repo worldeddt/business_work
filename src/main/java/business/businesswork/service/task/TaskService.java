@@ -2,7 +2,6 @@ package business.businesswork.service.task;
 
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
-import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
@@ -12,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,39 +29,22 @@ public class TaskService {
         tx.begin();
 
         try {
-            Date date = new Date();
-//
-//            LocalDateTime now = LocalDateTime.now();
-//            String nowDateTime = String.format(
-//                    "%04d-%02d-%02d %02d:%02d:%02d",
-//                    now.getYear(),
-//                    now.getMonthValue(),
-//                    now.getDayOfMonth(),
-//                    now.getHour(),
-//                    now.getMinute(),
-//                    now.getSecond()
-//            );
-//
-//            logger.info("now date : "+date);
-//            logger.info("now datetime : "+now);
-//            logger.info("now datetime string : "+nowDateTime);
-            logger.info("============== section Id : "+registerTask.getSectionId());
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
             Section section = em.find(Section.class, registerTask.getSectionId());
 
-            logger.info("============== section class : "+section);
             Task task = new Task();
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
             task.setTaskStatusType(registerTask.getStatus());
-            task.setRegisterDate(date);
+            task.setRegisterDate(datetime);
             task.setSection(section);
             em.persist(task);
 
-//            section.addTask(task);
+            section.addTask(task);
 
-
-//            em.persist(section);
+            em.persist(section);
 
             em.flush();
             em.clear();
@@ -91,26 +73,17 @@ public class TaskService {
         tx.begin();
 
         try {
-
-            Date date = new Date();
-
-//            LocalDateTime now = LocalDateTime.now();
-//            String nowDateTime = String.format(
-//                    "%04d-%02d-%02d %02d:%02d:%02d",
-//                    now.getYear(),
-//                    now.getMonthValue(),
-//                    now.getDayOfMonth(),
-//                    now.getHour(),
-//                    now.getMinute(),
-//                    now.getSecond()
-//            );
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
             Task task = em.find(Task.class, modifyTask.getIndex());
             Section section = em.find(Section.class, modifyTask.getSectionId());
+
             task.setSection(section);
             task.setTaskStatusType(modifyTask.getStatus());
             task.setDescription(modifyTask.getDescription());
-            task.setLastModifyDate(date);
+            task.setTitle(modifyTask.getTitle());
+            task.setLastModifyDate(datetime);
 
             em.persist(modifyTask);
 
