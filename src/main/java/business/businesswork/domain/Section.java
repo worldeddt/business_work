@@ -11,6 +11,7 @@ import java.util.List;
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "section_index")
     public Long index;
 
     @Column(nullable = false)
@@ -23,8 +24,8 @@ public class Section {
     @Column(nullable = false)
     public SectionStatus status = SectionStatus.ACTIVE;
 
-    @ManyToOne
-    @JoinColumn(name = "projectId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_index")
     public Project project;
 
     @OneToMany(mappedBy = "section")

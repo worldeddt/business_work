@@ -39,8 +39,8 @@ public class SectionController {
     }
 
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
-    public List<Section> findAll() throws Exception {
-        return sectionService.findAll();
+    public List<Section> findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+        return sectionService.findAll(projectId);
     }
 
 }

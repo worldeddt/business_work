@@ -30,11 +30,11 @@ public class Task {
     }
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "member_index")
     public Member member;
 
     @ManyToOne
-    @JoinColumn(name = "sectionId")
+    @JoinColumn(name = "section_index")
     public Section section;
 
     @Enumerated(EnumType.STRING)

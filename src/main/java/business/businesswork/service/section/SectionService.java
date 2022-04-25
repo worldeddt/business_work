@@ -71,11 +71,10 @@ public class SectionService {
 
         try {
             Section section = em.find(Section.class, modifySection.getIndex());
-            Project project = em.find(Project.class, section.getProject());
+            Project project = em.find(Project.class, modifySection.getProjectId());
             section.setTitle(modifySection.getTitle());
             section.setDescription(modifySection.getDescription());
             section.setProject(project);
-            section.addTask(modifySection.getTask());
 
             em.persist(section);
             em.flush();
@@ -154,15 +153,19 @@ public class SectionService {
         return Optional.of(section);
     }
 
-    public List<Section> findAll()
+    public List<Section> findAll(Long projectId)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            return em.createQuery("select p from Section p where p.status = :status", Section.class)
+
+            logger.info("======= project Index : "+projectId);
+            return em.createQuery("select s from Section s where s.status = :status and s.project= " +
+                            "(select p from Project p where p.index = :projectIndex)", Section.class)
                     .setParameter("status", SectionStatus.ACTIVE)
+                    .setParameter("projectIndex", projectId)
                     .getResultList();
 
         } catch (Exception e) {

@@ -11,6 +11,7 @@ import java.util.List;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "project_index")
     public Long index;
 
     @Column(nullable = false)

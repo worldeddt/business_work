@@ -1,6 +1,7 @@
 package business.businesswork.api.controller.section;
 
 import business.businesswork.enumerate.SectionStatus;
+import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,20 @@ class SectionControllerTest {
     }
 
     @Test
-    void update() {
+    public void update() throws Exception {
+        Gson gson = new Gson();
+        ModifySection modifySection = new ModifySection();
+        modifySection.setIndex(1L);
+        modifySection.setDescription("첫 번째 섹션");
+        modifySection.setTitle("나투더플라");
+        modifySection.setProjectId(2L);
+
+        this.mockMvc.perform(
+                        post("/section/update")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(gson.toJson(modifySection)))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -61,7 +75,7 @@ class SectionControllerTest {
 
     @Test
     public void findAll() throws Exception {
-        this.mockMvc.perform(get("/section/all"))
+        this.mockMvc.perform(get("/section/all").param("projectId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

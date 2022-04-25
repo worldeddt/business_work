@@ -137,7 +137,6 @@ public class ProjectService {
             responseProject.setIndex(project1.getIndex());
             responseProject.setDescription(project1.getDescription());
             responseProject.setTitle(project1.getTitle());
-            responseProject.setSections(project1.getSections());
 
             return responseProject;
 
