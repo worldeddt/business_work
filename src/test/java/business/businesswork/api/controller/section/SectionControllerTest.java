@@ -75,7 +75,7 @@ class SectionControllerTest {
 
     @Test
     public void findAll() throws Exception {
-        this.mockMvc.perform(get("/section/all").param("projectId", "2"))
+        this.mockMvc.perform(get("/section/all").param("projectId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

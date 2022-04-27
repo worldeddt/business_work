@@ -24,7 +24,7 @@ public class Project {
     public ProjectStatus status = ProjectStatus.ACTIVE;
 
     @OneToMany(mappedBy = "project")
-    List<Section> sections = new ArrayList<Section>();
+    private List<Section> sections = new ArrayList<>();
 
     public void addSection(Section section) {
         section.setProject(this);

@@ -5,6 +5,8 @@ import business.businesswork.domain.Section;
 import business.businesswork.service.section.SectionService;
 import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ public class SectionController {
 
     @Autowired(required = false)
     private SectionService sectionService;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(@RequestBody RegisterSection registerSection) throws Exception {
@@ -40,6 +44,7 @@ public class SectionController {
 
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
     public List<Section> findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+        logger.info("========================from controller : "+sectionService.findAll(projectId));
         return sectionService.findAll(projectId);
     }
 

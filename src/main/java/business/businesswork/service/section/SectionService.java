@@ -3,7 +3,6 @@ package business.businesswork.service.section;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
-import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifySection;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -160,13 +158,24 @@ public class SectionService {
         tx.begin();
 
         try {
-
             logger.info("======= project Index : "+projectId);
-            return em.createQuery("select s from Section s where s.status = :status and s.project= " +
-                            "(select p from Project p where p.index = :projectIndex)", Section.class)
+            Project project = em.find(Project.class, projectId);
+
+            List<Section> query1 =  em.createQuery("select p from Section p where p.status  = :status and p.project = :project", Section.class)
+                    .setParameter("project", project)
                     .setParameter("status", SectionStatus.ACTIVE)
-                    .setParameter("projectIndex", projectId)
                     .getResultList();
+
+            logger.info("========= only one section : "+query1.get(0));
+
+            List<Section> query =  em.createQuery("select p from Section p where p.status  = :status and p.project.index = :projectIndex",Section.class)
+                    .setParameter("projectIndex", projectId)
+                    .setParameter("status", SectionStatus.ACTIVE)
+                    .getResultList();
+
+            logger.info("======= list of sections : "+query);
+
+            return query;
 
         } catch (Exception e) {
             tx.rollback();

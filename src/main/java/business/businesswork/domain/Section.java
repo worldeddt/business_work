@@ -29,7 +29,7 @@ public class Section {
     public Project project;
 
     @OneToMany(mappedBy = "section")
-    List<Task> tasks = new ArrayList<Task>();
+    private List<Task> tasks = new ArrayList<>();
 
     @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
     public LocalDateTime registerDate;
