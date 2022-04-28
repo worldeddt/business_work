@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +44,11 @@ public class SectionController {
     }
 
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
-    public List<Section> findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
-        logger.info("========================from controller : "+sectionService.findAll(projectId));
+    public Section findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return sectionService.findAll(projectId);
+
+//        logger.info("======== section find all : "+ sectionService.findAll(projectId));
+//        return sectionService.findAll(projectId);
     }
 
 }

@@ -1,5 +1,6 @@
 package business.businesswork.service.section;
 
+import business.businesswork.domain.Member;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
@@ -151,32 +152,28 @@ public class SectionService {
         return Optional.of(section);
     }
 
-    public List<Section> findAll(Long projectId)
+    public Section findAll(Long projectId)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            logger.info("======= project Index : "+projectId);
             Project project = em.find(Project.class, projectId);
+            List<Section> sections = project.getSections();
 
-            List<Section> query1 =  em.createQuery("select p from Section p where p.status  = :status and p.project = :project", Section.class)
-                    .setParameter("project", project)
-                    .setParameter("status", SectionStatus.ACTIVE)
-                    .getResultList();
+            Section section1 = new Section();
+            for (Section section : sections) {
+                logger.info("======= sections"+section);
+                section1.setIndex(section.getIndex());
+                section1.setDescription(section.getDescription());
+                section1.setTitle(section.getTitle());
+                section1.setStatus(section.getStatus());
+            }
 
-            logger.info("========= only one section : "+query1.get(0));
+            tx.commit();
 
-            List<Section> query =  em.createQuery("select p from Section p where p.status  = :status and p.project.index = :projectIndex",Section.class)
-                    .setParameter("projectIndex", projectId)
-                    .setParameter("status", SectionStatus.ACTIVE)
-                    .getResultList();
-
-            logger.info("======= list of sections : "+query);
-
-            return query;
-
+            return section1;
         } catch (Exception e) {
             tx.rollback();
         } finally {
