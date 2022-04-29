@@ -5,6 +5,7 @@ import business.businesswork.domain.Section;
 import business.businesswork.service.section.SectionService;
 import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
+import business.businesswork.vo.ResponseSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class SectionController {
     }
 
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
-    public Section findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+    public ResponseSection findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return sectionService.findAll(projectId);
 
 //        logger.info("======== section find all : "+ sectionService.findAll(projectId));

@@ -4,10 +4,12 @@ import business.businesswork.domain.Member;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
+import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
+import business.businesswork.vo.ResponseSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -152,7 +155,7 @@ public class SectionService {
         return Optional.of(section);
     }
 
-    public Section findAll(Long projectId)
+    public ResponseSection findAll(Long projectId)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -162,18 +165,26 @@ public class SectionService {
             Project project = em.find(Project.class, projectId);
             List<Section> sections = project.getSections();
 
-            Section section1 = new Section();
+            ResponseSection responseSection = new ResponseSection();
+            ArrayList<Section> sectionList = new ArrayList<>();
+
+            responseSection.setResult(ResponseStatus.FAIL.getResultCode());
             for (Section section : sections) {
-                logger.info("======= sections"+section);
+                Section section1 = new Section();
                 section1.setIndex(section.getIndex());
                 section1.setDescription(section.getDescription());
                 section1.setTitle(section.getTitle());
                 section1.setStatus(section.getStatus());
+
+                sectionList.add(section1);
             }
+
+            responseSection.setSectionList(sectionList);
+            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
 
             tx.commit();
 
-            return section1;
+            return responseSection;
         } catch (Exception e) {
             tx.rollback();
         } finally {
