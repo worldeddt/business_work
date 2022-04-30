@@ -8,18 +8,14 @@ import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.ModifyProject;
 import business.businesswork.vo.RegistProject;
 import business.businesswork.vo.ResponseProject;
-import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProjectService {
@@ -35,14 +31,19 @@ public class ProjectService {
         tx.begin();
 
         try {
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
             Project project = em.find(Project.class, projectId);
             project.setStatus(ProjectStatus.DELETE);
+            project.setDeleteDate(datetime);
             em.persist(project);
 
             List<Section> sections = project.getSections();
             for (Section section : sections) {
                 Section section1 = em.find(Section.class, section.getIndex());
                 section1.setStatus(SectionStatus.DELETE);
+                section1.setDeleteDate(datetime);
                 em.persist(section1);
             }
 

@@ -29,7 +29,7 @@ class SectionControllerTest {
         RegisterSection registerSection = new RegisterSection();
         registerSection.setDescription("두 번째 섹션");
         registerSection.setTitle("section title two");
-        registerSection.setProjectId(1L);
+        registerSection.setProjectId(2L);
         registerSection.setSectionStatus(SectionStatus.ACTIVE);
 
         this.mockMvc.perform(

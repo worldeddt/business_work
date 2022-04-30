@@ -26,8 +26,8 @@ class ProjectControllerTest {
     public void register() throws Exception {
         Gson gson = new Gson();
         RegistProject registProject = new RegistProject();
-        registProject.setTitle("첫 번째 프로젝트");
-        registProject.setDescription("ㅇㅇㅇㅇㅇ");
+        registProject.setTitle("세번재 프로젝트");
+        registProject.setDescription("세번째 세번째");
 
         this.mockMvc.perform(
                 post("/project/register")
@@ -48,7 +48,7 @@ class ProjectControllerTest {
 
     @Test
     public void findOne() throws Exception {
-        this.mockMvc.perform(get("/project/").param("projectId", "1"))
+        this.mockMvc.perform(get("/project/").param("projectId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -64,7 +64,7 @@ class ProjectControllerTest {
     public void update() throws Exception {
         Gson gson = new Gson();
         ModifyProject modifyProject = new ModifyProject();
-        modifyProject.setIndex(1L);
+        modifyProject.setIndex(2L);
         modifyProject.setTitle("첫 번째 프로젝트");
         modifyProject.setDescription("천재노창");
 
