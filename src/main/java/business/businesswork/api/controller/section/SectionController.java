@@ -40,7 +40,7 @@ public class SectionController {
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})
-    public Optional<Section> findOne(@RequestParam(required = false, name = "sectiondId") Long sectionId) throws Exception {
+    public Optional<Section> findOne(@RequestParam(required = false, name = "sectionId") Long sectionId) throws Exception {
         return sectionService.findById(sectionId);
     }
 

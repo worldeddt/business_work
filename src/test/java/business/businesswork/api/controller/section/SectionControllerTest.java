@@ -68,14 +68,14 @@ class SectionControllerTest {
 
     @Test
     void findOne() throws Exception {
-        this.mockMvc.perform(get("/section/").param("sectionId", "1"))
+        this.mockMvc.perform(get("/section/").param("sectionId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     public void findAll() throws Exception {
-        this.mockMvc.perform(get("/section/all").param("projectId", "1"))
+        this.mockMvc.perform(get("/section/all").param("projectId", "2"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

@@ -4,10 +4,12 @@ package business.businesswork.service.project;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.enumerate.ProjectStatus;
+import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.ModifyProject;
 import business.businesswork.vo.RegistProject;
 import business.businesswork.vo.ResponseProject;
+import business.businesswork.vo.ResponseSection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -125,22 +128,48 @@ public class ProjectService {
 
             logger.info("================== project id : "+ id);
 
-            TypedQuery<Project> query =
-                    em.createQuery("select p from Project p where p.index = :index and p.status = :status", Project.class)
-                            .setParameter("index", id)
-                            .setParameter("status", ProjectStatus.ACTIVE);
+            Project project = em.find(Project.class, id);
+            List<Section> sections = project.getSections();
 
-            Project project1 = query.getSingleResult();
+            ResponseSection responseSection = new ResponseSection();
+            ArrayList<Section> sectionList = new ArrayList<>();
 
-            if (project1 == null) return responseProject;
+//            TypedQuery<Project> query =
+//                    em.createQuery("select p from Project p where p.index = :index and p.status = :status", Project.class)
+//                            .setParameter("index", id)
+//                            .setParameter("status", ProjectStatus.ACTIVE);
+//
+//            Project project1 = query.getSingleResult();
+//
+//            if (project1 == null) return responseProject;
+//
+//            logger.info("========= project find one : "+project1.getSections());
+//
+//            responseProject.result = 1;
+//            responseProject.setIndex(project1.getIndex());
+//            responseProject.setDescription(project1.getDescription());
+//            responseProject.setTitle(project1.getTitle());
+////            responseProject.setSections(project1.getSections());
+//
+//            return responseProject;
 
-            responseProject.result = 1;
-            responseProject.setIndex(project1.getIndex());
-            responseProject.setDescription(project1.getDescription());
-            responseProject.setTitle(project1.getTitle());
+            responseSection.setResult(ResponseStatus.FAIL.getResultCode());
+            for (Section section : sections) {
+                Section section1 = new Section();
+                section1.setIndex(section.getIndex());
+                section1.setDescription(section.getDescription());
+                section1.setTitle(section.getTitle());
+                section1.setStatus(section.getStatus());
 
-            return responseProject;
+                sectionList.add(section1);
+            }
 
+            responseSection.setSectionList(sectionList);
+            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
+
+            tx.commit();
+
+            return responseSection;
         } catch (Exception e) {
             tx.rollback();
         } finally {

@@ -126,6 +126,7 @@ public class SectionService {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
+
         try {
 
             logger.info("================== section id : "+ id);
