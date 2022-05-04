@@ -119,7 +119,6 @@ public class ProjectService {
     public ResponseProject findById(Long id)
     {
         ResponseProject responseProject = new ResponseProject();
-        responseProject.result = 2;
 
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -128,30 +127,16 @@ public class ProjectService {
 
             logger.info("================== project id : "+ id);
 
+            responseProject.setResult(ResponseStatus.FAIL.getResultCode());
+
             Project project = em.find(Project.class, id);
+
+            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
+
             List<Section> sections = project.getSections();
 
             ResponseSection responseSection = new ResponseSection();
             ArrayList<Section> sectionList = new ArrayList<>();
-
-//            TypedQuery<Project> query =
-//                    em.createQuery("select p from Project p where p.index = :index and p.status = :status", Project.class)
-//                            .setParameter("index", id)
-//                            .setParameter("status", ProjectStatus.ACTIVE);
-//
-//            Project project1 = query.getSingleResult();
-//
-//            if (project1 == null) return responseProject;
-//
-//            logger.info("========= project find one : "+project1.getSections());
-//
-//            responseProject.result = 1;
-//            responseProject.setIndex(project1.getIndex());
-//            responseProject.setDescription(project1.getDescription());
-//            responseProject.setTitle(project1.getTitle());
-////            responseProject.setSections(project1.getSections());
-//
-//            return responseProject;
 
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
             for (Section section : sections) {
@@ -167,9 +152,17 @@ public class ProjectService {
             responseSection.setSectionList(sectionList);
             responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
 
+            responseProject.setTitle(project.getTitle());
+            responseProject.setDescription(project.getDescription());
+            responseProject.setStatus(project.getStatus());
+            responseProject.setIndex(project.getIndex());
+            responseProject.setSectionList(responseSection);
+
+            responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
+
             tx.commit();
 
-            return responseSection;
+            return responseProject;
         } catch (Exception e) {
             tx.rollback();
         } finally {

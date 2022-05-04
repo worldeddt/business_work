@@ -1,11 +1,6 @@
 package business.businesswork.vo;
 
-import business.businesswork.domain.Section;
 import business.businesswork.enumerate.ProjectStatus;
-import lombok.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ResponseProject {
     public Integer result;
@@ -13,7 +8,7 @@ public class ResponseProject {
     public String title;
     public String description;
     public ProjectStatus status;
-    public List<Section> sections = new ArrayList<Section>();
+    public ResponseSection sectionList;
 
     public Integer getResult() {
         return result;
@@ -55,11 +50,11 @@ public class ResponseProject {
         this.status = status;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public ResponseSection getSectionList() {
+        return sectionList;
     }
 
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
+    public void setSectionList(ResponseSection sectionList) {
+        this.sectionList = sectionList;
     }
 }
