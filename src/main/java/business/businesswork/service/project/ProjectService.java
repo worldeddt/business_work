@@ -181,9 +181,15 @@ public class ProjectService {
         tx.begin();
 
         try {
-            return em.createQuery("select p from Project p where p.status = :status", Project.class)
-                    .setParameter("status", ProjectStatus.ACTIVE)
-                    .getResultList();
+
+            TypedQuery<Project> projects =  em.createQuery("select p from Project p where p.status = :status", Project.class)
+                    .setParameter("status", ProjectStatus.ACTIVE);
+
+            for (Project project : projects.getResultList()) {
+                project
+
+            }
+            logger.info("------ projects : "+projects.getResultList());
 
         } catch (Exception e) {
             tx.rollback();
