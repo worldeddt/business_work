@@ -28,7 +28,6 @@ class TaskServiceTest {
         RegisterTask registerTask = new RegisterTask();
         registerTask.setDescription("dddd");
         registerTask.setTitle("dddd");
-        registerTask.setProjectId(1L);
         registerTask.setSectionId(1L);
 
         this.mockMvc.perform(

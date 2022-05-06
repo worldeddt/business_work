@@ -6,10 +6,7 @@ import business.businesswork.domain.Section;
 import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
-import business.businesswork.vo.ModifyProject;
-import business.businesswork.vo.RegistProject;
-import business.businesswork.vo.ResponseProject;
-import business.businesswork.vo.ResponseSection;
+import business.businesswork.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -124,9 +121,6 @@ public class ProjectService {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-
-            logger.info("================== project id : "+ id);
-
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
             Project project = em.find(Project.class, id);
@@ -174,22 +168,37 @@ public class ProjectService {
         return responseProject;
     }
 
-    public List<Project> findAll()
+    public AllProject findAll()
     {
+        AllProject projectList = new AllProject();
+        projectList.setResult(ResponseStatus.FAIL.getResultCode());
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-
-            TypedQuery<Project> projects =  em.createQuery("select p from Project p where p.status = :status", Project.class)
+            TypedQuery<Project> projects =
+                    em.createQuery("SELECT p FROM Project p WHERE p.status = :status", Project.class)
                     .setParameter("status", ProjectStatus.ACTIVE);
 
-            for (Project project : projects.getResultList()) {
-                project
+            logger.info("-------------- : "+em.find(Project.class, 1L));
+            logger.info("========= projects : "+projects);
 
+            for (Project project : projects.getResultList()) {
+
+                List<Project> projects1 = projectList.getProjectList();
+                projects1.add(project);
+                projectList.setProjectList(projects1);
             }
-            logger.info("------ projects : "+projects.getResultList());
+
+            projectList.setResult(ResponseStatus.SUCCESS.getResultCode());
+
+            logger.info("========= project list : "+projectList);
+
+            tx.commit();
+
+            return projectList;
 
         } catch (Exception e) {
             tx.rollback();
@@ -199,7 +208,7 @@ public class ProjectService {
 
         emf.close();
 
-        return null;
+        return projectList;
     }
 
     private String dateFormatter(LocalDateTime date)

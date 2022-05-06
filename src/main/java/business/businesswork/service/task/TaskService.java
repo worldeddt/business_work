@@ -2,9 +2,11 @@ package business.businesswork.service.task;
 
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
+import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
+import business.businesswork.vo.ResponseTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -85,7 +87,7 @@ public class TaskService {
             task.setTitle(modifyTask.getTitle());
             task.setLastModifyDate(datetime);
 
-            em.persist(modifyTask);
+            em.persist(task);
 
             em.flush();
             em.clear();
@@ -100,7 +102,7 @@ public class TaskService {
         emf.close();
     }
 
-    public void delete(String taskIndex)
+    public void delete(Long taskIndex)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -128,9 +130,11 @@ public class TaskService {
         emf.close();
     }
 
-    public Optional<Task> findById(Long id)
+    public ResponseTask findById(Long id)
     {
-        Task task = new Task();
+        ResponseTask responseTask = new ResponseTask();
+        responseTask.setResult(ResponseStatus.FAIL.getResultCode());
+
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -145,11 +149,13 @@ public class TaskService {
 
             Task task1 = query.getSingleResult();
 
+            responseTask.setSectionId(task1.getSection());
+
             task.setIndex(task1.getIndex());
             task.setDescription(task1.getDescription());
             task.setTitle(task1.getTitle());
 
-            return Optional.of(task);
+            return responseTask;
 
         } catch (Exception e) {
             tx.rollback();

@@ -5,6 +5,8 @@ import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.service.task.TaskService;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
+import business.businesswork.vo.ResponseProject;
+import business.businesswork.vo.ResponseTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +33,18 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public void delete(@RequestParam("taskIndex") String taskIndex) throws Exception {
+    public void delete(@RequestParam("taskIndex") Long taskIndex) throws Exception {
         this.taskService.delete(taskIndex);
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
     public void update(@RequestBody ModifyTask modifyTask) {
         this.taskService.update(modifyTask);
+    }
+
+    @RequestMapping(value = "/", method = {RequestMethod.GET})
+    public ResponseTask findOne(@RequestParam(required = false, name = "taskId") Long projectId) throws Exception {
+        return taskService.findById(projectId);
     }
 
     @RequestMapping(value="/test", method = {RequestMethod.GET})

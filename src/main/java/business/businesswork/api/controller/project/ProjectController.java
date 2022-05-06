@@ -4,6 +4,7 @@ package business.businesswork.api.controller.project;
 import business.businesswork.domain.Project;
 import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.service.project.ProjectService;
+import business.businesswork.vo.AllProject;
 import business.businesswork.vo.ModifyProject;
 import business.businesswork.vo.RegistProject;
 import business.businesswork.vo.ResponseProject;
@@ -47,7 +48,7 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
-    public List<Project> findAll() throws Exception {
+    public AllProject findAll() throws Exception {
         return projectService.findAll();
     }
 }
