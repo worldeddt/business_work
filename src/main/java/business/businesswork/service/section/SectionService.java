@@ -1,6 +1,5 @@
 package business.businesswork.service.section;
 
-import business.businesswork.domain.Member;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;

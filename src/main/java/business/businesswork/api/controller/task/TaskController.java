@@ -5,7 +5,6 @@ import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.service.task.TaskService;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
-import business.businesswork.vo.ResponseProject;
 import business.businesswork.vo.ResponseTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,17 +33,17 @@ public class TaskController {
 
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
     public void delete(@RequestParam("taskIndex") Long taskIndex) throws Exception {
-        this.taskService.delete(taskIndex);
+        taskService.delete(taskIndex);
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
     public void update(@RequestBody ModifyTask modifyTask) {
-        this.taskService.update(modifyTask);
+        taskService.update(modifyTask);
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})
-    public ResponseTask findOne(@RequestParam(required = false, name = "taskId") Long projectId) throws Exception {
-        return taskService.findById(projectId);
+    public ResponseTask findOne(@RequestParam(required = false, name = "taskIndex") Long taskIndex) {
+        return taskService.findById(taskIndex);
     }
 
     @RequestMapping(value="/test", method = {RequestMethod.GET})

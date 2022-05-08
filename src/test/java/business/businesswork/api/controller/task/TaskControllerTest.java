@@ -1,9 +1,7 @@
 package business.businesswork.api.controller.task;
 
-import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.ModifyTask;
-import business.businesswork.vo.RegisterSection;
 import business.businesswork.vo.RegisterTask;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,11 +44,11 @@ class TaskControllerTest {
     void update() throws Exception {
         Gson gson = new Gson();
         ModifyTask modifyTask = new ModifyTask();
-        modifyTask.setIndex(1L);
+        modifyTask.setIndex(2L);
         modifyTask.setTitle("업데이트 데스크");
         modifyTask.setDescription("업데이트");
         modifyTask.setSectionId(3L);
-        modifyTask.setStatus(TaskStatusType.INREVIEW);
+        modifyTask.setStatus(TaskStatusType.DOING);
 
         this.mockMvc.perform(post("/task/update").contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(modifyTask)))
@@ -60,13 +58,15 @@ class TaskControllerTest {
 
     @Test
     void delete() throws Exception {
-        this.mockMvc.perform(post("/task/delete").param("taskIndex", "1"))
+        this.mockMvc.perform(post("/task/delete").param("taskIndex", "2"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
-    void findById() {
-
+    void findById() throws Exception {
+        this.mockMvc.perform(get("/task/").param("taskIndex", "3"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }

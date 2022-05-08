@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -31,16 +29,13 @@ public class TaskService {
         tx.begin();
 
         try {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
             Section section = em.find(Section.class, registerTask.getSectionId());
 
             Task task = new Task();
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
             task.setTaskStatusType(registerTask.getStatus());
-            task.setRegisterDate(datetime);
+            task.setRegisterDate(getThisTime());
             task.setSection(section);
             em.persist(task);
 
@@ -75,17 +70,16 @@ public class TaskService {
         tx.begin();
 
         try {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
             Task task = em.find(Task.class, modifyTask.getIndex());
             Section section = em.find(Section.class, modifyTask.getSectionId());
+
+            if (task.getTaskStatusType() == TaskStatusType.DELETE) return;
 
             task.setSection(section);
             task.setTaskStatusType(modifyTask.getStatus());
             task.setDescription(modifyTask.getDescription());
             task.setTitle(modifyTask.getTitle());
-            task.setLastModifyDate(datetime);
+            task.setLastModifyDate(getThisTime());
 
             em.persist(task);
 
@@ -111,6 +105,7 @@ public class TaskService {
         try {
             Task task = em.find(Task.class, taskIndex);
             task.setTaskStatusType(TaskStatusType.DELETE);
+            task.setDeleteDate(getThisTime());
 
             em.persist(task);
             em.flush();
@@ -143,17 +138,19 @@ public class TaskService {
             logger.info("================== section id : "+ id);
 
             TypedQuery<Task> query =
-                    em.createQuery("select t from Task t where t.index = :index and t.taskStatusType not in (:status)", Task.class)
-                            .setParameter("index", id)
-                            .setParameter("status", TaskStatusType.DELETE);
+                    em.createQuery("select t from Task t where t.index = :index", Task.class)
+                            .setParameter("index", id);
 
-            Task task1 = query.getSingleResult();
+            Task task1 = em.find(Task.class, id);
 
-            responseTask.setSectionId(task1.getSection());
+            logger.info("====== task1 : "+task1.getDescription());
 
-            task.setIndex(task1.getIndex());
-            task.setDescription(task1.getDescription());
-            task.setTitle(task1.getTitle());
+            responseTask.setSection(task1.getSection());
+
+            responseTask.setIndex(task1.getIndex());
+            responseTask.setDescription(task1.getDescription());
+            responseTask.setTitle(task1.getTitle());
+            responseTask.setResult(ResponseStatus.SUCCESS.getResultCode());
 
             return responseTask;
 
@@ -165,29 +162,13 @@ public class TaskService {
 
         emf.close();
 
-        return Optional.of(task);
+        return responseTask;
     }
 
-    public List<Task> findAll()
+    private LocalDateTime getThisTime()
     {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-            return em.createQuery("select t from Task t where t.taskStatusType not in (:status)", Task.class)
-                    .setParameter("status", TaskStatusType.DELETE)
-                    .getResultList();
-
-        } catch (Exception e) {
-            tx.rollback();
-        } finally {
-            em.close();
-        }
-
-        emf.close();
-
-        return null;
+        LocalDateTime now = LocalDateTime.now();
+        return LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     private String dateFormatter(LocalDateTime date)
