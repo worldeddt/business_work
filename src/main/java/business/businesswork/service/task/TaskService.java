@@ -142,14 +142,17 @@ public class TaskService {
                             .setParameter("index", id);
 
             Task task1 = em.find(Task.class, id);
+            Section section = em.find(Section.class, id);
+            logger.info("====== section's project :"+section.getProject());
 
-            logger.info("====== task1 : "+task1.getDescription());
-
-            responseTask.setSection(task1.getSection());
+            logger.info("====== task1 : "+task1.getSection());
 
             responseTask.setIndex(task1.getIndex());
             responseTask.setDescription(task1.getDescription());
             responseTask.setTitle(task1.getTitle());
+            responseTask.setLastModifyDate(task1.getLastModifyDate());
+            responseTask.setRegisterDate(task1.getRegisterDate());
+            responseTask.setTaskStatusType(task1.getTaskStatusType());
             responseTask.setResult(ResponseStatus.SUCCESS.getResultCode());
 
             return responseTask;

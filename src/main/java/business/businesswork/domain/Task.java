@@ -33,7 +33,7 @@ public class Task {
     @JoinColumn(name = "member_index")
     public Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "section_index")
     public Section section;
 

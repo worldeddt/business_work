@@ -68,7 +68,7 @@ class SectionControllerTest {
 
     @Test
     void findOne() throws Exception {
-        this.mockMvc.perform(get("/section/").param("sectionId", "2"))
+        this.mockMvc.perform(get("/section/").param("sectionId", "3"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

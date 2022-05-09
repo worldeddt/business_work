@@ -3,6 +3,7 @@ package business.businesswork.api.controller.section;
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.service.section.SectionService;
+import business.businesswork.vo.AllSections;
 import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
 import business.businesswork.vo.ResponseSection;
@@ -40,12 +41,12 @@ public class SectionController {
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})
-    public Optional<Section> findOne(@RequestParam(required = false, name = "sectionId") Long sectionId) throws Exception {
+    public ResponseSection findOne(@RequestParam(required = false, name = "sectionId") Long sectionId) throws Exception {
         return sectionService.findById(sectionId);
     }
 
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
-    public ResponseSection findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+    public AllSections findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return sectionService.findAll(projectId);
 
 //        logger.info("======== section find all : "+ sectionService.findAll(projectId));

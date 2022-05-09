@@ -8,7 +8,7 @@ public class ResponseProject {
     public String title;
     public String description;
     public ProjectStatus status;
-    public ResponseSection sectionList;
+    public AllSections sectionList;
 
     public Integer getResult() {
         return result;
@@ -50,11 +50,11 @@ public class ResponseProject {
         this.status = status;
     }
 
-    public ResponseSection getSectionList() {
+    public AllSections getSectionList() {
         return sectionList;
     }
 
-    public void setSectionList(ResponseSection sectionList) {
+    public void setSectionList(AllSections sectionList) {
         this.sectionList = sectionList;
     }
 }

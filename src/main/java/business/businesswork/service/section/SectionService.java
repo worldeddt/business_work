@@ -6,6 +6,7 @@ import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
+import business.businesswork.vo.AllSections;
 import business.businesswork.vo.ModifySection;
 import business.businesswork.vo.RegisterSection;
 import business.businesswork.vo.ResponseSection;
@@ -119,9 +120,9 @@ public class SectionService {
         emf.close();
     }
 
-    public Optional<Section> findById(Long id)
+    public ResponseSection findById(Long id)
     {
-        Section section = new Section();
+        ResponseSection responseSection = new ResponseSection();
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -136,14 +137,32 @@ public class SectionService {
                             .setParameter("status", SectionStatus.ACTIVE);
 
             Section section1 = query.getSingleResult();
+            responseSection.setResult(ResponseStatus.FAIL.getResultCode());
 
-            section.setIndex(section1.getIndex());
-            section.setDescription(section1.getDescription());
-            section.setTitle(section1.getTitle());
-            section.setTasks(section1.getTasks());
+            if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
 
-            return Optional.of(section);
+            List<Task> taskList = section1.getTasks();
 
+            responseSection.setIndex(section1.getIndex());
+            responseSection.setDescription(section1.getDescription());
+            responseSection.setRegisterDateTime(section1.getRegisterDate());
+            responseSection.setTitle(section1.getTitle());
+
+            for (Task task : taskList) {
+                Task task1 = new Task();
+                task1.setIndex(task.getIndex());
+                task1.setDescription(task.getDescription());
+                task1.setTitle(task.getTitle());
+                task1.setTaskStatusType(task.getTaskStatusType());
+                task1.set
+            }
+
+
+            responseSection.setTasks();
+
+            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
+
+            return responseSection;
         } catch (Exception e) {
             tx.rollback();
         } finally {
@@ -152,10 +171,10 @@ public class SectionService {
 
         emf.close();
 
-        return Optional.of(section);
+        return responseSection;
     }
 
-    public ResponseSection findAll(Long projectId)
+    public AllSections findAll(Long projectId)
     {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -165,7 +184,7 @@ public class SectionService {
             Project project = em.find(Project.class, projectId);
             List<Section> sections = project.getSections();
 
-            ResponseSection responseSection = new ResponseSection();
+            AllSections responseSection = new AllSections();
             ArrayList<Section> sectionList = new ArrayList<>();
 
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());

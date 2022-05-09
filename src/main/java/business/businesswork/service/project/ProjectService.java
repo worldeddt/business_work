@@ -128,7 +128,7 @@ public class ProjectService {
 
             List<Section> sections = project.getSections();
 
-            ResponseSection responseSection = new ResponseSection();
+            AllSections responseSection = new AllSections();
             ArrayList<Section> sectionList = new ArrayList<>();
 
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
