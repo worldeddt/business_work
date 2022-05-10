@@ -177,25 +177,28 @@ public class ProjectService {
         tx.begin();
 
         try {
-            TypedQuery<Project> projects =
+            TypedQuery<Project> query =
                     em.createQuery("SELECT p FROM Project p WHERE p.status = :status", Project.class)
                     .setParameter("status", ProjectStatus.ACTIVE);
 
-            logger.info("-------------- : "+em.find(Project.class, 1L));
-            logger.info("========= projects : "+projects);
+            List<Project> projects = query.getResultList();
+            ArrayList<Project> project2 = new ArrayList<>();
 
-            for (Project project : projects.getResultList()) {
+            for (Project project1 : projects) {
+                Project project = new Project();
+                project.setTitle(project1.getTitle());
+                project.setDescription(project1.getDescription());
+                project.setStatus(project1.getStatus());
+                project.setIndex(project1.getIndex());
+                project.setRegisterDate(project1.getRegisterDate());
+                project.setLastModifyDate(project1.getLastModifyDate());
 
-                List<Project> projects1 = projectList.getProjectList();
-                projects1.add(project);
-                projectList.setProjectList(projects1);
+                project2.add(project);
             }
 
+            logger.info("====== projects : "+project2);
+            projectList.setProjectList(project2);
             projectList.setResult(ResponseStatus.SUCCESS.getResultCode());
-
-            logger.info("========= project list : "+projectList);
-
-            tx.commit();
 
             return projectList;
 

@@ -42,9 +42,6 @@ public class SectionController {
     @RequestMapping(value = "/all", method = {RequestMethod.GET})
     public AllSections findAll(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return sectionService.findAll(projectId);
-
-//        logger.info("======== section find all : "+ sectionService.findAll(projectId));
-//        return sectionService.findAll(projectId);
     }
 
 }
