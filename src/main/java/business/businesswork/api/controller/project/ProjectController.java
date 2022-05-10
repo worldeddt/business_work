@@ -1,8 +1,6 @@
 package business.businesswork.api.controller.project;
 
 
-import business.businesswork.domain.Project;
-import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.service.project.ProjectService;
 import business.businesswork.vo.AllProject;
 import business.businesswork.vo.ModifyProject;
@@ -13,9 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.*;
-import java.util.List;
-import java.util.Optional;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 @RestController
 @RequestMapping("/project")

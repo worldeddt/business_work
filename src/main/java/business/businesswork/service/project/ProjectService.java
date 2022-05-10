@@ -128,10 +128,10 @@ public class ProjectService {
 
             List<Section> sections = project.getSections();
 
-            AllSections responseSection = new AllSections();
+            AllSections allSections = new AllSections();
             ArrayList<Section> sectionList = new ArrayList<>();
 
-            responseSection.setResult(ResponseStatus.FAIL.getResultCode());
+            allSections.setResult(ResponseStatus.FAIL.getResultCode());
             for (Section section : sections) {
                 Section section1 = new Section();
                 section1.setIndex(section.getIndex());
@@ -142,14 +142,14 @@ public class ProjectService {
                 sectionList.add(section1);
             }
 
-            responseSection.setSectionList(sectionList);
-            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
+            allSections.setSectionList(sectionList);
+            allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
 
             responseProject.setTitle(project.getTitle());
             responseProject.setDescription(project.getDescription());
             responseProject.setStatus(project.getStatus());
             responseProject.setIndex(project.getIndex());
-            responseProject.setSectionList(responseSection);
+            responseProject.setSectionList(allSections);
 
             responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
 

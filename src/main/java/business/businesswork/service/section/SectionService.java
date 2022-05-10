@@ -6,10 +6,7 @@ import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
-import business.businesswork.vo.AllSections;
-import business.businesswork.vo.ModifySection;
-import business.businesswork.vo.RegisterSection;
-import business.businesswork.vo.ResponseSection;
+import business.businesswork.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,7 +16,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -128,9 +124,6 @@ public class SectionService {
         tx.begin();
 
         try {
-
-            logger.info("================== section id : "+ id);
-
             TypedQuery<Section> query =
                     em.createQuery("select s from Section s where s.index = :index and s.status = :status", Section.class)
                             .setParameter("index", id)
@@ -141,25 +134,32 @@ public class SectionService {
 
             if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
 
-            List<Task> taskList = section1.getTasks();
+            AllTasks allTasks = new AllTasks();
+            List<Task> tasks = section1.getTasks();
 
-            responseSection.setIndex(section1.getIndex());
-            responseSection.setDescription(section1.getDescription());
-            responseSection.setRegisterDateTime(section1.getRegisterDate());
-            responseSection.setTitle(section1.getTitle());
+            ArrayList<Task> taskList = new ArrayList<>();
 
-            for (Task task : taskList) {
+            allTasks.setResult(ResponseStatus.FAIL.getResultCode());
+
+            for (Task task : tasks) {
                 Task task1 = new Task();
                 task1.setIndex(task.getIndex());
                 task1.setDescription(task.getDescription());
                 task1.setTitle(task.getTitle());
                 task1.setTaskStatusType(task.getTaskStatusType());
-                task1.set
+                task1.setRegisterDate(task.getRegisterDate());
+                task1.setLastModifyDate(task.getLastModifyDate());
+                taskList.add(task1);
             }
 
+            allTasks.setResult(ResponseStatus.SUCCESS.getResultCode());
 
-            responseSection.setTasks();
-
+            allTasks.setTaskList(taskList);
+            responseSection.setTaskList(allTasks);
+            responseSection.setIndex(section1.getIndex());
+            responseSection.setDescription(section1.getDescription());
+            responseSection.setRegisterDateTime(section1.getRegisterDate());
+            responseSection.setTitle(section1.getTitle());
             responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
 
             return responseSection;

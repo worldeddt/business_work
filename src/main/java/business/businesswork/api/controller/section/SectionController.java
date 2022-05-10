@@ -1,7 +1,5 @@
 package business.businesswork.api.controller.section;
 
-import business.businesswork.domain.Project;
-import business.businesswork.domain.Section;
 import business.businesswork.service.section.SectionService;
 import business.businesswork.vo.AllSections;
 import business.businesswork.vo.ModifySection;
@@ -11,10 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/section")
