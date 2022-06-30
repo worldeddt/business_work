@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
@@ -39,12 +40,12 @@ public class ProjectController {
         projectService.deleteProject(projectId);
     }
 
-    @RequestMapping(value = "/", method = {RequestMethod.GET})
+    @RequestMapping(value = "/", method = {RequestMethod.POST})
     public ResponseProject findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return projectService.findById(projectId);
     }
 
-    @RequestMapping(value = "/all", method = {RequestMethod.GET})
+    @RequestMapping(value = "/all", method = {RequestMethod.POST})
     public AllProject findAll() throws Exception {
         return projectService.findAll();
     }

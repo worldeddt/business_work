@@ -55,7 +55,7 @@ class ProjectControllerTest {
 
     @Test
     public void findAll() throws Exception {
-        this.mockMvc.perform(get("/project/all"))
+        this.mockMvc.perform(post("/project/all"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

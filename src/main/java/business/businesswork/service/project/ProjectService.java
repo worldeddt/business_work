@@ -208,8 +208,6 @@ public class ProjectService {
             em.close();
         }
 
-        emf.close();
-
         return projectList;
     }
 
