@@ -26,8 +26,8 @@ class ProjectControllerTest {
     public void register() throws Exception {
         Gson gson = new Gson();
         RegistProject registProject = new RegistProject();
-        registProject.setTitle("세번재 프로젝트");
-        registProject.setDescription("세번째 세번째");
+        registProject.setTitle("첫번째 프로젝트");
+        registProject.setDescription("첫번째 첫번째");
 
         this.mockMvc.perform(
                 post("/project/register")
