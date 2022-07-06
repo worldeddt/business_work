@@ -40,13 +40,13 @@ public class Task {
     @Enumerated(EnumType.STRING)
     public TaskStatusType taskStatusType = TaskStatusType.TODO;
 
-    @Column(columnDefinition = "datetime DEFAULT ''", nullable = false)
+    @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
     public LocalDateTime registerDate;
 
-    @Column(columnDefinition = "datetime DEFAULT ''")
+    @Column(columnDefinition = "timestamp DEFAULT '0000-00-00 00:00:00'")
     public LocalDateTime lastModifyDate;
 
-    @Column(columnDefinition = "datetime DEFAULT ''")
+    @Column(columnDefinition = "timestamp DEFAULT '0000-00-00 00:00:00'")
     public LocalDateTime deleteDate;
 
     public Long getIndex() {

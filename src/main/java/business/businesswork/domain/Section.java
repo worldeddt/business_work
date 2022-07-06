@@ -17,7 +17,7 @@ public class Section {
     @Column(nullable = false)
     public String title;
 
-    @Column(columnDefinition = "CHARACTER LARGE OBJECT default ''", nullable = false)
+    @Column(columnDefinition = "varchar(5000) default ''", nullable = false)
     public String description;
 
     @Enumerated(EnumType.STRING)
