@@ -53,8 +53,6 @@ public class ProjectService {
         } finally {
             em.close();
         }
-
-        emf.close();
     }
 
     public void register(RegistProject registProject)
@@ -80,8 +78,6 @@ public class ProjectService {
         } finally {
             em.close();
         }
-
-        emf.close();
     }
 
     public void update(ModifyProject modifyProject)
@@ -122,7 +118,8 @@ public class ProjectService {
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
-            Project project = em.find(Project.class, id);
+            System.out.println("뽀로리야");
+            Project project = em.find(Project.class, 1L);
 
             if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
@@ -155,14 +152,11 @@ public class ProjectService {
 
             tx.commit();
 
-            return responseProject;
         } catch (Exception e) {
             tx.rollback();
         } finally {
             em.close();
         }
-
-        emf.close();
 
         return responseProject;
     }

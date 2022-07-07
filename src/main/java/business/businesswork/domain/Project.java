@@ -31,7 +31,7 @@ public class Project {
         sections.add(section);
     }
 
-    @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
+    @Column(columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP", nullable = false)
     public LocalDateTime registerDate;
 
     public LocalDateTime lastModifyDate;

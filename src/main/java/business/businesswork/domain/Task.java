@@ -13,6 +13,7 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "task_index")
     private Long index;
 
     @Column(name="descriptionName")
@@ -40,13 +41,13 @@ public class Task {
     @Enumerated(EnumType.STRING)
     public TaskStatusType taskStatusType = TaskStatusType.TODO;
 
-    @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
+    @Column(columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP", nullable = false)
     public LocalDateTime registerDate;
 
-    @Column(columnDefinition = "timestamp DEFAULT '0000-00-00 00:00:00'")
+    @Column(columnDefinition = "timestamp")
     public LocalDateTime lastModifyDate;
 
-    @Column(columnDefinition = "timestamp DEFAULT '0000-00-00 00:00:00'")
+    @Column(columnDefinition = "timestamp")
     public LocalDateTime deleteDate;
 
     public Long getIndex() {

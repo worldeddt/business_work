@@ -48,7 +48,7 @@ class ProjectControllerTest {
 
     @Test
     public void findOne() throws Exception {
-        this.mockMvc.perform(get("/project/").param("projectId", "2"))
+        this.mockMvc.perform(post("/project/").param("projectId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

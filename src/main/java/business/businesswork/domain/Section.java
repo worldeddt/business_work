@@ -17,7 +17,7 @@ public class Section {
     @Column(nullable = false)
     public String title;
 
-    @Column(columnDefinition = "varchar(5000) default ''", nullable = false)
+    @Column(columnDefinition = "varchar(1000) default '' ", nullable = false)
     public String description;
 
     @Enumerated(EnumType.STRING)
@@ -31,7 +31,7 @@ public class Section {
     @OneToMany(mappedBy = "section")
     private List<Task> tasks = new ArrayList<>();
 
-    @Column(columnDefinition = "timestamp DEFAULT current_timestamp()", nullable = false)
+    @Column(columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP", nullable = false)
     public LocalDateTime registerDate;
 
     public LocalDateTime lastModifyDate;
