@@ -9,7 +9,11 @@ import business.businesswork.vo.ResponseProject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -24,6 +28,9 @@ public class ProjectController {
 
     @Autowired(required = false)
     private ProjectService projectService;
+
+    @Autowired(required = false)
+    private RestTemplateBuilder restTemplateBuilder;
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST})
     public void register(@RequestBody RegistProject registProject) throws Exception {
@@ -40,13 +47,25 @@ public class ProjectController {
         projectService.deleteProject(projectId);
     }
 
-    @RequestMapping(value = "/", method = {RequestMethod.POST})
+    @RequestMapping(value = "/template", method = {RequestMethod.POST})
     public ResponseProject findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         return projectService.findById(projectId);
     }
 
-    @RequestMapping(value = "/all", method = {RequestMethod.POST})
+    @RequestMapping(value = "/allTemplate")
     public AllProject findAll() throws Exception {
         return projectService.findAll();
+    }
+
+    @RequestMapping(value = "/all", method = {RequestMethod.POST})
+    public ResponseEntity<AllProject> findAllRestTemplate() throws Exception {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        return restTemplate.postForEntity("http://localhost:8090/project/allTemplate", null, AllProject.class);
+    }
+
+    @RequestMapping(value = "/", method = {RequestMethod.POST})
+    public ResponseProject findOneRestTemplate(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+        RestTemplate restTemplate = restTemplateBuilder.build();
+        return restTemplate.postForObject("http://localhost:8090/project/template", projectId, ResponseProject.class);
     }
 }

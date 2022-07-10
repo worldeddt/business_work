@@ -118,8 +118,12 @@ public class ProjectService {
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
-            System.out.println("뽀로리야");
-            Project project = em.find(Project.class, 1L);
+            Project project = em.find(Project.class, id);
+//            Project project =
+//                    em.createQuery("SELECT p FROM Project p WHERE p.status = :status AND p.index = :index", Project.class)
+//                            .setParameter("status", ProjectStatus.ACTIVE)
+//                            .setParameter("index", id)
+//                            .getSingleResult();
 
             if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
