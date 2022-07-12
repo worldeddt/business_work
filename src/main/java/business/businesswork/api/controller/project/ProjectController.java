@@ -10,9 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.persistence.EntityManagerFactory;
@@ -57,15 +58,13 @@ public class ProjectController {
         return projectService.findAll();
     }
 
-    @RequestMapping(value = "/all", method = {RequestMethod.POST})
-    public ResponseEntity<AllProject> findAllRestTemplate() throws Exception {
-        RestTemplate restTemplate = restTemplateBuilder.build();
-        return restTemplate.postForEntity("http://localhost:8090/project/allTemplate", null, AllProject.class);
-    }
-
     @RequestMapping(value = "/", method = {RequestMethod.POST})
-    public ResponseProject findOneRestTemplate(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+    public ResponseProject findOneTemp(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        return restTemplate.postForObject("http://localhost:8090/project/template", projectId, ResponseProject.class);
+
+        MultiValueMap<String, Long> parameters = new LinkedMultiValueMap<>();
+        parameters.add("projectId", projectId);
+
+        return restTemplate.postForObject("http://localhost:8090/project/template", parameters, ResponseProject.class);
     }
 }

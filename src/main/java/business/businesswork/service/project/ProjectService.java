@@ -113,17 +113,20 @@ public class ProjectService {
         ResponseProject responseProject = new ResponseProject();
 
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
             Project project = em.find(Project.class, id);
-//            Project project =
-//                    em.createQuery("SELECT p FROM Project p WHERE p.status = :status AND p.index = :index", Project.class)
-//                            .setParameter("status", ProjectStatus.ACTIVE)
-//                            .setParameter("index", id)
-//                            .getSingleResult();
+
+//            System.out.println("ProjectStatus.ACTIVE : "+ProjectStatus.ACTIVE.getProjectStatus());
+//            TypedQuery<Project> query =
+//                    em.createQuery("SELECT p FROM Project p WHERE p.index = :indexe", Project.class)
+//                            .setParameter("indexe", id);
+//
+//
+//            System.out.println("get result list : "+ query.getResultList());
+
+//            Project project = query.getSingleResult();
 
             if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
@@ -154,10 +157,8 @@ public class ProjectService {
 
             responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
 
-            tx.commit();
-
         } catch (Exception e) {
-            tx.rollback();
+            System.out.println("e:"+e);
         } finally {
             em.close();
         }
@@ -221,5 +222,4 @@ public class ProjectService {
                 date.getSecond()
         );
     }
-
 }

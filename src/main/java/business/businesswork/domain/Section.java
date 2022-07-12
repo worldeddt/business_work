@@ -25,7 +25,7 @@ public class Section {
     public SectionStatus status = SectionStatus.ACTIVE;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_index")
+    @JoinColumn(name = "projectIndex")
     public Project project;
 
     @OneToMany(mappedBy = "section")
