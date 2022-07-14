@@ -50,7 +50,7 @@ public class ProjectController {
 
     @RequestMapping(value = "/template", method = {RequestMethod.POST})
     public ResponseProject findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
-        return projectService.findById(projectId);
+        return projectService.findProject(projectId);
     }
 
     @RequestMapping(value = "/allTemplate")

@@ -23,13 +23,13 @@ public class Project {
     @Enumerated(EnumType.STRING)
     public ProjectStatus status = ProjectStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "project")
-    private List<Section> sections = new ArrayList<>();
+//    @OneToMany(mappedBy = "project")
+//    private List<Section> sections = new ArrayList<>();
 
-    public void addSection(Section section) {
-        section.setProject(this);
-        sections.add(section);
-    }
+//    public void addSection(Section section) {
+//        section.setProject(this);
+//        sections.add(section);
+//    }
 
     @Column(columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP", nullable = false)
     public LocalDateTime registerDate;
@@ -70,13 +70,13 @@ public class Project {
         this.status = status;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
-    }
+//    public List<Section> getSections() {
+//        return sections;
+//    }
+//
+//    public void setSections(List<Section> sections) {
+//        this.sections = sections;
+//    }
 
     public LocalDateTime getRegisterDate() {
         return registerDate;

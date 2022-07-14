@@ -1,11 +1,11 @@
 package business.businesswork;
 
-import business.businesswork.api.controller.project.ProjectController;
-import business.businesswork.api.controller.section.SectionController;
-import business.businesswork.api.controller.task.TaskController;
+//import business.businesswork.api.controller.project.ProjectController;
+//import business.businesswork.api.controller.section.SectionController;
+//import business.businesswork.api.controller.task.TaskController;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+//import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication(scanBasePackages={
         "business.businesswork.*"})

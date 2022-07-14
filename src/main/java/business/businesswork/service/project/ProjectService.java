@@ -38,13 +38,13 @@ public class ProjectService {
             project.setDeleteDate(datetime);
             em.persist(project);
 
-            List<Section> sections = project.getSections();
-            for (Section section : sections) {
-                Section section1 = em.find(Section.class, section.getIndex());
-                section1.setStatus(SectionStatus.DELETE);
-                section1.setDeleteDate(datetime);
-                em.persist(section1);
-            }
+//            List<Section> sections = project.getSections();
+//            for (Section section : sections) {
+//                Section section1 = em.find(Section.class, section.getIndex());
+//                section1.setStatus(SectionStatus.DELETE);
+//                section1.setDeleteDate(datetime);
+//                em.persist(section1);
+//            }
 
             em.flush();
             tx.commit();
@@ -108,7 +108,7 @@ public class ProjectService {
         emf.close();
     }
 
-    public ResponseProject findById(Long id)
+    public ResponseProject findProject(Long projectId)
     {
         ResponseProject responseProject = new ResponseProject();
 
@@ -116,7 +116,15 @@ public class ProjectService {
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
-            Project project = em.find(Project.class, id);
+            Query query = em.createNativeQuery("select * from project", Project.class);
+
+            List<Project> project = query.getResultList();
+
+            System.out.println("resultList"+ project);
+            System.out.println("title : "+ project.get(0).getTitle());
+//            Project project = (Project) query.getSingleResult();
+//            System.out.println("get single result : "+query.getSingleResult());
+//            Project project = em.find(Project.class, projectId);
 
 //            System.out.println("ProjectStatus.ACTIVE : "+ProjectStatus.ACTIVE.getProjectStatus());
 //            TypedQuery<Project> query =
@@ -125,35 +133,35 @@ public class ProjectService {
 //
 //
 //            System.out.println("get result list : "+ query.getResultList());
-
+//
 //            Project project = query.getSingleResult();
 
-            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
+//            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
-            List<Section> sections = project.getSections();
+//            List<Section> sections = project.getSections();
 
-            AllSections allSections = new AllSections();
-            ArrayList<Section> sectionList = new ArrayList<>();
+//            AllSections allSections = new AllSections();
+//            ArrayList<Section> sectionList = new ArrayList<>();
 
-            allSections.setResult(ResponseStatus.FAIL.getResultCode());
-            for (Section section : sections) {
-                Section section1 = new Section();
-                section1.setIndex(section.getIndex());
-                section1.setDescription(section.getDescription());
-                section1.setTitle(section.getTitle());
-                section1.setStatus(section.getStatus());
+//            allSections.setResult(ResponseStatus.FAIL.getResultCode());
+//            for (Section section : sections) {
+//                Section section1 = new Section();
+//                section1.setIndex(section.getIndex());
+//                section1.setDescription(section.getDescription());
+//                section1.setTitle(section.getTitle());
+//                section1.setStatus(section.getStatus());
+//
+//                sectionList.add(section1);
+//            }
+//
+//            allSections.setSectionList(sectionList);
+//            allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
 
-                sectionList.add(section1);
-            }
-
-            allSections.setSectionList(sectionList);
-            allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
-
-            responseProject.setTitle(project.getTitle());
-            responseProject.setDescription(project.getDescription());
-            responseProject.setStatus(project.getStatus());
-            responseProject.setIndex(project.getIndex());
-            responseProject.setSectionList(allSections);
+//            responseProject.setTitle(project.getTitle());
+//            responseProject.setDescription(project.getDescription());
+//            responseProject.setStatus(project.getStatus());
+//            responseProject.setIndex(project.getIndex());
+//            responseProject.setSectionList(allSections);
 
             responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
 

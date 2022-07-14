@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+//@Entity
 public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
