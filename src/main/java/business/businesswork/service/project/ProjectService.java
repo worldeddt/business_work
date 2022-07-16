@@ -11,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -112,16 +114,34 @@ public class ProjectService {
     {
         ResponseProject responseProject = new ResponseProject();
 
+        Project project = new Project();
         EntityManager em = emf.createEntityManager();
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
-            Query query = em.createNativeQuery("select * from project", Project.class);
 
-            List<Project> project = query.getResultList();
+//            Query query1 =
+//            em.createNativeQuery("SELECT * FROM Project WHERE projectIndex = '"+projectId+"';", Project.class);
+//
+//            System.out.println("result : "+query1.getFirstResult());
+//
+//            project = (Project) query1.getSingleResult();
 
-            System.out.println("resultList"+ project);
-            System.out.println("title : "+ project.get(0).getTitle());
+
+            String sql =
+                    "select p.projectIndex index from Project p where p.projectIndex = '"+projectId+"';";
+ 
+            Query nativeQuery = em.createNativeQuery(sql, "projectMapping");
+ 
+            List resultList = nativeQuery.getResultList();
+            for(Object row : resultList) {
+                Project Project = (Project) row;
+                System.out.println("project id :"+ project.getIndex());
+            }
+
+            System.out.println("query single result :"+project.getTitle());
+
+//            System.out.println("title : "+ project.get(0).getTitle());
 //            Project project = (Project) query.getSingleResult();
 //            System.out.println("get single result : "+query.getSingleResult());
 //            Project project = em.find(Project.class, projectId);

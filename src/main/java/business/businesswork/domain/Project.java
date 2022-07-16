@@ -8,6 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@SqlResultSetMapping(name = "projectMapping",
+    entities = {@EntityResult (entityClass = Project.class,
+        fields = {
+            @FieldResult(name="index", column="index"),
+            @FieldResult(name="description", column="description"),
+            @FieldResult(name="title", column="title"),
+        }
+    )
+})
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
