@@ -11,16 +11,20 @@ import java.util.List;
 @SqlResultSetMapping(name = "projectMapping",
     entities = {@EntityResult (entityClass = Project.class,
         fields = {
-            @FieldResult(name="index", column="index"),
+            @FieldResult(name="index", column="project_index"),
             @FieldResult(name="description", column="description"),
             @FieldResult(name="title", column="title"),
+            @FieldResult(name="deletedate", column="deletedate"),
+            @FieldResult(name="lastmodifydate", column="lastmodifydate"),
+                @FieldResult(name="registerdate", column="registerdate"),
+                @FieldResult(name="status", column="status"),
         }
     )
 })
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "projectIndex")
+    @Column(name = "project_index")
     private Long index;
 
     @Column(nullable = false)
@@ -32,13 +36,13 @@ public class Project {
     @Enumerated(EnumType.STRING)
     public ProjectStatus status = ProjectStatus.ACTIVE;
 
-//    @OneToMany(mappedBy = "project")
-//    private List<Section> sections = new ArrayList<>();
+    @OneToMany(mappedBy = "project")
+    private List<Section> sections = new ArrayList<>();
 
-//    public void addSection(Section section) {
-//        section.setProject(this);
-//        sections.add(section);
-//    }
+    public void addSection(Section section) {
+        section.setProject(this);
+        sections.add(section);
+    }
 
     @Column(columnDefinition = "timestamp DEFAULT CURRENT_TIMESTAMP", nullable = false)
     public LocalDateTime registerDate;
@@ -79,13 +83,13 @@ public class Project {
         this.status = status;
     }
 
-//    public List<Section> getSections() {
-//        return sections;
-//    }
-//
-//    public void setSections(List<Section> sections) {
-//        this.sections = sections;
-//    }
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
+    }
 
     public LocalDateTime getRegisterDate() {
         return registerDate;

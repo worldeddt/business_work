@@ -27,9 +27,9 @@ class SectionControllerTest {
     public void register() throws Exception {
         Gson gson = new Gson();
         RegisterSection registerSection = new RegisterSection();
-        registerSection.setDescription("두 번째 섹션");
+        registerSection.setDescription("첫 번째 섹션");
         registerSection.setTitle("section title two");
-        registerSection.setProjectId(2L);
+        registerSection.setProjectId(1L);
         registerSection.setSectionStatus(SectionStatus.ACTIVE);
 
         this.mockMvc.perform(

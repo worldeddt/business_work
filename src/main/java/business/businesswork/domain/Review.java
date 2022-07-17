@@ -3,7 +3,7 @@ package business.businesswork.domain;
 
 import javax.persistence.*;
 
-//@Entity
+@Entity
 public class Review {
 
     @Id

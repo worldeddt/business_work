@@ -6,6 +6,7 @@ import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.*;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -114,74 +115,53 @@ public class ProjectService {
     {
         ResponseProject responseProject = new ResponseProject();
 
-        Project project = new Project();
+        Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
+            Query query1 =
+            em.createNativeQuery("SELECT * FROM Project WHERE status = '"+ProjectStatus.ACTIVE+"' AND project_index = '"+projectId+"';", Project.class);
 
-//            Query query1 =
-//            em.createNativeQuery("SELECT * FROM Project WHERE projectIndex = '"+projectId+"';", Project.class);
-//
-//            System.out.println("result : "+query1.getFirstResult());
-//
-//            project = (Project) query1.getSingleResult();
+            List project1 = query1.getResultList();
 
+//            Project project = em.find(Project.class, projectId);
+            Project project  = gson.fromJson(gson.toJson(project1.get(0)), Project.class);
 
-            String sql =
-                    "select p.projectIndex index from Project p where p.projectIndex = '"+projectId+"';";
- 
-            Query nativeQuery = em.createNativeQuery(sql, "projectMapping");
- 
-            List resultList = nativeQuery.getResultList();
-            for(Object row : resultList) {
-                Project Project = (Project) row;
-                System.out.println("project id :"+ project.getIndex());
+            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
+
+            List<Section> sections = project.getSections();
+
+            AllSections allSections = new AllSections();
+            allSections.setResult(ResponseStatus.FAIL.getResultCode());
+
+            for (Section section1 : sections) {
+                System.out.println("section1:"+section1.getStatus());
             }
 
-            System.out.println("query single result :"+project.getTitle());
+            if (sections.size() != 0) {
 
-//            System.out.println("title : "+ project.get(0).getTitle());
-//            Project project = (Project) query.getSingleResult();
-//            System.out.println("get single result : "+query.getSingleResult());
-//            Project project = em.find(Project.class, projectId);
+                ArrayList<Section> sectionList = new ArrayList<>();
 
-//            System.out.println("ProjectStatus.ACTIVE : "+ProjectStatus.ACTIVE.getProjectStatus());
-//            TypedQuery<Project> query =
-//                    em.createQuery("SELECT p FROM Project p WHERE p.index = :indexe", Project.class)
-//                            .setParameter("indexe", id);
-//
-//
-//            System.out.println("get result list : "+ query.getResultList());
-//
-//            Project project = query.getSingleResult();
+                for (Section section : sections) {
+                    Section section1 = new Section();
+                    section1.setIndex(section.getIndex());
+                    section1.setDescription(section.getDescription());
+                    section1.setTitle(section.getTitle());
+                    section1.setStatus(section.getStatus());
 
-//            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
+                    sectionList.add(section1);
+                }
 
-//            List<Section> sections = project.getSections();
+                allSections.setSectionList(sectionList);
+                allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
+            }
 
-//            AllSections allSections = new AllSections();
-//            ArrayList<Section> sectionList = new ArrayList<>();
-
-//            allSections.setResult(ResponseStatus.FAIL.getResultCode());
-//            for (Section section : sections) {
-//                Section section1 = new Section();
-//                section1.setIndex(section.getIndex());
-//                section1.setDescription(section.getDescription());
-//                section1.setTitle(section.getTitle());
-//                section1.setStatus(section.getStatus());
-//
-//                sectionList.add(section1);
-//            }
-//
-//            allSections.setSectionList(sectionList);
-//            allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
-
-//            responseProject.setTitle(project.getTitle());
-//            responseProject.setDescription(project.getDescription());
-//            responseProject.setStatus(project.getStatus());
-//            responseProject.setIndex(project.getIndex());
-//            responseProject.setSectionList(allSections);
+            responseProject.setTitle(project.getTitle());
+            responseProject.setDescription(project.getDescription());
+            responseProject.setStatus(project.getStatus());
+            responseProject.setIndex(project.getIndex());
+            responseProject.setSectionList(allSections);
 
             responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
 
