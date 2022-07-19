@@ -30,7 +30,7 @@ class TaskControllerTest {
         RegisterTask registerTask = new RegisterTask();
         registerTask.setDescription("할일1 ");
         registerTask.setTitle("task test");
-        registerTask.setSectionId(4L);
+        registerTask.setSectionId(1L);
 
         this.mockMvc.perform(
                         post("/task/register")
