@@ -133,7 +133,6 @@ public class ProjectService {
 
             System.out.println("project : "+project1.getTitle());
 
-
 //            ProjectDto project = gson.fromJson(gson.toJson(), ProjectDto.class);
 
 //            System.out.println("project : "+project.getTitle());
