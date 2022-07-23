@@ -4,14 +4,15 @@ import business.businesswork.enumerate.SectionStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class ResponseSection {
     public Integer result;
-    private Long index;
+    private UUID index;
     private String title;
     private String Description = "";
-    private Long projectId;
+    private UUID projectId;
     private LocalDateTime registerDateTime;
     private LocalDateTime lastModifyDate;
     private SectionStatus sectionStatus;

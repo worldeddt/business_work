@@ -8,7 +8,6 @@ import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.*;
 import com.google.gson.Gson;
-import net.bytebuddy.implementation.bind.annotation.Super;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -80,6 +79,7 @@ public class ProjectService {
             em.flush();
             tx.commit();
         } catch (Exception e) {
+            System.out.println("e:"+e);
             tx.rollback();
         } finally {
             em.close();

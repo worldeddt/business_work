@@ -144,7 +144,6 @@ public class SectionService {
 //            ArrayList<Task> taskList = new ArrayList<>();
 
 //            allTasks.setResult(ResponseStatus.FAIL.getResultCode());
-
 //            for (Task task : tasks) {
 //                Task task1 = new Task();
 //                task1.setIndex(task.getIndex());
@@ -157,7 +156,6 @@ public class SectionService {
 //            }
 
 //            allTasks.setResult(ResponseStatus.SUCCESS.getResultCode());
-
 //            allTasks.setTaskList(taskList);
 //            responseSection.setTaskList(allTasks);
             responseSection.setIndex(section1.getIndex());

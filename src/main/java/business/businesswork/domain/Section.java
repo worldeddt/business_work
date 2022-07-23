@@ -10,8 +10,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -19,9 +18,9 @@ import java.util.List;
 public class Section {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "section_index")
-    public Long index;
+    public UUID index;
 
     @Column(nullable = false)
     public String title;
@@ -52,5 +51,4 @@ public class Section {
 //        task.setSection(this);
 //        tasks.add(task);
 //    }
-
 }

@@ -2,9 +2,11 @@ package business.businesswork.vo;
 
 import business.businesswork.enumerate.ProjectStatus;
 
+import java.util.UUID;
+
 public class ResponseProject {
     public Integer result;
-    public Long index;
+    public UUID index;
     public String title;
     public String description;
     public ProjectStatus status;
@@ -18,11 +20,11 @@ public class ResponseProject {
         this.result = result;
     }
 
-    public Long getIndex() {
+    public UUID getIndex() {
         return index;
     }
 
-    public void setIndex(Long index) {
+    public void setIndex(UUID index) {
         this.index = index;
     }
 
