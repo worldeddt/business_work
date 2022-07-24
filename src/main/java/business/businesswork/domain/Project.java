@@ -1,12 +1,19 @@
 package business.businesswork.domain;
 
 import business.businesswork.enumerate.ProjectStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.Data;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 @Entity
 @SqlResultSetMapping(name = "projectMapping",
     entities = {@EntityResult (entityClass = Project.class,
@@ -16,11 +23,12 @@ import java.util.List;
             @FieldResult(name="title", column="title"),
             @FieldResult(name="deletedate", column="deletedate"),
             @FieldResult(name="lastmodifydate", column="lastmodifydate"),
-                @FieldResult(name="registerdate", column="registerdate"),
-                @FieldResult(name="status", column="status"),
+            @FieldResult(name="registerdate", column="registerdate"),
+            @FieldResult(name="status", column="status"),
         }
     )
 })
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +44,7 @@ public class Project {
     @Enumerated(EnumType.STRING)
     public ProjectStatus status = ProjectStatus.ACTIVE;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "project")
     private List<Section> sections = new ArrayList<>();
 
@@ -51,67 +60,4 @@ public class Project {
 
     public LocalDateTime deleteDate;
 
-    public Long getIndex() {
-        return index;
-    }
-
-    public void setIndex(Long index) {
-        this.index = index;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ProjectStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ProjectStatus status) {
-        this.status = status;
-    }
-
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public void setSections(List<Section> sections) {
-        this.sections = sections;
-    }
-
-    public LocalDateTime getRegisterDate() {
-        return registerDate;
-    }
-
-    public void setRegisterDate(LocalDateTime registerDate) {
-        this.registerDate = registerDate;
-    }
-
-    public LocalDateTime getLastModifyDate() {
-        return lastModifyDate;
-    }
-
-    public void setLastModifyDate(LocalDateTime lastModifyDate) {
-        this.lastModifyDate = lastModifyDate;
-    }
-
-    public LocalDateTime getDeleteDate() {
-        return deleteDate;
-    }
-
-    public void setDeleteDate(LocalDateTime deleteDate) {
-        this.deleteDate = deleteDate;
-    }
 }

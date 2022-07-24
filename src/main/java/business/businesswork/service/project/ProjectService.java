@@ -2,6 +2,7 @@ package business.businesswork.service.project;
 
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
+import business.businesswork.dto.ProjectDto;
 import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
@@ -120,53 +121,63 @@ public class ProjectService {
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
-            Query query1 =
-            em.createNativeQuery("SELECT * FROM Project WHERE status = '"+ProjectStatus.ACTIVE+"' AND project_index = '"+projectId+"';", Project.class);
+//            Query query1 =
+//            em.createNativeQuery("SELECT * FROM Project WHERE status = '"+ProjectStatus.ACTIVE+"' AND project_index = '"+projectId+"';", Project.class);
 
-            List project1 = query1.getResultList();
+//            List project1 = query1.getResultList();
 
-//            Project project = em.find(Project.class, projectId);
-            Project project  = gson.fromJson(gson.toJson(project1.get(0)), Project.class);
+            Project project = em.find(Project.class, projectId);
+//            Project project  = gson.fromJson(gson.toJson(project1.get(0)), Project.class);
 
-            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
+            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
-            List<Section> sections = project.getSections();
+            System.out.println("project : "+project1.getTitle());
 
-            AllSections allSections = new AllSections();
-            allSections.setResult(ResponseStatus.FAIL.getResultCode());
 
-            for (Section section1 : sections) {
-                System.out.println("section1:"+section1.getStatus());
-            }
+//            ProjectDto project = gson.fromJson(gson.toJson(), ProjectDto.class);
 
-            if (sections.size() != 0) {
+//            System.out.println("project : "+project.getTitle());
+//            System.out.println("project : "+project.getTitle());
 
-                ArrayList<Section> sectionList = new ArrayList<>();
-
-                for (Section section : sections) {
-                    Section section1 = new Section();
-                    section1.setIndex(section.getIndex());
-                    section1.setDescription(section.getDescription());
-                    section1.setTitle(section.getTitle());
-                    section1.setStatus(section.getStatus());
-
-                    sectionList.add(section1);
-                }
-
-                allSections.setSectionList(sectionList);
-                allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
-            }
-
-            responseProject.setTitle(project.getTitle());
-            responseProject.setDescription(project.getDescription());
-            responseProject.setStatus(project.getStatus());
-            responseProject.setIndex(project.getIndex());
-            responseProject.setSectionList(allSections);
+//            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
+//
+//            List<Section> sections = project.getSections();
+//
+//            AllSections allSections = new AllSections();
+//            allSections.setResult(ResponseStatus.FAIL.getResultCode());
+//
+//            for (Section section1 : sections) {
+//                System.out.println("section1:"+section1.getStatus());
+//            }
+//
+//            if (sections.size() != 0) {
+//
+//                ArrayList<Section> sectionList = new ArrayList<>();
+//
+//                for (Section section : sections) {
+//                    Section section1 = new Section();
+//                    section1.setIndex(section.getIndex());
+//                    section1.setDescription(section.getDescription());
+//                    section1.setTitle(section.getTitle());
+//                    section1.setStatus(section.getStatus());
+//
+//                    sectionList.add(section1);
+//                }
+//
+//                allSections.setSectionList(sectionList);
+//                allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
+//            }
+//
+//            responseProject.setTitle(project.getTitle());
+//            responseProject.setDescription(project.getDescription());
+//            responseProject.setStatus(project.getStatus());
+//            responseProject.setIndex(project.getIndex());
+//            responseProject.setSectionList(allSections);
 
             responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
 
         } catch (Exception e) {
-            System.out.println("e:"+e);
+            logger.info("e :"+e);
         } finally {
             em.close();
         }

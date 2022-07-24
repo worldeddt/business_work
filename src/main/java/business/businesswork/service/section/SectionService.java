@@ -2,10 +2,9 @@ package business.businesswork.service.section;
 
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
-import business.businesswork.domain.Task;
+//import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
-import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,25 +39,30 @@ public class SectionService {
             Section section = new Section();
             section.setTitle(registerSection.getTitle());
             section.setDescription(registerSection.getDescription());
-            section.setProject(project);
             section.setStatus(registerSection.getSectionStatus());
             section.setRegisterDate(datetime);
+            project.addSection(section);
 
             em.persist(section);
             em.flush();
+            em.clear();
 
-            TypedQuery<Section> Section1 = em.createQuery("select s from Section s", Section.class);
+            List<Section> result = em.createQuery("select s from Section s order by s.index desc", Section.class)
+                    .setFirstResult(0)
+                    .setMaxResults(10)
+                    .getResultList();
 
-            logger.info("===== query "+Section1.getResultList());
+            for (Section section1 : result) {
+                System.out.println("section : "+ section1.getIndex());
+            }
 
             tx.commit();
         } catch (Exception e) {
+            System.out.println("e : "+e);
             tx.rollback();
         } finally {
             em.close();
         }
-
-        emf.close();
     }
 
     public void update(ModifySection modifySection)
@@ -98,12 +102,12 @@ public class SectionService {
             section.setStatus(SectionStatus.DELETE);
             em.persist(section);
 
-            List<Task> tasks = section.getTasks();
-            for (Task task : tasks) {
-                Task task1 = em.find(Task.class, task.getIndex());
-                task1.setTaskStatusType(TaskStatusType.DELETE);
-                em.persist(task1);
-            }
+//            List<Task> tasks = section.getTasks();
+//            for (Task task : tasks) {
+//                Task task1 = em.find(Task.class, task.getIndex());
+//                task1.setTaskStatusType(TaskStatusType.DELETE);
+//                em.persist(task1);
+//            }
 
             em.flush();
             tx.commit();
@@ -134,28 +138,28 @@ public class SectionService {
 
             if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
 
-            AllTasks allTasks = new AllTasks();
-            List<Task> tasks = section1.getTasks();
+//            AllTasks allTasks = new AllTasks();
+//            List<Task> tasks = section1.getTasks();
 
-            ArrayList<Task> taskList = new ArrayList<>();
+//            ArrayList<Task> taskList = new ArrayList<>();
 
-            allTasks.setResult(ResponseStatus.FAIL.getResultCode());
+//            allTasks.setResult(ResponseStatus.FAIL.getResultCode());
 
-            for (Task task : tasks) {
-                Task task1 = new Task();
-                task1.setIndex(task.getIndex());
-                task1.setDescription(task.getDescription());
-                task1.setTitle(task.getTitle());
-                task1.setTaskStatusType(task.getTaskStatusType());
-                task1.setRegisterDate(task.getRegisterDate());
-                task1.setLastModifyDate(task.getLastModifyDate());
-                taskList.add(task1);
-            }
+//            for (Task task : tasks) {
+//                Task task1 = new Task();
+//                task1.setIndex(task.getIndex());
+//                task1.setDescription(task.getDescription());
+//                task1.setTitle(task.getTitle());
+//                task1.setTaskStatusType(task.getTaskStatusType());
+//                task1.setRegisterDate(task.getRegisterDate());
+//                task1.setLastModifyDate(task.getLastModifyDate());
+//                taskList.add(task1);
+//            }
 
-            allTasks.setResult(ResponseStatus.SUCCESS.getResultCode());
+//            allTasks.setResult(ResponseStatus.SUCCESS.getResultCode());
 
-            allTasks.setTaskList(taskList);
-            responseSection.setTaskList(allTasks);
+//            allTasks.setTaskList(taskList);
+//            responseSection.setTaskList(allTasks);
             responseSection.setIndex(section1.getIndex());
             responseSection.setDescription(section1.getDescription());
             responseSection.setRegisterDateTime(section1.getRegisterDate());

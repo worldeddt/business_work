@@ -15,5 +15,5 @@ public class ResponseSection {
     private LocalDateTime registerDateTime;
     private LocalDateTime lastModifyDate;
     private SectionStatus sectionStatus;
-    private AllTasks taskList;
+//    private AllTasks taskList;
 }
