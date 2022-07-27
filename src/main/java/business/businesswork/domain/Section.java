@@ -1,5 +1,6 @@
 package business.businesswork.domain;
 
+import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.SectionStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -14,13 +15,30 @@ import java.util.UUID;
 
 @Data
 @Entity
+@SqlResultSetMapping(
+    name = "sectionMapping",
+    classes={
+        @ConstructorResult(
+            targetClass=Section.class,
+            columns={
+                @ColumnResult(name="section_index", type = Long.class),
+                @ColumnResult(name="title", type = String.class),
+                @ColumnResult(name="description", type = String.class),
+                @ColumnResult(name="status", type = SectionStatus.class),
+                @ColumnResult(name="registerdate", type = LocalDateTime.class),
+                @ColumnResult(name="lastmodifydate", type = LocalDateTime.class),
+                @ColumnResult(name="deletedate", type = LocalDateTime.class),
+            }
+        )
+    }
+)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Section {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "section_index")
-    public UUID index;
+    public Long index;
 
     @Column(nullable = false)
     public String title;

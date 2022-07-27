@@ -9,10 +9,10 @@ import java.util.UUID;
 @Data
 public class ResponseSection {
     public Integer result;
-    private UUID index;
+    private Long index;
     private String title;
     private String Description = "";
-    private UUID projectId;
+    private Long projectId;
     private LocalDateTime registerDateTime;
     private LocalDateTime lastModifyDate;
     private SectionStatus sectionStatus;

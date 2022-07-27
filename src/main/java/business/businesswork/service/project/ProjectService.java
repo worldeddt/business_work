@@ -8,6 +8,7 @@ import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.*;
 import com.google.gson.Gson;
+import net.bytebuddy.implementation.bind.annotation.Super;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @Service
 public class ProjectService {
@@ -79,7 +82,6 @@ public class ProjectService {
             em.flush();
             tx.commit();
         } catch (Exception e) {
-            System.out.println("e:"+e);
             tx.rollback();
         } finally {
             em.close();
@@ -127,6 +129,8 @@ public class ProjectService {
 //            em.createNativeQuery("SELECT * FROM Project WHERE status = '"+ProjectStatus.ACTIVE+"' AND project_index = '"+projectId+"';", Project.class);
 
 //            List project1 = query1.getResultList();
+
+            Project project3  = new Project();
 
             Project project = em.find(Project.class, projectId);
 //            Project project  = gson.fromJson(gson.toJson(project1.get(0)), Project.class);
