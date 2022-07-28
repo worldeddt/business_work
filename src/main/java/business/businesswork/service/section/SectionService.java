@@ -6,6 +6,8 @@ import business.businesswork.domain.Section;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.reflect.Modifier.TRANSIENT;
 
 
 @Service
@@ -41,7 +45,7 @@ public class SectionService {
             section.setDescription(registerSection.getDescription());
             section.setStatus(registerSection.getSectionStatus());
             section.setRegisterDate(datetime);
-            project.addSection(section);
+//            project.addSection(section);
 
             em.persist(section);
             em.flush();
@@ -123,18 +127,25 @@ public class SectionService {
     public ResponseSection findById(Long id)
     {
         ResponseSection responseSection = new ResponseSection();
+        Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+//        EntityTransaction tx = em.getTransaction();
+//        tx.begin();
 
         try {
-            TypedQuery<Section> query =
-                    em.createQuery("select s from Section s where s.index = :index and s.status = :status", Section.class)
-                            .setParameter("index", id)
-                            .setParameter("status", SectionStatus.ACTIVE);
-
-            Section section1 = query.getSingleResult();
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
+            System.out.println("SectionStatus.ACTIVE :"+SectionStatus.ACTIVE);
+//            TypedQuery<Section> query =
+//                    em.createQuery("select s from Section s where s.index = :index and s.status = :status", Section.class)
+//                            .setParameter("index", id)
+//                            .setParameter("status", SectionStatus.ACTIVE.toString());
+
+            Query query1 =
+            em.createNativeQuery("SELECT * FROM Section WHERE status = '"+SectionStatus.ACTIVE+"' AND section_index = '"+id+"';", Section.class);
+
+//            Section section1 = (Section) query1.getSingleResult();
+            Section section1 = gson.fromJson(gson.toJson(query1.getSingleResult()), Section.class);
+            System.out.println("section1 :"+section1.getTitle());
 
             if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
 
@@ -166,12 +177,13 @@ public class SectionService {
 
             return responseSection;
         } catch (Exception e) {
-            tx.rollback();
+            System.out.println("section findById : "+e);
+//            tx.rollback();
         } finally {
             em.close();
         }
 
-        emf.close();
+//        emf.close();
 
         return responseSection;
     }
@@ -184,21 +196,21 @@ public class SectionService {
 
         try {
             Project project = em.find(Project.class, projectId);
-            List<Section> sections = project.getSections();
+//            List<Section> sections = (List<Section>) project.getSections();
 
             AllSections responseSection = new AllSections();
             ArrayList<Section> sectionList = new ArrayList<>();
 
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
-            for (Section section : sections) {
-                Section section1 = new Section();
-                section1.setIndex(section.getIndex());
-                section1.setDescription(section.getDescription());
-                section1.setTitle(section.getTitle());
-                section1.setStatus(section.getStatus());
-
-                sectionList.add(section1);
-            }
+//            for (Section section : sections) {
+//                Section section1 = new Section();
+//                section1.setIndex(section.getIndex());
+//                section1.setDescription(section.getDescription());
+//                section1.setTitle(section.getTitle());
+//                section1.setStatus(section.getStatus());
+//
+//                sectionList.add(section1);
+//            }
 
             responseSection.setSectionList(sectionList);
             responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());

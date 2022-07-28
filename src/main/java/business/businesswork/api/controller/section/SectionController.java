@@ -34,7 +34,7 @@ public class SectionController {
         sectionService.update(modifySection);
     }
 
-    @RequestMapping(value = "/", method = {RequestMethod.GET})
+    @RequestMapping(value = "/", method = {RequestMethod.POST})
     public ResponseSection findOne(@RequestParam(required = false, name = "sectionId") Long sectionId) throws Exception {
         return sectionService.findById(sectionId);
     }

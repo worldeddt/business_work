@@ -132,9 +132,11 @@ public class ProjectService {
 
             Project project3  = new Project();
 
-            Project project = em.find(Project.class, projectId);
+//            Project project = em.find(Project.class, projectId);
 //            Project project  = gson.fromJson(gson.toJson(project1.get(0)), Project.class);
 
+//            String json = gson.toJson(em.find(Project.class, projectId));
+//            System.out.println("json : "+ json);
             Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
             System.out.println("project : "+project1.getTitle());

@@ -1,38 +1,27 @@
 package business.businesswork.domain;
 
-import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.SectionStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @Entity
 @SqlResultSetMapping(
     name = "sectionMapping",
-    classes={
-        @ConstructorResult(
-            targetClass=Section.class,
-            columns={
-                @ColumnResult(name="section_index", type = Long.class),
-                @ColumnResult(name="title", type = String.class),
-                @ColumnResult(name="description", type = String.class),
-                @ColumnResult(name="status", type = SectionStatus.class),
-                @ColumnResult(name="registerdate", type = LocalDateTime.class),
-                @ColumnResult(name="lastmodifydate", type = LocalDateTime.class),
-                @ColumnResult(name="deletedate", type = LocalDateTime.class),
-            }
-        )
+    columns={
+            @ColumnResult(name="section_index", type = Long.class),
+            @ColumnResult(name="title", type = String.class),
+            @ColumnResult(name="description", type = String.class),
+            @ColumnResult(name="status", type = SectionStatus.class),
+            @ColumnResult(name="registerdate", type = LocalDateTime.class),
+            @ColumnResult(name="lastmodifydate", type = LocalDateTime.class),
+            @ColumnResult(name="deletedate", type = LocalDateTime.class),
     }
 )
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Section {
 
     @Id
