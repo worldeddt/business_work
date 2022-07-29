@@ -16,6 +16,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.lang.reflect.Modifier.TRANSIENT;
@@ -27,6 +28,11 @@ public class SectionService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
+
+    final Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .excludeFieldsWithModifiers(TRANSIENT) // STATIC|TRANSIENT in the default configuration
+            .create();
 
     public void register(RegisterSection registerSection)
     {
@@ -141,9 +147,20 @@ public class SectionService {
 //                            .setParameter("status", SectionStatus.ACTIVE.toString());
 
             Query query1 =
-            em.createNativeQuery("SELECT * FROM Section WHERE status = '"+SectionStatus.ACTIVE+"' AND section_index = '"+id+"';", Section.class);
+            em.createNativeQuery("SELECT * FROM Section WHERE status = '"+SectionStatus.ACTIVE+"' AND section_index = '"+id+"';");
 
-//            Section section1 = (Section) query1.getSingleResult();
+            List<Object> section2 = (List<Object>) query1.getResultList();
+
+            List object2 = query1.getResultList();
+
+            for (Object section4 : section2) {
+                System.out.println("section4 : "+section4);
+                final String json = gson.toJson(section4);
+                System.out.println("json : "+json);
+                Section section5 = gson.fromJson(json, Section.class);
+                System.out.println("section5 : "+section5);
+            }
+
             Section section1 = gson.fromJson(gson.toJson(query1.getSingleResult()), Section.class);
             System.out.println("section1 :"+section1.getTitle());
 

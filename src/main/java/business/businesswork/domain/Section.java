@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 )
 //@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 public class Section {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "section_index")
