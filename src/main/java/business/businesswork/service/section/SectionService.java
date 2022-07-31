@@ -2,10 +2,12 @@ package business.businesswork.service.section;
 
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
-//import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
-import business.businesswork.vo.*;
+import business.businesswork.vo.AllSections;
+import business.businesswork.vo.ModifySection;
+import business.businesswork.vo.RegisterSection;
+import business.businesswork.vo.ResponseSection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -13,11 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static java.lang.reflect.Modifier.TRANSIENT;
 
@@ -147,19 +148,26 @@ public class SectionService {
 //                            .setParameter("status", SectionStatus.ACTIVE.toString());
 
             Query query1 =
-            em.createNativeQuery("SELECT * FROM Section WHERE status = '"+SectionStatus.ACTIVE+"' AND section_index = '"+id+"';");
+            em.createNativeQuery("SELECT * FROM Section WHERE status = '"+SectionStatus.ACTIVE+"' AND section_index = '"+id+"';", Section.class);
 
-            List<Object> section2 = (List<Object>) query1.getResultList();
+            Object section2 =  query1.getSingleResult();
 
             List object2 = query1.getResultList();
 
-            for (Object section4 : section2) {
-                System.out.println("section4 : "+section4);
-                final String json = gson.toJson(section4);
-                System.out.println("json : "+json);
-                Section section5 = gson.fromJson(json, Section.class);
-                System.out.println("section5 : "+section5);
-            }
+
+            System.out.println("section2 : "+section2.getClass());
+            final String json = gson.toJson(section2);
+            System.out.println("json : "+json);;
+            Section section5 = gson.fromJson(json, Section.class);
+            System.out.println("section5 : "+section5);
+
+//            for (Object section4 : section2) {
+//                System.out.println("section4 : "+section4);
+//                final String json = gson.toJson(section4);
+//                System.out.println("json : "+json);
+//                Section section5 = gson.fromJson(json, Section.class);
+//                System.out.println("section5 : "+section5);
+//            }
 
             Section section1 = gson.fromJson(gson.toJson(query1.getSingleResult()), Section.class);
             System.out.println("section1 :"+section1.getTitle());
