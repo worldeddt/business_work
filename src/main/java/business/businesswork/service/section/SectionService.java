@@ -15,10 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
-import java.lang.reflect.Array;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.reflect.Modifier.TRANSIENT;
 
@@ -52,7 +52,7 @@ public class SectionService {
             section.setDescription(registerSection.getDescription());
             section.setStatus(registerSection.getSectionStatus());
             section.setRegisterDate(datetime);
-//            project.addSection(section);
+            project.addSection(section);
 
             em.persist(section);
             em.flush();

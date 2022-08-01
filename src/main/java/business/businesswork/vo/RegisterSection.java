@@ -7,7 +7,7 @@ import lombok.Data;
 public class RegisterSection {
     private Long index;
     private String title;
-    private String Description = "";
+    private String description;
     private Long projectId;
     private SectionStatus sectionStatus = SectionStatus.ACTIVE;
 }

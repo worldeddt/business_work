@@ -1,54 +1,29 @@
 package business.businesswork.domain;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
 @Entity
-public class Review {
+@Table(name = "business_review")
+public class Review extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="br_index")
     public Long index;
 
+    @Column(name="br_opiinion", columnDefinition = "varchar(500) default '' ", nullable = false)
     public String reviewOpinion;
 
     @ManyToOne
-    @JoinColumn(name = "memberId")
+    @JoinColumn(name = "bm_index")
     public Member member;
 
     @ManyToOne
-    @JoinColumn(name = "taskId")
+    @JoinColumn(name = "bt_index")
     public Task task;
-
-    public Long getIndex() {
-        return index;
-    }
-
-    public void setIndex(Long index) {
-        this.index = index;
-    }
-
-    public String getReviewOpinion() {
-        return reviewOpinion;
-    }
-
-    public void setReviewOpinion(String reviewOpinion) {
-        this.reviewOpinion = reviewOpinion;
-    }
-
-    public Member getMember() {
-        return member;
-    }
-
-    public void setMember(Member member) {
-        this.member = member;
-    }
-
-    public Task getTask() {
-        return task;
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-    }
 }

@@ -1,23 +1,26 @@
 package business.businesswork.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Member {
+@Table(name = "business member")
+public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_index")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "bm_index")
     private Long index;
 
-    @Column(name = "member_name", nullable = false)
+    @Column(name = "bm_name", nullable = false)
     public String name;
 
-    @Column(name = "member_kakao_id", nullable = true, columnDefinition = "varchar(200) default '' ")
+    @Column(name = "bm_kakao_id", columnDefinition = "varchar(200) default '' ")
     public String kakaoId;
 
-    @Column
+    @Column(name = "bm_affiliation")
     public String affiliation;
 }

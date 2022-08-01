@@ -1,28 +1,22 @@
 package business.businesswork.service.project;
 
 import business.businesswork.domain.Project;
-import business.businesswork.domain.Section;
-import business.businesswork.dto.ProjectDto;
 import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
-import business.businesswork.enumerate.SectionStatus;
-import business.businesswork.vo.*;
+import business.businesswork.vo.AllProject;
+import business.businesswork.vo.ModifyProject;
+import business.businesswork.vo.RegistProject;
+import business.businesswork.vo.ResponseProject;
 import com.google.gson.Gson;
-import net.bytebuddy.implementation.bind.annotation.Super;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-
-import static com.fasterxml.jackson.databind.type.LogicalType.Map;
 
 @Service
 public class ProjectService {
