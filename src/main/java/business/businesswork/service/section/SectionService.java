@@ -52,6 +52,7 @@ public class SectionService {
             section.setDescription(registerSection.getDescription());
             section.setStatus(registerSection.getSectionStatus());
             section.setRegisterDate(datetime);
+            section.setProject(project);
 //            project.addSection(section);
 
             em.persist(section);
@@ -145,21 +146,19 @@ public class SectionService {
 //            TypedQuery<Section> query =
 //                    em.createQuery("select s from Section s where s.index = :index and s.status = :status", Section.class)
 //                            .setParameter("index", id)
-//                            .setParameter("status", SectionStatus.ACTIVE.toString());
+//                            .setParameter("status", SectionStatus.ACTIVE);
 
             Query query1 =
             em.createNativeQuery("SELECT * FROM business_section WHERE bs_status = '"+SectionStatus.ACTIVE+"' AND bs_index = '"+id+"';", Section.class);
+//
+//            Object section2 =  query1.getSingleResult();
 
-            Object section2 =  query1.getSingleResult();
-
-            List object2 = query1.getResultList();
+//            List object2 = query1.getResultList();
 
 
-            System.out.println("section2 : "+section2.getClass());
-            final String json = gson.toJson(section2);
-            System.out.println("json : "+json);;
-            Section section5 = gson.fromJson(json, Section.class);
-            System.out.println("section5 : "+section5);
+//            final String json = gson.toJson(section2);
+//            System.out.println("json : "+json);;
+//            Section section1 = gson.fromJson(json, Section.class);
 
 //            for (Object section4 : section2) {
 //                System.out.println("section4 : "+section4);
@@ -174,26 +173,6 @@ public class SectionService {
 
             if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
 
-//            AllTasks allTasks = new AllTasks();
-//            List<Task> tasks = section1.getTasks();
-
-//            ArrayList<Task> taskList = new ArrayList<>();
-
-//            allTasks.setResult(ResponseStatus.FAIL.getResultCode());
-//            for (Task task : tasks) {
-//                Task task1 = new Task();
-//                task1.setIndex(task.getIndex());
-//                task1.setDescription(task.getDescription());
-//                task1.setTitle(task.getTitle());
-//                task1.setTaskStatusType(task.getTaskStatusType());
-//                task1.setRegisterDate(task.getRegisterDate());
-//                task1.setLastModifyDate(task.getLastModifyDate());
-//                taskList.add(task1);
-//            }
-
-//            allTasks.setResult(ResponseStatus.SUCCESS.getResultCode());
-//            allTasks.setTaskList(taskList);
-//            responseSection.setTaskList(allTasks);
             responseSection.setIndex(section1.getIndex());
             responseSection.setDescription(section1.getDescription());
             responseSection.setRegisterDateTime(section1.getRegisterDate());

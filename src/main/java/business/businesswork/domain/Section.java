@@ -28,5 +28,5 @@ public class Section extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bp_index")
-    public Project project;
+    private Project project;
 }

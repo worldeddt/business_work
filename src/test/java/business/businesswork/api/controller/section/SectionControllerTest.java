@@ -56,7 +56,7 @@ class SectionControllerTest {
         modifySection.setIndex(1L);
         modifySection.setDescription("첫 번째 섹션");
         modifySection.setTitle("나투더플라");
-        modifySection.setProjectId(2L);
+        modifySection.setProjectId(1L);
 
         this.mockMvc.perform(
                         post("/section/update")
