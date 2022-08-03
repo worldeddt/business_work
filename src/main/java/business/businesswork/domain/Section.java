@@ -14,7 +14,7 @@ public class Section extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bs_index")
-    public Long index;
+    private Long index;
 
     @Column(name = "bs_title", nullable = false)
     public String title;

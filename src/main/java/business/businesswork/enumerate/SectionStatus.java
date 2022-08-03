@@ -6,7 +6,7 @@ public enum SectionStatus {
 
     private String sectionStatus;
 
-    SectionStatus(String projectStatus) {
+    SectionStatus(String sectionStatus) {
         this.sectionStatus = sectionStatus;
     }
 

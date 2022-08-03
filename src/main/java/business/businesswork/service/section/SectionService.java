@@ -10,6 +10,7 @@ import business.businesswork.vo.RegisterSection;
 import business.businesswork.vo.ResponseSection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.omg.PortableInterceptor.ACTIVE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -142,14 +143,18 @@ public class SectionService {
 
         try {
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
-            System.out.println("SectionStatus.ACTIVE :"+SectionStatus.ACTIVE);
-//            TypedQuery<Section> query =
-//                    em.createQuery("select s from Section s where s.index = :index and s.status = :status", Section.class)
-//                            .setParameter("index", id)
-//                            .setParameter("status", SectionStatus.ACTIVE);
+//            TypedQuery<Section> query1 =
+//                    em.createQuery("select s from Section s where s.index = :index", Section.class)
+//                            .setParameter("index", id);
+//
+//            System.out.println("query result : "+query1.getSingleResult().getTitle());
 
-            Query query1 =
-            em.createNativeQuery("SELECT * FROM business_section WHERE bs_status = '"+SectionStatus.ACTIVE+"' AND bs_index = '"+id+"';", Section.class);
+            Section section2 = em.find(Section.class, id);
+            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, id)), Section.class);
+            System.out.println("section title : "+section1.getTitle());
+
+//            Query query1 =
+//            em.createNativeQuery("SELECT * FROM business_section WHERE bs_status = '"+SectionStatus.ACTIVE+"' AND bs_index = '"+id+"';", Section.class);
 //
 //            Object section2 =  query1.getSingleResult();
 
@@ -167,9 +172,6 @@ public class SectionService {
 //                Section section5 = gson.fromJson(json, Section.class);
 //                System.out.println("section5 : "+section5);
 //            }
-
-            Section section1 = gson.fromJson(gson.toJson(query1.getSingleResult()), Section.class);
-            System.out.println("section1 :"+section1.getTitle());
 
             if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
 
