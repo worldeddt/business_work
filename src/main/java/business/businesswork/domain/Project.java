@@ -29,11 +29,11 @@ public class Project extends BaseEntity {
     @Column(name = "bp_status")
     public ProjectStatus status = ProjectStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "project")
-    private List<Section> sections = new ArrayList<>();
-
-    public void addSection(Section section) {
-        section.setProject(this);
-        sections.add(section);
-    }
+//    @OneToMany(mappedBy = "project")
+//    private List<Section> sections = new ArrayList<>();
+//
+//    public void addSection(Section section) {
+//        section.setProject(this);
+//        sections.add(section);
+//    }
 }

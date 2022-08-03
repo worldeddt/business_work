@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "business_review")
 public class Review extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="br_index")
@@ -19,11 +18,11 @@ public class Review extends BaseEntity {
     @Column(name="br_opiinion", columnDefinition = "varchar(500) default '' ", nullable = false)
     public String reviewOpinion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bm_index")
     public Member member;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bt_index")
     public Task task;
 }

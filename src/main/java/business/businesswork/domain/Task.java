@@ -5,7 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -24,15 +25,22 @@ public class Task extends BaseEntity {
     @Column(name="bt_title", nullable = false)
     public String title;
 
-    @ManyToOne
-    @JoinColumn(name = "bm_index")
-    public Member member;
+    @Column(name="bt_assign")
+    public Long bm_index;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bs_index")
     public Section section;
 
+    @OneToMany(mappedBy = "task")
+    public List<Review> reviews = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(name="bt_status")
     public TaskStatusType taskStatusType = TaskStatusType.TODO;
+
+    public void addReviews(Review review) {
+        review.setTask(this);
+        reviews.add(review);
+    }
 }

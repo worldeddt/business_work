@@ -52,7 +52,7 @@ public class SectionService {
             section.setDescription(registerSection.getDescription());
             section.setStatus(registerSection.getSectionStatus());
             section.setRegisterDate(datetime);
-            project.addSection(section);
+//            project.addSection(section);
 
             em.persist(section);
             em.flush();
@@ -148,7 +148,7 @@ public class SectionService {
 //                            .setParameter("status", SectionStatus.ACTIVE.toString());
 
             Query query1 =
-            em.createNativeQuery("SELECT * FROM Section WHERE status = '"+SectionStatus.ACTIVE+"' AND section_index = '"+id+"';", Section.class);
+            em.createNativeQuery("SELECT * FROM business_section WHERE bs_status = '"+SectionStatus.ACTIVE+"' AND bs_index = '"+id+"';", Section.class);
 
             Object section2 =  query1.getSingleResult();
 
