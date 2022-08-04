@@ -26,7 +26,7 @@ public class Section extends BaseEntity {
     @Column(name = "bs_status", nullable = false)
     public SectionStatus status = SectionStatus.ACTIVE;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "bp_index")
     private Project project;
 }

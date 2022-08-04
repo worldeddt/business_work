@@ -10,7 +10,6 @@ import business.businesswork.vo.RegisterSection;
 import business.businesswork.vo.ResponseSection;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.omg.PortableInterceptor.ACTIVE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -143,15 +142,10 @@ public class SectionService {
 
         try {
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
-//            TypedQuery<Section> query1 =
-//                    em.createQuery("select s from Section s where s.index = :index", Section.class)
-//                            .setParameter("index", id);
-//
-//            System.out.println("query result : "+query1.getSingleResult().getTitle());
 
-            Section section2 = em.find(Section.class, id);
-            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, id)), Section.class);
-            System.out.println("section title : "+section1.getTitle());
+            String section1 = gson.toJson(em.find(Section.class, id));
+
+            System.out.println("section1 : "+section1);
 
 //            Query query1 =
 //            em.createNativeQuery("SELECT * FROM business_section WHERE bs_status = '"+SectionStatus.ACTIVE+"' AND bs_index = '"+id+"';", Section.class);
