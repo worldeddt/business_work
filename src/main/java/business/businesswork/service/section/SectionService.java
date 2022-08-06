@@ -2,6 +2,7 @@ package business.businesswork.service.section;
 
 import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
+import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.vo.AllSections;
@@ -143,9 +144,9 @@ public class SectionService {
         try {
             responseSection.setResult(ResponseStatus.FAIL.getResultCode());
 
-            String section1 = gson.toJson(em.find(Section.class, id));
+            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, id)), Section.class);
 
-            System.out.println("section1 : "+section1);
+            System.out.println("section1 : "+section1.getTitle());
 
 //            Query query1 =
 //            em.createNativeQuery("SELECT * FROM business_section WHERE bs_status = '"+SectionStatus.ACTIVE+"' AND bs_index = '"+id+"';", Section.class);
@@ -167,12 +168,12 @@ public class SectionService {
 //                System.out.println("section5 : "+section5);
 //            }
 
-            if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
-
-            responseSection.setIndex(section1.getIndex());
-            responseSection.setDescription(section1.getDescription());
-            responseSection.setRegisterDateTime(section1.getRegisterDate());
-            responseSection.setTitle(section1.getTitle());
+//            if (section1.getStatus() == SectionStatus.DELETE) return responseSection;
+//
+//            responseSection.setIndex(section1.getIndex());
+//            responseSection.setDescription(section1.getDescription());
+//            responseSection.setRegisterDateTime(section1.getRegisterDate());
+//            responseSection.setTitle(section1.getTitle());
             responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
 
             return responseSection;
@@ -188,45 +189,41 @@ public class SectionService {
         return responseSection;
     }
 
-    public AllSections findAll(Long projectId)
+    public AllSections findAllByProjectId(Long projectId)
     {
+        AllSections responseSection = new AllSections();
         EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+        Gson gson = new Gson();
 
         try {
-            Project project = em.find(Project.class, projectId);
-//            List<Section> sections = (List<Section>) project.getSections();
 
-            AllSections responseSection = new AllSections();
+            List sectionQueryList =
+                    em.createNativeQuery("select * from business_section where bp_index = '"+projectId+"' and bs_status = '"+SectionStatus.ACTIVE+"';", Section.class)
+                            .getResultList();
+
             ArrayList<Section> sectionList = new ArrayList<>();
 
-            responseSection.setResult(ResponseStatus.FAIL.getResultCode());
-//            for (Section section : sections) {
-//                Section section1 = new Section();
-//                section1.setIndex(section.getIndex());
-//                section1.setDescription(section.getDescription());
-//                section1.setTitle(section.getTitle());
-//                section1.setStatus(section.getStatus());
-//
-//                sectionList.add(section1);
-//            }
+            for (Object section3 : sectionQueryList) {
+                Section section1 = gson.fromJson(gson.toJson(section3), Section.class);
+                Section section2 = new Section();
+                section2.setIndex(section1.getIndex());
+                section2.setDescription(section1.getDescription());
+                section2.setTitle(section1.getTitle());
+                section2.setStatus(section1.getStatus());
+
+                sectionList.add(section1);
+            }
 
             responseSection.setSectionList(sectionList);
             responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
 
-            tx.commit();
-
-            return responseSection;
         } catch (Exception e) {
-            tx.rollback();
+            System.out.println("error exception : "+e);
         } finally {
             em.close();
         }
 
-        emf.close();
-
-        return null;
+        return responseSection;
     }
 
     private String dateFormatter(LocalDateTime date)
