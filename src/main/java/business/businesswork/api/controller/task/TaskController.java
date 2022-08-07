@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/task")
 public class TaskController {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     @Autowired(required = false)
     private TaskService taskService;
 

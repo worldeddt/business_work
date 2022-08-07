@@ -4,12 +4,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "business_review")
-public class Review extends BaseEntity {
+public class Review extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="br_index")

@@ -5,12 +5,14 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "business_project")
-public class Project extends BaseEntity {
+public class Project extends BaseEntity implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bp_index")
@@ -25,4 +27,8 @@ public class Project extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "bp_status")
     public ProjectStatus status = ProjectStatus.DELETE;
+
+    public Project() {
+        super();
+    }
 }

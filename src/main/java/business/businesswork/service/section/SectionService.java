@@ -137,12 +137,13 @@ public class SectionService {
 
     public ResponseSection findById(Long id)
     {
+        CommonResponse commonResponse = new CommonResponse();
         ResponseSection responseSection = new ResponseSection();
         Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
 
         try {
-            responseSection.setResult(ResponseStatus.FAIL.getResultCode());
+            responseSection.setResult(commonResponse);
 
             Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, id)), Section.class);
 
@@ -152,10 +153,15 @@ public class SectionService {
             responseSection.setSectionStatus(section1.getStatus());
             responseSection.setLastModifyDate(section1.getLastModifyDate());
             responseSection.setRegisterDateTime(section1.getRegisterDate());
-            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
+
+            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
+            responseSection.setResult(commonResponse);
 
         } catch (Exception e) {
             System.out.println("section findById : "+e);
+            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
+            commonResponse.setMessage(e.getMessage());
+            responseSection.setResult(commonResponse);
         } finally {
             em.close();
         }

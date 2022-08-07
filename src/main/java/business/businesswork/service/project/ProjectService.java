@@ -13,7 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
+import javax.persistence.Persistence;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -26,102 +29,133 @@ public class ProjectService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
-    public void deleteProject(Long projectId)
+    public CommonResponse deleteProject(Long projectId)
     {
+        CommonResponse commonResponse = new CommonResponse();
         EntityManager em = emf.createEntityManager();
+        Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-            Project project = em.find(Project.class, projectId);
+            Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
+            em.clear();
+            System.out.println("project : "+project.getRegisterDate());
             project.setStatus(ProjectStatus.DELETE);
-            project.setDeleteDate(datetime);
+
+            project.setDeleteDate(this.getThisTime());
+            System.out.println("project : "+project);
+
             em.persist(project);
 
-//            List<Section> sections = project.getSections();
-//            for (Section section : sections) {
-//                Section section1 = em.find(Section.class, section.getIndex());
-//                section1.setStatus(SectionStatus.DELETE);
-//                section1.setDeleteDate(datetime);
-//                em.persist(section1);
-//            }
+            AllSections allSections = this.findSectionByProjectId(projectId, em);
+
+            System.out.println("allSections = "+ allSections);
+
+            if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
+                for (SectionVO sectionVo : allSections.getSectionList()) {
+                    Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
+                    section1.setStatus(SectionStatus.DELETE);
+                    em.persist(section1);
+                    for (TaskVO taskVO : sectionVo.getTaskList()) {
+                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
+                        task1.setTaskStatusType(TaskStatusType.DELETE);
+                        em.persist(task1);
+                    }
+                }
+            }
 
             em.flush();
             tx.commit();
+
+            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("delete project exception error : "+e);
+            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
+            commonResponse.setMessage(e.getMessage());
             tx.rollback();
         } finally {
             em.close();
         }
+
+        return commonResponse;
     }
 
-    public void register(RegistProject registProject)
+    public CommonResponse register(RegistProject registProject)
     {
+        CommonResponse commonResponse = new CommonResponse();
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime datetime = LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             Project project = new Project();
             project.setTitle(registProject.getTitle());
             project.setDescription(registProject.getDescription());
-            project.setRegisterDate(datetime);
+            project.setRegisterDate(this.getThisTime());
+            project.setStatus(ProjectStatus.ACTIVE);
 
             em.persist(project);
             em.flush();
             tx.commit();
+
+            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("register project exception error : "+e);
+            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
+            commonResponse.setMessage(e.getMessage());
             tx.rollback();
         } finally {
             em.close();
         }
+
+        return commonResponse;
     }
 
-    public void update(ModifyProject modifyProject)
+    public CommonResponse update(ModifyProject modifyProject)
     {
+        CommonResponse commonResponse = new CommonResponse();
         EntityManager em = emf.createEntityManager();
+        Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Project project = em.find(Project.class, modifyProject.getIndex());
+            Project project = gson.fromJson(gson.toJson(em.find(Project.class, modifyProject.getIndex())), Project.class);
 
-            if (project.getStatus() == ProjectStatus.DELETE) return;
+            if (project.getStatus() == ProjectStatus.DELETE) return commonResponse;
 
             project.setTitle(modifyProject.getTitle());
             project.setDescription(modifyProject.getDescription());
+            project.setLastModifyDate(this.getThisTime());
 
             em.persist(project);
             em.flush();
             em.clear();
 
             tx.commit();
+            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("update project exception error : "+e);
+            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
+            commonResponse.setMessage(e.getMessage());
             tx.rollback();
         } finally {
             em.close();
         }
 
-        emf.close();
+        return commonResponse;
     }
 
     public ResponseProject findProject(Long projectId)
     {
+        CommonResponse commonResponse = new CommonResponse();
         ResponseProject responseProject = new ResponseProject();
 
         Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
         try {
-            responseProject.setResult(ResponseStatus.FAIL.getResultCode());
+            responseProject.setResult(commonResponse);
 
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
@@ -129,6 +163,7 @@ public class ProjectService {
 
             if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
+            //find sections
             AllSections allSections  = this.findSectionByProjectId(projectId, em);
 
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
@@ -141,15 +176,67 @@ public class ProjectService {
             responseProject.setDescription(project.getDescription());
             responseProject.setStatus(project.getStatus());
             responseProject.setIndex(project.getIndex());
-            responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
+            responseProject.setRegisterDateTime(project.getRegisterDate());
+            responseProject.setLastModifyDate(project.getLastModifyDate());
+            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
+            responseProject.setResult(commonResponse);
 
         } catch (Exception e) {
             logger.error("findProject exception error : "+e);
+            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
+            responseProject.setResult(commonResponse);
         } finally {
             em.close();
         }
 
         return responseProject;
+    }
+
+    public AllProject findAll()
+    {
+        AllProject projectList = new AllProject();
+        CommonResponse commonResponse = new CommonResponse();
+        Gson gson = new Gson();
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            String queryString =
+                    "select * from business_project where bp_status <> '" + ProjectStatus.DELETE.getProjectStatus()+ "';";
+
+            List projects = em.createNativeQuery(queryString, Project.class)
+                    .getResultList();
+
+            ArrayList<Project> project3 = new ArrayList<>();
+
+            for (Object project2 : projects) {
+                Project project1 = gson.fromJson(gson.toJson(project2), Project.class);
+                Project project = new Project();
+                project.setTitle(project1.getTitle());
+                project.setDescription(project1.getDescription());
+                project.setStatus(project1.getStatus());
+                project.setIndex(project1.getIndex());
+                project.setRegisterDate(project1.getRegisterDate());
+                project.setLastModifyDate(project1.getLastModifyDate());
+
+                project3.add(project);
+            }
+
+            projectList.setProjectList(project3);
+            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
+            projectList.setResult(commonResponse);
+
+        } catch (Exception e) {
+            logger.error("findAll (project) exection error : "+e);
+            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
+            commonResponse.setMessage(e.getMessage());
+            projectList.setResult(commonResponse);
+        } finally {
+            em.close();
+        }
+
+        return projectList;
     }
 
     private AllSections findSectionByProjectId(Long projectId, EntityManager em)
@@ -230,46 +317,6 @@ public class ProjectService {
         }
 
         return responseTask;
-    }
-
-    public AllProject findAll()
-    {
-        AllProject projectList = new AllProject();
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-
-        try {
-            TypedQuery<Project> query =
-                    em.createQuery("SELECT p FROM Project p WHERE p.status = :status", Project.class)
-                    .setParameter("status", ProjectStatus.ACTIVE.getProjectStatus());
-
-            List<Project> projects = query.getResultList();
-            ArrayList<Project> project2 = new ArrayList<>();
-
-            for (Project project1 : projects) {
-                Project project = new Project();
-                project.setTitle(project1.getTitle());
-                project.setDescription(project1.getDescription());
-                project.setStatus(project1.getStatus());
-                project.setIndex(project1.getIndex());
-                project.setRegisterDate(project1.getRegisterDate());
-                project.setLastModifyDate(project1.getLastModifyDate());
-
-                project2.add(project);
-            }
-
-            logger.info("====== projects : "+project2);
-            projectList.setProjectList(project2);
-            projectList.setResult(ResponseStatus.SUCCESS.getResultCode());
-
-        } catch (Exception e) {
-            logger.error("findAll (project) exection error : "+e);
-        } finally {
-            em.close();
-        }
-
-        return projectList;
     }
 
     private LocalDateTime getThisTime()

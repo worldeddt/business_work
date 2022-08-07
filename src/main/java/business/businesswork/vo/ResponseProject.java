@@ -1,17 +1,20 @@
 package business.businesswork.vo;
 
 import business.businesswork.enumerate.ProjectStatus;
-import business.businesswork.enumerate.ResponseStatus;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class ResponseProject {
-    public Integer result = ResponseStatus.FAIL.getResultCode();
+    public CommonResponse result;
     public Long index;
     public String title;
     public String description;
     public ProjectStatus status;
+    private LocalDateTime registerDateTime;
+    private LocalDateTime lastModifyDate;
+    private LocalDateTime deleteDate;
     public List<SectionVO> sectionList;
 }

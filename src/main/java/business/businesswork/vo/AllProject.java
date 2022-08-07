@@ -8,6 +8,6 @@ import java.util.List;
 
 @Data
 public class AllProject {
-    public Integer result = ResponseStatus.FAIL.getResultCode();
+    public CommonResponse result;
     public List<Project> projectList;
 }

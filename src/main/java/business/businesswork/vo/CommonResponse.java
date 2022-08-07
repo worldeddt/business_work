@@ -9,4 +9,6 @@ public class CommonResponse {
     public int result = ResponseStatus.FAIL.getResultCode();
 
     public String message = "";
+
+    public CommonResponse() {}
 }

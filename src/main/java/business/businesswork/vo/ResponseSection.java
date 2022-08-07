@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class ResponseSection {
-    public Integer result;
+    public CommonResponse result;
     private Long index;
     private String title;
     private String Description = "";
