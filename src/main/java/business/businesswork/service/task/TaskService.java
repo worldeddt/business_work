@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class TaskService {
@@ -30,7 +31,6 @@ public class TaskService {
 
         try {
             Section section = em.find(Section.class, registerTask.getSectionId());
-
             Task task = new Task();
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
@@ -39,19 +39,14 @@ public class TaskService {
             task.setSection(section);
             em.persist(task);
 
-//            section.addTask(task);
-
-            em.persist(section);
-
             em.flush();
             em.clear();
 
-            TypedQuery<Task> query =
-                    em.createQuery("select t from Task t where t.section.index = :sectionIndex", Task.class)
-                            .setParameter("sectionIndex", registerTask.getSectionId());
+            List<Task> taskList = em.createQuery("select t from Task t where t.section.index = :sectionIndex", Task.class)
+                            .setParameter("sectionIndex", registerTask.getSectionId())
+                            .getResultList();
 
-            logger.info("=========================== registered task = "+query.getResultList());
-
+            logger.info("=========================== registered task = "+taskList);
 
             tx.commit();
         } catch (Exception e) {
@@ -59,8 +54,6 @@ public class TaskService {
         } finally {
             em.close();
         }
-
-        emf.close();
     }
 
     public void update(ModifyTask modifyTask)
@@ -92,8 +85,6 @@ public class TaskService {
         } finally {
             em.close();
         }
-
-        emf.close();
     }
 
     public void delete(Long taskIndex)
@@ -121,8 +112,6 @@ public class TaskService {
         } finally {
             em.close();
         }
-
-        emf.close();
     }
 
     public ResponseTask findById(Long id)
@@ -162,8 +151,6 @@ public class TaskService {
         } finally {
             em.close();
         }
-
-        emf.close();
 
         return responseTask;
     }

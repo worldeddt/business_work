@@ -25,23 +25,15 @@ public class Task extends BaseEntity {
     @Column(name="bt_title", nullable = false)
     public String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "bm_index")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "bs_index")
     private Section section;
 
-//    @OneToMany(mappedBy = "task")
-//    private List<Review> reviews = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     @Column(name="bt_status")
-    public TaskStatusType taskStatusType = TaskStatusType.TODO;
-
-//    public void addReviews(Review review) {
-//        review.setTask(this);
-//        reviews.add(review);
-//    }
+    public TaskStatusType taskStatusType = TaskStatusType.DELETE;
 }

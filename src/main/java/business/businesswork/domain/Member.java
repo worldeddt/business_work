@@ -25,12 +25,4 @@ public class Member extends BaseEntity {
 
     @Column(name = "bm_affiliation")
     public String affiliation;
-
-//    @OneToMany(mappedBy = "member")
-//    private List<Review> reviews = new ArrayList<>();
-
-//    public void addReviews(Review review) {
-//        review.setMember(this);
-//        reviews.add(review);
-//    }
 }

@@ -24,9 +24,9 @@ public class Section extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "bs_status", nullable = false)
-    public SectionStatus status = SectionStatus.ACTIVE;
+    public SectionStatus status = SectionStatus.DELETE;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "bp_index")
     private Project project;
 }

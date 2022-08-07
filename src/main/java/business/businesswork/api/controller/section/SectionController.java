@@ -1,10 +1,7 @@
 package business.businesswork.api.controller.section;
 
 import business.businesswork.service.section.SectionService;
-import business.businesswork.vo.AllSections;
-import business.businesswork.vo.ModifySection;
-import business.businesswork.vo.RegisterSection;
-import business.businesswork.vo.ResponseSection;
+import business.businesswork.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +17,18 @@ public class SectionController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
-    public void register(@RequestBody RegisterSection registerSection) throws Exception {
-        sectionService.register(registerSection);
+    public CommonResponse register(@RequestBody RegisterSection registerSection) throws Exception {
+        return sectionService.register(registerSection);
     }
 
     @RequestMapping(value =  "/delete", method = RequestMethod.POST)
-    public void delete(@RequestParam("sectionId") Long sectionId) throws Exception {
-        sectionService.delete(sectionId);
+    public CommonResponse delete(@RequestParam("sectionId") Long sectionId) throws Exception {
+        return sectionService.delete(sectionId);
     }
 
     @RequestMapping(value =  "/update", method = RequestMethod.POST)
-    public void update(@RequestBody ModifySection modifySection) throws Exception {
-        sectionService.update(modifySection);
+    public CommonResponse update(@RequestBody ModifySection modifySection) throws Exception {
+        return sectionService.update(modifySection);
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.POST})

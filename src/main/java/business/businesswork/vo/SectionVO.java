@@ -4,10 +4,10 @@ import business.businesswork.enumerate.SectionStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-public class ResponseSection {
-    public Integer result;
+public class SectionVO {
     private Long index;
     private String title;
     private String Description = "";
@@ -15,5 +15,5 @@ public class ResponseSection {
     private LocalDateTime registerDateTime;
     private LocalDateTime lastModifyDate;
     private SectionStatus sectionStatus;
-    private AllTasks taskList;
+    private List<TaskVO> taskList;
 }

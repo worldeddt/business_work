@@ -1,12 +1,13 @@
 package business.businesswork.service.project;
 
 import business.businesswork.domain.Project;
+import business.businesswork.domain.Section;
+import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
-import business.businesswork.vo.AllProject;
-import business.businesswork.vo.ModifyProject;
-import business.businesswork.vo.RegistProject;
-import business.businesswork.vo.ResponseProject;
+import business.businesswork.enumerate.SectionStatus;
+import business.businesswork.enumerate.TaskStatusType;
+import business.businesswork.vo.*;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,7 @@ public class ProjectService {
             em.flush();
             tx.commit();
         } catch (Exception e) {
+            logger.error("delete project exception error : "+e);
             tx.rollback();
         } finally {
             em.close();
@@ -76,6 +78,7 @@ public class ProjectService {
             em.flush();
             tx.commit();
         } catch (Exception e) {
+            logger.error("register project exception error : "+e);
             tx.rollback();
         } finally {
             em.close();
@@ -102,6 +105,7 @@ public class ProjectService {
 
             tx.commit();
         } catch (Exception e) {
+            logger.error("update project exception error : "+e);
             tx.rollback();
         } finally {
             em.close();
@@ -119,66 +123,28 @@ public class ProjectService {
         try {
             responseProject.setResult(ResponseStatus.FAIL.getResultCode());
 
-//            Query query1 =
-//            em.createNativeQuery("SELECT * FROM Project WHERE status = '"+ProjectStatus.ACTIVE+"' AND project_index = '"+projectId+"';", Project.class);
+            Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
-//            List project1 = query1.getResultList();
+            System.out.println("project single :" +project.getIndex());
 
-            Project project3  = new Project();
+            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
-//            Project project = em.find(Project.class, projectId);
-//            Project project  = gson.fromJson(gson.toJson(project1.get(0)), Project.class);
+            AllSections allSections  = this.findSectionByProjectId(projectId, em);
 
-//            String json = gson.toJson(em.find(Project.class, projectId));
-//            System.out.println("json : "+ json);
-            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
+            if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
+                logger.debug("sections request success");
+                responseProject.setSectionList(allSections.getSectionList());
+            } else
+                logger.error("sections request success");
 
-            System.out.println("project : "+project1.getTitle());
-
-//            ProjectDto project = gson.fromJson(gson.toJson(), ProjectDto.class);
-
-//            System.out.println("project : "+project.getTitle());
-//            System.out.println("project : "+project.getTitle());
-
-//            if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
-//
-//            List<Section> sections = project.getSections();
-//
-//            AllSections allSections = new AllSections();
-//            allSections.setResult(ResponseStatus.FAIL.getResultCode());
-//
-//            for (Section section1 : sections) {
-//                System.out.println("section1:"+section1.getStatus());
-//            }
-//
-//            if (sections.size() != 0) {
-//
-//                ArrayList<Section> sectionList = new ArrayList<>();
-//
-//                for (Section section : sections) {
-//                    Section section1 = new Section();
-//                    section1.setIndex(section.getIndex());
-//                    section1.setDescription(section.getDescription());
-//                    section1.setTitle(section.getTitle());
-//                    section1.setStatus(section.getStatus());
-//
-//                    sectionList.add(section1);
-//                }
-//
-//                allSections.setSectionList(sectionList);
-//                allSections.setResult(ResponseStatus.SUCCESS.getResultCode());
-//            }
-//
-//            responseProject.setTitle(project.getTitle());
-//            responseProject.setDescription(project.getDescription());
-//            responseProject.setStatus(project.getStatus());
-//            responseProject.setIndex(project.getIndex());
-//            responseProject.setSectionList(allSections);
-
+            responseProject.setTitle(project.getTitle());
+            responseProject.setDescription(project.getDescription());
+            responseProject.setStatus(project.getStatus());
+            responseProject.setIndex(project.getIndex());
             responseProject.setResult(ResponseStatus.SUCCESS.getResultCode());
 
         } catch (Exception e) {
-            logger.info("e :"+e);
+            logger.error("findProject exception error : "+e);
         } finally {
             em.close();
         }
@@ -186,11 +152,89 @@ public class ProjectService {
         return responseProject;
     }
 
+    private AllSections findSectionByProjectId(Long projectId, EntityManager em)
+    {
+        AllSections responseSection = new AllSections();
+        Gson gson = new Gson();
+
+        try {
+            String queryString =
+                    "select * from business_section where bp_index = '" + projectId + "' and bs_status = '" + SectionStatus.ACTIVE + "';";
+
+            List sectionQueryList = em.createNativeQuery(queryString, Section.class)
+                    .getResultList();
+
+            ArrayList<SectionVO> sectionList = new ArrayList<>();
+
+            for (Object section3 : sectionQueryList) {
+                Section section1 = gson.fromJson(gson.toJson(section3), Section.class);
+                SectionVO section2 = new SectionVO();
+                section2.setIndex(section1.getIndex());
+                section2.setDescription(section1.getDescription());
+                section2.setTitle(section1.getTitle());
+                section2.setSectionStatus(section1.getStatus());
+
+                if (section1.getStatus() != SectionStatus.DELETE ) {
+                    AllTasks allTasks  = this.findTasksBySectionId(section1.getIndex(), em);
+
+                    if (allTasks.getResult() == ResponseStatus.SUCCESS.getResultCode())
+                        section2.setTaskList(allTasks.getTaskList());
+
+                    sectionList.add(section2);
+                }
+            }
+
+            responseSection.setSectionList(sectionList);
+            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
+
+        } catch (Exception e) {
+            logger.error("findSectionByProjectId error : "+e);
+        } finally {
+            em.close();
+        }
+
+        return responseSection;
+    }
+
+    public AllTasks findTasksBySectionId(Long sectionId, EntityManager em)
+    {
+        AllTasks responseTask = new AllTasks();
+        Gson gson = new Gson();
+
+        try {
+            String queryString =
+                    "select * from business_task where bs_index = '" + sectionId + "' and bt_status <> '" + TaskStatusType.DELETE + "';";
+
+            List taskQueryList = em.createNativeQuery(queryString, Task.class).getResultList();
+
+            ArrayList<TaskVO> taskList = new ArrayList<>();
+
+            for (Object task3 : taskQueryList) {
+                Task task1 = gson.fromJson(gson.toJson(task3), Task.class);
+                TaskVO task2 = new TaskVO();
+                task2.setIndex(task1.getIndex());
+                task2.setDescription(task1.getDescription());
+                task2.setTitle(task1.getTitle());
+                task2.setTaskStatusType(task1.getTaskStatusType());
+
+                if (task2.getTaskStatusType() != TaskStatusType.DELETE) taskList.add(task2);
+            }
+
+            responseTask.setTaskList(taskList);
+            responseTask.setResult(ResponseStatus.SUCCESS.getResultCode());
+
+        } catch (Exception e) {
+            logger.error("findTasksBySectionId error : "+e);
+        } finally {
+            em.close();
+        }
+
+        return responseTask;
+    }
+
     public AllProject findAll()
     {
         AllProject projectList = new AllProject();
-        projectList.setResult(ResponseStatus.FAIL.getResultCode());
-
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -198,7 +242,7 @@ public class ProjectService {
         try {
             TypedQuery<Project> query =
                     em.createQuery("SELECT p FROM Project p WHERE p.status = :status", Project.class)
-                    .setParameter("status", ProjectStatus.ACTIVE);
+                    .setParameter("status", ProjectStatus.ACTIVE.getProjectStatus());
 
             List<Project> projects = query.getResultList();
             ArrayList<Project> project2 = new ArrayList<>();
@@ -219,15 +263,19 @@ public class ProjectService {
             projectList.setProjectList(project2);
             projectList.setResult(ResponseStatus.SUCCESS.getResultCode());
 
-            return projectList;
-
         } catch (Exception e) {
-            tx.rollback();
+            logger.error("findAll (project) exection error : "+e);
         } finally {
             em.close();
         }
 
         return projectList;
+    }
+
+    private LocalDateTime getThisTime()
+    {
+        LocalDateTime now = LocalDateTime.now();
+        return LocalDateTime.parse(this.dateFormatter(now), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     private String dateFormatter(LocalDateTime date)

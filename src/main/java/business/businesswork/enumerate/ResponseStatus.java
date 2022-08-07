@@ -2,7 +2,8 @@ package business.businesswork.enumerate;
 
 public enum ResponseStatus {
     SUCCESS(1),
-    FAIL(2);
+    FAIL(2),
+    SERVER_ERROR(3);
 
     private int resultCode;
 

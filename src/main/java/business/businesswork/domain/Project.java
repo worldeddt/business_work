@@ -1,13 +1,10 @@
 package business.businesswork.domain;
 
 import business.businesswork.enumerate.ProjectStatus;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,13 +24,5 @@ public class Project extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "bp_status")
-    public ProjectStatus status = ProjectStatus.ACTIVE;
-
-//    @OneToMany(mappedBy = "project")
-//    private List<Section> sections = new ArrayList<>();
-//
-//    public void addSection(Section section) {
-//        section.setProject(this);
-//        sections.add(section);
-//    }
+    public ProjectStatus status = ProjectStatus.DELETE;
 }

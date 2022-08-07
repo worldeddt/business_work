@@ -10,5 +10,5 @@ import java.util.List;
 @Data
 public class AllSections {
     public Integer result = ResponseStatus.FAIL.getResultCode();
-    public List<Section> sectionList;
+    public List<SectionVO> sectionList;
 }

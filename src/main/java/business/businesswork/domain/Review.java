@@ -18,11 +18,11 @@ public class Review extends BaseEntity {
     @Column(name="br_opiinion", columnDefinition = "varchar(500) default '' ", nullable = false)
     public String reviewOpinion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "bm_index")
     public Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "bt_index")
     public Task task;
 }
