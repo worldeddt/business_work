@@ -18,12 +18,12 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(name = "register_date", nullable = false, updatable = false)
-    private LocalDateTime registerDate;
+    public LocalDateTime registerDate;
 
     @LastModifiedDate
     @Column(name = "last_modify_date")
-    private LocalDateTime lastModifyDate;
+    public LocalDateTime lastModifyDate;
 
     @Column(name = "delete_date")
-    private LocalDateTime deleteDate;
+    public LocalDateTime deleteDate;
 }

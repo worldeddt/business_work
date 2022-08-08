@@ -11,7 +11,6 @@ public class SectionVO {
     private Long index;
     private String title;
     private String Description = "";
-    private Long projectId;
     private LocalDateTime registerDateTime;
     private LocalDateTime lastModifyDate;
     private SectionStatus sectionStatus;

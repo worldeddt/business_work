@@ -38,15 +38,10 @@ public class ProjectService {
         tx.begin();
 
         try {
-            Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
             em.clear();
-            System.out.println("project : "+project.getRegisterDate());
+            Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
             project.setStatus(ProjectStatus.DELETE);
-
             project.setDeleteDate(this.getThisTime());
-            System.out.println("project : "+project);
-
-            em.persist(project);
 
             AllSections allSections = this.findSectionByProjectId(projectId, em);
 
@@ -55,19 +50,19 @@ public class ProjectService {
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
                 for (SectionVO sectionVo : allSections.getSectionList()) {
                     Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
+                    System.out.println("section1 : "+section1.getTitle());
                     section1.setStatus(SectionStatus.DELETE);
-                    em.persist(section1);
+                    if (sectionVo.getTaskList().size() == 0) continue;
                     for (TaskVO taskVO : sectionVo.getTaskList()) {
                         Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
                         task1.setTaskStatusType(TaskStatusType.DELETE);
-                        em.persist(task1);
+                        em.flush();
                     }
                 }
             }
 
             em.flush();
             tx.commit();
-
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("delete project exception error : "+e);
@@ -258,6 +253,8 @@ public class ProjectService {
                 SectionVO section2 = new SectionVO();
                 section2.setIndex(section1.getIndex());
                 section2.setDescription(section1.getDescription());
+                section2.setRegisterDateTime(section1.getRegisterDate());
+                section2.setLastModifyDate(section1.getLastModifyDate());
                 section2.setTitle(section1.getTitle());
                 section2.setSectionStatus(section1.getStatus());
 
@@ -301,6 +298,8 @@ public class ProjectService {
                 TaskVO task2 = new TaskVO();
                 task2.setIndex(task1.getIndex());
                 task2.setDescription(task1.getDescription());
+                task2.setRegisterDate(task1.getRegisterDate());
+                task2.setLastModifyDate(task1.getLastModifyDate());
                 task2.setTitle(task1.getTitle());
                 task2.setTaskStatusType(task1.getTaskStatusType());
 
