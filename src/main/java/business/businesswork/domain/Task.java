@@ -18,7 +18,7 @@ public class Task extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bt_index")
-    private Long index;
+    public Long index;
 
     @Column(name="bt_description")
     public String description;
@@ -28,11 +28,11 @@ public class Task extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "bm_index")
-    private Member member;
+    public Member member;
 
     @ManyToOne
     @JoinColumn(name = "bs_index")
-    private Section section;
+    public Section section;
 
     @Enumerated(EnumType.STRING)
     @Column(name="bt_status")

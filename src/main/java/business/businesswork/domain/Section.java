@@ -15,7 +15,7 @@ public class Section extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bs_index")
-    private Long index;
+    public Long index;
 
     @Column(name = "bs_title", nullable = false)
     public String title;
@@ -29,5 +29,5 @@ public class Section extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "bp_index")
-    private Project project;
+    public Project project;
 }

@@ -15,7 +15,7 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bm_index")
-    private Long index;
+    public Long index;
 
     @Column(name = "bm_name", nullable = false)
     public String name;

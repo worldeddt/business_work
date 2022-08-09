@@ -13,12 +13,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "business_project")
 public class Project extends BaseEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "bp_index")
-    private Long index;
+    public Long index;
 
     @Column(name = "bp_title", nullable = false)
     public String title;
@@ -29,6 +27,38 @@ public class Project extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "bp_status")
     public ProjectStatus status = ProjectStatus.DELETE;
+
+    public Long getIndex() {
+        return index;
+    }
+
+    public void setIndex(Long index) {
+        this.index = index;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ProjectStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProjectStatus status) {
+        this.status = status;
+    }
 
     public Project() {
         super();

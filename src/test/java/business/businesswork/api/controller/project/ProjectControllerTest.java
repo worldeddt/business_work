@@ -45,13 +45,11 @@ class ProjectControllerTest {
 
     @Test
     public void deleteProject() throws Exception {
-        Gson gson = new Gson();
         this.mockMvc.perform(
                 post("/project/delete").param("projectId", "1")
                 )
                 .andDo(print())
-                .andExpect(status().isOk())
-                        .andExpect(content().json("{'result' : 1, 'message': ''}"));
+                .andExpect(status().isOk());
     }
 
     @Test

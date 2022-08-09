@@ -13,10 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,30 +35,35 @@ public class ProjectService {
         tx.begin();
 
         try {
-            em.clear();
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
             project.setStatus(ProjectStatus.DELETE);
             project.setDeleteDate(this.getThisTime());
-
-            AllSections allSections = this.findSectionByProjectId(projectId, em);
-
-            System.out.println("allSections = "+ allSections);
-
-            if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
-                for (SectionVO sectionVo : allSections.getSectionList()) {
-                    Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
-                    System.out.println("section1 : "+section1.getTitle());
-                    section1.setStatus(SectionStatus.DELETE);
-                    if (sectionVo.getTaskList().size() == 0) continue;
-                    for (TaskVO taskVO : sectionVo.getTaskList()) {
-                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
-                        task1.setTaskStatusType(TaskStatusType.DELETE);
-                        em.flush();
-                    }
-                }
-            }
-
+            em.persist(project);
             em.flush();
+            em.clear();
+
+            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
+            System.out.println("project1 :"+project1.getStatus());
+
+//            AllSections allSections = this.findSectionByProjectId(projectId, em);
+//
+//            System.out.println("allSections = "+ allSections);
+//
+//            if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
+//                for (SectionVO sectionVo : allSections.getSectionList()) {
+//                    Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
+//                    section1.setStatus(SectionStatus.DELETE);
+//                    section1.setDeleteDate(this.getThisTime());
+//                    em.persist(section1);
+//                    if (sectionVo.getTaskList().size() == 0) continue;
+//                    for (TaskVO taskVO : sectionVo.getTaskList()) {
+//                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
+//                        task1.setTaskStatusType(TaskStatusType.DELETE);
+//                        em.persist(task1);
+//                    }
+//                }
+//            }
+
             tx.commit();
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
