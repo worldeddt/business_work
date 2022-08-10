@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
 @Table(name = "business_project")
@@ -27,40 +26,4 @@ public class Project extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "bp_status")
     public ProjectStatus status = ProjectStatus.DELETE;
-
-    public Long getIndex() {
-        return index;
-    }
-
-    public void setIndex(Long index) {
-        this.index = index;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public ProjectStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ProjectStatus status) {
-        this.status = status;
-    }
-
-    public Project() {
-        super();
-    }
 }

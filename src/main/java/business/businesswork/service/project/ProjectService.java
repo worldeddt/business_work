@@ -36,11 +36,12 @@ public class ProjectService {
 
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
+
+            Q
             project.setStatus(ProjectStatus.DELETE);
-            project.setDeleteDate(this.getThisTime());
+//            project.setDeleteDate(this.getThisTime());
             em.persist(project);
             em.flush();
-            em.clear();
 
             Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
             System.out.println("project1 :"+project1.getStatus());
