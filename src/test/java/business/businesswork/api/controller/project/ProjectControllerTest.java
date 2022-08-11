@@ -70,7 +70,7 @@ class ProjectControllerTest {
     public void update() throws Exception {
         Gson gson = new Gson();
         ModifyProject modifyProject = new ModifyProject();
-        modifyProject.setIndex(2L);
+        modifyProject.setIndex(1L);
         modifyProject.setTitle("첫 번째 프로젝트");
         modifyProject.setDescription("천재노창");
 

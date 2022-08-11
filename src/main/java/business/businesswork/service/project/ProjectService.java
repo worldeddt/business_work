@@ -85,9 +85,7 @@ public class ProjectService {
             project.setStatus(ProjectStatus.ACTIVE);
 
             em.persist(project);
-            em.flush();
             tx.commit();
-
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("register project exception error : "+e);
@@ -117,10 +115,7 @@ public class ProjectService {
             project.setTitle(modifyProject.getTitle());
             project.setDescription(modifyProject.getDescription());
             project.setLastModifyDate(this.getThisTime());
-
-            em.persist(project);
-            em.flush();
-            em.clear();
+            em.merge(project);
 
             tx.commit();
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
