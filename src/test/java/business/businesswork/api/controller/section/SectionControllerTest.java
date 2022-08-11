@@ -53,7 +53,7 @@ class SectionControllerTest {
     public void update() throws Exception {
         Gson gson = new Gson();
         ModifySection modifySection = new ModifySection();
-        modifySection.setIndex(1L);
+        modifySection.setIndex(4L);
         modifySection.setDescription("첫 번째 섹션");
         modifySection.setTitle("나투더플라");
         modifySection.setProjectId(1L);

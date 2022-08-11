@@ -47,8 +47,6 @@ public class SectionService {
             section.setProject(project);
 
             em.persist(section);
-            em.flush();
-            em.clear();
             tx.commit();
 
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
@@ -69,17 +67,16 @@ public class SectionService {
         CommonResponse commonResponse = new CommonResponse();
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
+        Gson gson = new Gson();
         tx.begin();
 
         try {
-            Section section = em.find(Section.class, modifySection.getIndex());
-            Project project = em.find(Project.class, modifySection.getProjectId());
+            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
             section.setTitle(modifySection.getTitle());
             section.setDescription(modifySection.getDescription());
-            section.setProject(project);
+            section.setLastModifyDate(this.getThisTime());
 
-            em.persist(section);
-            em.flush();
+            em.merge(section);
             tx.commit();
 
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
@@ -119,9 +116,7 @@ public class SectionService {
                 em.persist(task1);
             }
 
-            em.flush();
             tx.commit();
-
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("delete section exception error : "+e);
