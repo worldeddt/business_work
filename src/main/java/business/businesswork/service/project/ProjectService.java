@@ -36,34 +36,27 @@ public class ProjectService {
 
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
-
-            Q
             project.setStatus(ProjectStatus.DELETE);
-//            project.setDeleteDate(this.getThisTime());
-            em.persist(project);
-            em.flush();
+            project.setDeleteDate(this.getThisTime());
+            em.merge(project);
 
-            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
-            System.out.println("project1 :"+project1.getStatus());
+            AllSections allSections = this.findSectionByProjectId(projectId, em);
 
-//            AllSections allSections = this.findSectionByProjectId(projectId, em);
-//
-//            System.out.println("allSections = "+ allSections);
-//
-//            if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
-//                for (SectionVO sectionVo : allSections.getSectionList()) {
-//                    Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
-//                    section1.setStatus(SectionStatus.DELETE);
-//                    section1.setDeleteDate(this.getThisTime());
-//                    em.persist(section1);
-//                    if (sectionVo.getTaskList().size() == 0) continue;
-//                    for (TaskVO taskVO : sectionVo.getTaskList()) {
-//                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
-//                        task1.setTaskStatusType(TaskStatusType.DELETE);
-//                        em.persist(task1);
-//                    }
-//                }
-//            }
+            if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
+                for (SectionVO sectionVo : allSections.getSectionList()) {
+                    Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
+                    section1.setStatus(SectionStatus.DELETE);
+                    section1.setDeleteDate(this.getThisTime());
+                    em.merge(section1);
+                    if (sectionVo.getTaskList().size() == 0) continue;
+                    for (TaskVO taskVO : sectionVo.getTaskList()) {
+                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
+                        task1.setTaskStatusType(TaskStatusType.DELETE);
+                        task1.setDeleteDate(this.getThisTime());
+                        em.merge(task1);
+                    }
+                }
+            }
 
             tx.commit();
             commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
@@ -72,8 +65,6 @@ public class ProjectService {
             commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
             commonResponse.setMessage(e.getMessage());
             tx.rollback();
-        } finally {
-            em.close();
         }
 
         return commonResponse;
@@ -156,8 +147,6 @@ public class ProjectService {
             responseProject.setResult(commonResponse);
 
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
-
-            System.out.println("project single :" +project.getIndex());
 
             if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
@@ -276,8 +265,6 @@ public class ProjectService {
 
         } catch (Exception e) {
             logger.error("findSectionByProjectId error : "+e);
-        } finally {
-            em.close();
         }
 
         return responseSection;
@@ -314,8 +301,6 @@ public class ProjectService {
 
         } catch (Exception e) {
             logger.error("findTasksBySectionId error : "+e);
-        } finally {
-            em.close();
         }
 
         return responseTask;
