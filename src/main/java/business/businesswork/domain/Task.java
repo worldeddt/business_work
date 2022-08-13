@@ -16,7 +16,7 @@ import java.util.List;
 public class Task extends BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bt_index")
     public Long index;
 

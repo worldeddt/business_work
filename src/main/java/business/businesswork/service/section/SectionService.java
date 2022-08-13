@@ -6,10 +6,13 @@ import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
+import business.businesswork.exceptions.BusinessException;
+import business.businesswork.service.common.CommonService;
 import business.businesswork.vo.*;
 import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
@@ -29,9 +32,12 @@ public class SectionService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
+    @Autowired(required = false)
+    private CommonService commonService;
+
     public CommonResponse register(RegisterSection registerSection)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -45,16 +51,22 @@ public class SectionService {
             section.setStatus(registerSection.getSectionStatus());
             section.setRegisterDate(this.getThisTime());
             section.setProject(project);
-
             em.persist(section);
-            tx.commit();
+            em.flush();
 
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
+            if (section.getIndex() == null) throw new BusinessException(ResponseStatus.SECTION_REGISTER_FAIL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
+            tx.commit();
         } catch (Exception e) {
             logger.error("register section exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
+
         } finally {
             em.close();
         }
@@ -64,7 +76,7 @@ public class SectionService {
 
     public CommonResponse update(ModifySection modifySection)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         Gson gson = new Gson();
@@ -72,19 +84,37 @@ public class SectionService {
 
         try {
             Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
+
+            if (section.getStatus() == SectionStatus.DELETE)
+                throw new BusinessException(ResponseStatus.SECTION_WAS_DELETE);
+
             section.setTitle(modifySection.getTitle());
             section.setDescription(modifySection.getDescription());
             section.setLastModifyDate(this.getThisTime());
 
             em.merge(section);
-            tx.commit();
+            em.flush();
+            em.clear();
 
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
+            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
+
+            if (
+                !section1.getStatus().equals(section.getStatus()) ||
+                !section1.getTitle().equals(section.getTitle()) ||
+                !section1.getDescription().equals(section.getDescription())
+            )
+                throw new BusinessException(ResponseStatus.TASK_UPDATE_FAL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
+            tx.commit();
         } catch (Exception e) {
             logger.error("update section exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         } finally {
             em.close();
         }
@@ -94,35 +124,57 @@ public class SectionService {
 
     public CommonResponse delete(Long SectionId)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Section section = em.find(Section.class, SectionId);
+            AllTasks allTasks = commonService.findTasksBySectionId(SectionId, em);
+
+            Section section = gson.fromJson(gson.toJson(em.find(Section.class, SectionId)), Section.class);
             section.setStatus(SectionStatus.DELETE);
-            em.persist(section);
-
-            String queryString =
-                    "select * from business_task where bs_index = '" + SectionId + "' and bt_status <> '" + TaskStatusType.DELETE + "';";
-            List tasks = em.createNativeQuery(queryString, Section.class)
-                    .getResultList();
-
-            for (Object task : tasks) {
-                Task task1 = gson.fromJson(gson.toJson(task), Task.class);
+            section.setDeleteDate(this.getThisTime());
+            em.merge(section);
+            for (TaskVO taskVO : allTasks.getTaskList()) {
+                Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
                 task1.setTaskStatusType(TaskStatusType.DELETE);
-                em.persist(task1);
+                task1.setDeleteDate(this.getThisTime());
+                em.merge(task1);
             }
 
+//
+//            String queryString =
+//                    "select * from business_task where bs_index = '" + SectionId + "' and bt_status <> '" + TaskStatusType.DELETE + "';";
+//            List tasks = em.createNativeQuery(queryString, Section.class)
+//                    .getResultList();
+//
+//            for (Object task : tasks) {
+//                Task task1 = gson.fromJson(gson.toJson(task), Task.class);
+//                task1.setTaskStatusType(TaskStatusType.DELETE);
+//                task1.setDeleteDate(this.getThisTime());
+//                em.merge(task1);
+//            }
+
+            em.flush();
+            em.clear();
+
+            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, SectionId)), Section.class);
+
+            if (!section.getStatus().equals(section1.getStatus()))
+                throw new BusinessException(ResponseStatus.SECTION_UPDATE_FAL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("delete section exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         } finally {
             em.close();
         }
@@ -132,7 +184,7 @@ public class SectionService {
 
     public ResponseSection findById(Long id)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         ResponseSection responseSection = new ResponseSection();
         Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();

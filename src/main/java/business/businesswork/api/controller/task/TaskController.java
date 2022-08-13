@@ -1,6 +1,7 @@
 package business.businesswork.api.controller.task;
 
 import business.businesswork.service.task.TaskService;
+import business.businesswork.vo.CommonResponse;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import business.businesswork.vo.ResponseTask;
@@ -16,18 +17,18 @@ public class TaskController {
     private TaskService taskService;
 
     @RequestMapping(value = "/register", method = {RequestMethod.POST})
-    public void register(@RequestBody RegisterTask registerTask) throws Exception {
-        taskService.register(registerTask);
+    public CommonResponse register(@RequestBody RegisterTask registerTask) throws Exception {
+        return taskService.register(registerTask);
     }
 
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public void delete(@RequestParam("taskIndex") Long taskIndex) throws Exception {
-        taskService.delete(taskIndex);
+    public CommonResponse delete(@RequestParam("taskIndex") Long taskIndex) throws Exception {
+        return taskService.delete(taskIndex);
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
-    public void update(@RequestBody ModifyTask modifyTask) {
-        taskService.update(modifyTask);
+    public CommonResponse update(@RequestBody ModifyTask modifyTask) {
+        return taskService.update(modifyTask);
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})

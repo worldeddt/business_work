@@ -4,9 +4,12 @@ import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.TaskStatusType;
+import business.businesswork.exceptions.BusinessException;
+import business.businesswork.vo.CommonResponse;
 import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import business.businesswork.vo.ResponseTask;
+import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,7 +17,6 @@ import org.springframework.stereotype.Service;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Service
 public class TaskService {
@@ -23,14 +25,16 @@ public class TaskService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
-    public void register(RegisterTask registerTask)
+    public CommonResponse register(RegisterTask registerTask)
     {
+        CommonResponse commonResponse = new CommonResponse(null);
+        Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Section section = em.find(Section.class, registerTask.getSectionId());
+            Section section = gson.fromJson(gson.toJson(em.find(Section.class, registerTask.getSectionId())), Section.class);
             Task task = new Task();
             task.setTitle(registerTask.getTitle());
             task.setDescription(registerTask.getDescription());
@@ -39,79 +43,111 @@ public class TaskService {
             task.setSection(section);
             em.persist(task);
 
-            em.flush();
-            em.clear();
-
-            List<Task> taskList = em.createQuery("select t from Task t where t.section.index = :sectionIndex", Task.class)
-                            .setParameter("sectionIndex", registerTask.getSectionId())
-                            .getResultList();
-
-            logger.info("=========================== registered task = "+taskList);
-
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
         } catch (Exception e) {
+            logger.error("register task exception error : "+e);
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
             tx.rollback();
         } finally {
             em.close();
         }
+
+        return commonResponse;
     }
 
-    public void update(ModifyTask modifyTask)
+    public CommonResponse update(ModifyTask modifyTask)
     {
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
+        Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Task task = em.find(Task.class, modifyTask.getIndex());
-            Section section = em.find(Section.class, modifyTask.getSectionId());
+            Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
+            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifyTask.getSectionId())), Section.class);
 
-            if (task.getTaskStatusType() == TaskStatusType.DELETE) return;
+            if (task.getTaskStatusType() == TaskStatusType.DELETE)
+                throw new BusinessException(ResponseStatus.TASK_WAS_DELETE);
 
             task.setSection(section);
             task.setTaskStatusType(modifyTask.getStatus());
             task.setDescription(modifyTask.getDescription());
             task.setTitle(modifyTask.getTitle());
             task.setLastModifyDate(getThisTime());
-
-            em.persist(task);
+            em.merge(task);
 
             em.flush();
             em.clear();
 
+            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
+
+            if (!task1.getSection().getIndex().equals(task.getSection().getIndex()))
+                throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
+
+            if
+            (
+                !task1.getTaskStatusType().equals(task.getTaskStatusType()) ||
+                !task1.getTitle().equals(task.getTitle()) ||
+                !task1.getDescription().equals(task.getDescription())
+            )
+                throw new BusinessException(ResponseStatus.TASK_UPDATE_FAL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
         } catch (Exception e) {
+            logger.error("update task exception error : "+e);
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         } finally {
             em.close();
         }
+
+        return commonResponse;
     }
 
-    public void delete(Long taskIndex)
+    public CommonResponse delete(Long taskIndex)
     {
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
+        Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-            Task task = em.find(Task.class, taskIndex);
+            Task task = gson.fromJson(gson.toJson(em.find(Task.class, taskIndex)), Task.class);
             task.setTaskStatusType(TaskStatusType.DELETE);
             task.setDeleteDate(getThisTime());
+            em.merge(task);
 
-            em.persist(task);
             em.flush();
             em.clear();
 
-            Task task1 = em.find(Task.class, taskIndex);
+            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskIndex)), Task.class);
 
-            logger.info("task after delete request = "+ task1.getTaskStatusType());
+            if (!task.getTaskStatusType().equals(task1.getTaskStatusType()))
+                throw new BusinessException(ResponseStatus.TASK_DELETE_FAL);
 
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
         } catch (Exception e) {
+            logger.error("delete task exception error : "+e);
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         } finally {
             em.close();
         }
+
+        return commonResponse;
     }
 
     public ResponseTask findById(Long id)
@@ -132,9 +168,6 @@ public class TaskService {
 
             Task task1 = em.find(Task.class, id);
             Section section = em.find(Section.class, id);
-            logger.info("====== section's project :"+section.getProject());
-
-            logger.info("====== task1 : "+task1.getSection());
 
             responseTask.setIndex(task1.getIndex());
             responseTask.setDescription(task1.getDescription());

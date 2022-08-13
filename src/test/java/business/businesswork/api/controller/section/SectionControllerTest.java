@@ -43,7 +43,7 @@ class SectionControllerTest {
     @Test
     void delete() throws Exception {
         this.mockMvc.perform(
-                        post("/section/delete").param("sectionId", "1")
+                        post("/section/delete").param("sectionId", "7")
                 )
                 .andDo(print())
                 .andExpect(status().isOk());

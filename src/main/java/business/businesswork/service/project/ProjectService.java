@@ -7,10 +7,14 @@ import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
+import business.businesswork.exceptions.BusinessException;
+import business.businesswork.service.common.CommonService;
 import business.businesswork.vo.*;
 import com.google.gson.Gson;
+import org.hibernate.query.criteria.internal.BasicPathUsageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.*;
@@ -26,9 +30,12 @@ public class ProjectService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
+    @Autowired(required = false)
+    private CommonService commonService;
+
     public CommonResponse deleteProject(Long projectId)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
@@ -40,7 +47,7 @@ public class ProjectService {
             project.setDeleteDate(this.getThisTime());
             em.merge(project);
 
-            AllSections allSections = this.findSectionByProjectId(projectId, em);
+            AllSections allSections = commonService.findSectionByProjectId(projectId, em);
 
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
                 for (SectionVO sectionVo : allSections.getSectionList()) {
@@ -58,13 +65,24 @@ public class ProjectService {
                 }
             }
 
+            em.flush();
+            em.clear();
+
+            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
+
+            if (!project.getStatus().equals(project1.getStatus()))
+                throw new BusinessException(ResponseStatus.PROJECT_DELETE_FAIL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
-            logger.error("delete project exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
+            logger.error("delete project exception error : "+e.getMessage());
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         }
 
         return commonResponse;
@@ -72,7 +90,7 @@ public class ProjectService {
 
     public CommonResponse register(RegistProject registProject)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -83,15 +101,21 @@ public class ProjectService {
             project.setDescription(registProject.getDescription());
             project.setRegisterDate(this.getThisTime());
             project.setStatus(ProjectStatus.ACTIVE);
-
             em.persist(project);
+            em.flush();
+
+            if (project.getIndex() == null) throw new BusinessException(ResponseStatus.PROJECT_REGISTER_FAIL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("register project exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
             tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         } finally {
             em.close();
         }
@@ -101,7 +125,7 @@ public class ProjectService {
 
     public CommonResponse update(ModifyProject modifyProject)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         Gson gson = new Gson();
         EntityTransaction tx = em.getTransaction();
@@ -110,20 +134,35 @@ public class ProjectService {
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, modifyProject.getIndex())), Project.class);
 
-            if (project.getStatus() == ProjectStatus.DELETE) return commonResponse;
+            if (project.getStatus().equals(ProjectStatus.DELETE))
+                commonResponse.setResponse(ResponseStatus.PROJECT_WAS_DELETE);
 
             project.setTitle(modifyProject.getTitle());
             project.setDescription(modifyProject.getDescription());
             project.setLastModifyDate(this.getThisTime());
             em.merge(project);
 
+            em.flush();
+            em.clear();
+
+            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, modifyProject.getIndex())), Project.class);
+
+            if (
+                !project.getDescription().equals(project1.getDescription()) ||
+                !project.getTitle().equals(project1.getTitle())
+            )
+                throw new BusinessException(ResponseStatus.PROJECT_UPDATE_FAIL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
         } catch (Exception e) {
             logger.error("update project exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
             tx.rollback();
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
         } finally {
             em.close();
         }
@@ -133,7 +172,7 @@ public class ProjectService {
 
     public ResponseProject findProject(Long projectId)
     {
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         ResponseProject responseProject = new ResponseProject();
 
         Gson gson = new Gson();
@@ -146,7 +185,7 @@ public class ProjectService {
             if ((project.getStatus() == ProjectStatus.DELETE) || project.getStatus() == null) return responseProject;
 
             //find sections
-            AllSections allSections  = this.findSectionByProjectId(projectId, em);
+            AllSections allSections  = commonService.findSectionByProjectId(projectId, em);
 
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
                 logger.debug("sections request success");
@@ -177,7 +216,7 @@ public class ProjectService {
     public AllProject findAll()
     {
         AllProject projectList = new AllProject();
-        CommonResponse commonResponse = new CommonResponse();
+        CommonResponse commonResponse = new CommonResponse(null);
         Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -219,86 +258,6 @@ public class ProjectService {
         }
 
         return projectList;
-    }
-
-    private AllSections findSectionByProjectId(Long projectId, EntityManager em)
-    {
-        AllSections responseSection = new AllSections();
-        Gson gson = new Gson();
-
-        try {
-            String queryString =
-                    "select * from business_section where bp_index = '" + projectId + "' and bs_status = '" + SectionStatus.ACTIVE + "';";
-
-            List sectionQueryList = em.createNativeQuery(queryString, Section.class)
-                    .getResultList();
-
-            ArrayList<SectionVO> sectionList = new ArrayList<>();
-
-            for (Object section3 : sectionQueryList) {
-                Section section1 = gson.fromJson(gson.toJson(section3), Section.class);
-                SectionVO section2 = new SectionVO();
-                section2.setIndex(section1.getIndex());
-                section2.setDescription(section1.getDescription());
-                section2.setRegisterDateTime(section1.getRegisterDate());
-                section2.setLastModifyDate(section1.getLastModifyDate());
-                section2.setTitle(section1.getTitle());
-                section2.setSectionStatus(section1.getStatus());
-
-                if (section1.getStatus() != SectionStatus.DELETE ) {
-                    AllTasks allTasks  = this.findTasksBySectionId(section1.getIndex(), em);
-
-                    if (allTasks.getResult() == ResponseStatus.SUCCESS.getResultCode())
-                        section2.setTaskList(allTasks.getTaskList());
-
-                    sectionList.add(section2);
-                }
-            }
-
-            responseSection.setSectionList(sectionList);
-            responseSection.setResult(ResponseStatus.SUCCESS.getResultCode());
-
-        } catch (Exception e) {
-            logger.error("findSectionByProjectId error : "+e);
-        }
-
-        return responseSection;
-    }
-
-    public AllTasks findTasksBySectionId(Long sectionId, EntityManager em)
-    {
-        AllTasks responseTask = new AllTasks();
-        Gson gson = new Gson();
-
-        try {
-            String queryString =
-                    "select * from business_task where bs_index = '" + sectionId + "' and bt_status <> '" + TaskStatusType.DELETE + "';";
-
-            List taskQueryList = em.createNativeQuery(queryString, Task.class).getResultList();
-
-            ArrayList<TaskVO> taskList = new ArrayList<>();
-
-            for (Object task3 : taskQueryList) {
-                Task task1 = gson.fromJson(gson.toJson(task3), Task.class);
-                TaskVO task2 = new TaskVO();
-                task2.setIndex(task1.getIndex());
-                task2.setDescription(task1.getDescription());
-                task2.setRegisterDate(task1.getRegisterDate());
-                task2.setLastModifyDate(task1.getLastModifyDate());
-                task2.setTitle(task1.getTitle());
-                task2.setTaskStatusType(task1.getTaskStatusType());
-
-                if (task2.getTaskStatusType() != TaskStatusType.DELETE) taskList.add(task2);
-            }
-
-            responseTask.setTaskList(taskList);
-            responseTask.setResult(ResponseStatus.SUCCESS.getResultCode());
-
-        } catch (Exception e) {
-            logger.error("findTasksBySectionId error : "+e);
-        }
-
-        return responseTask;
     }
 
     private LocalDateTime getThisTime()

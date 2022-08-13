@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "business_member")
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bm_index")
     public Long index;
 

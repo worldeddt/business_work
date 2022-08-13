@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Table(name = "business_section")
 public class Section extends BaseEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bs_index")
     public Long index;
 

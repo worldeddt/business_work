@@ -8,7 +8,17 @@ import lombok.Data;
 public class CommonResponse {
     public int result = ResponseStatus.FAIL.getResultCode();
 
-    public String message = "";
+    public String message = ResponseStatus.FAIL.getResultMessage();
 
-    public CommonResponse() {}
+    public CommonResponse(ResponseStatus responseStatus) {
+        if (responseStatus != null) {
+            this.result = responseStatus.getResultCode();
+            this.message = responseStatus.getResultMessage();
+        }
+    }
+
+    public void setResponse(ResponseStatus responseStatus) {
+        this.result = responseStatus.getResultCode();
+        this.message = responseStatus.getResultMessage();
+    }
 }

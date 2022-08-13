@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "business_project")
 public class Project extends BaseEntity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bp_index")
     public Long index;
 
