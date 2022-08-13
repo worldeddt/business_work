@@ -30,7 +30,7 @@ class TaskControllerTest {
         RegisterTask registerTask = new RegisterTask();
         registerTask.setDescription("할일1 ");
         registerTask.setTitle("task test");
-        registerTask.setSectionId(11L);
+        registerTask.setSectionId(2L);
 
         this.mockMvc.perform(
                         post("/task/register")
@@ -44,10 +44,10 @@ class TaskControllerTest {
     void update() throws Exception {
         Gson gson = new Gson();
         ModifyTask modifyTask = new ModifyTask();
-        modifyTask.setIndex(2L);
+        modifyTask.setIndex(1L);
         modifyTask.setTitle("업데이트 데스크");
         modifyTask.setDescription("업데이트");
-        modifyTask.setSectionId(3L);
+        modifyTask.setSectionId(1L);
         modifyTask.setStatus(TaskStatusType.DOING);
 
         this.mockMvc.perform(post("/task/update").contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +58,7 @@ class TaskControllerTest {
 
     @Test
     void delete() throws Exception {
-        this.mockMvc.perform(post("/task/delete").param("taskIndex", "2"))
+        this.mockMvc.perform(post("/task/delete").param("taskIndex", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

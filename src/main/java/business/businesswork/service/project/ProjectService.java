@@ -43,6 +43,9 @@ public class ProjectService {
 
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
+
+            if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
+
             project.setStatus(ProjectStatus.DELETE);
             project.setDeleteDate(this.getThisTime());
             em.merge(project);
@@ -52,12 +55,17 @@ public class ProjectService {
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
                 for (SectionVO sectionVo : allSections.getSectionList()) {
                     Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, sectionVo.getIndex())), Section.class);
+
+                    if (section1 == null) continue;
+
                     section1.setStatus(SectionStatus.DELETE);
                     section1.setDeleteDate(this.getThisTime());
                     em.merge(section1);
                     if (sectionVo.getTaskList().size() == 0) continue;
                     for (TaskVO taskVO : sectionVo.getTaskList()) {
                         Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
+
+                        if (task1 == null) continue;
                         task1.setTaskStatusType(TaskStatusType.DELETE);
                         task1.setDeleteDate(this.getThisTime());
                         em.merge(task1);
@@ -134,8 +142,10 @@ public class ProjectService {
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, modifyProject.getIndex())), Project.class);
 
+            if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
+
             if (project.getStatus().equals(ProjectStatus.DELETE))
-                commonResponse.setResponse(ResponseStatus.PROJECT_WAS_DELETE);
+                throw new BusinessException(ResponseStatus.PROJECT_WAS_DELETE);
 
             project.setTitle(modifyProject.getTitle());
             project.setDescription(modifyProject.getDescription());

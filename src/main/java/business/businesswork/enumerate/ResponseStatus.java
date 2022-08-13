@@ -16,7 +16,10 @@ public enum ResponseStatus {
     PROJECT_REGISTER_FAIL(13, "project register fail"),
     SECTION_REGISTER_FAIL(14, "section register fail"),
     TASK_REGISTER_FAIL(15, "task register fail"),
-    PROJECT_UPDATE_FAIL(16, "project update fail")
+    PROJECT_UPDATE_FAIL(16, "project update fail"),
+    PROJECT_IS_NULL(17, "project is null"),
+    SECTION_IS_NULL(18, "section is null"),
+    TASK_IS_NULL(19, "task is null")
     ;
 
     private final int resultCode;

@@ -45,6 +45,8 @@ public class SectionService {
         try {
             Project project = em.find(Project.class, registerSection.getProjectId());
 
+            if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
+
             Section section = new Section();
             section.setTitle(registerSection.getTitle());
             section.setDescription(registerSection.getDescription());
@@ -85,14 +87,16 @@ public class SectionService {
         try {
             Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
 
+            if (section == null) throw new BusinessException(ResponseStatus.SECTION_IS_NULL);
+
             if (section.getStatus() == SectionStatus.DELETE)
                 throw new BusinessException(ResponseStatus.SECTION_WAS_DELETE);
 
             section.setTitle(modifySection.getTitle());
             section.setDescription(modifySection.getDescription());
             section.setLastModifyDate(this.getThisTime());
-
             em.merge(section);
+
             em.flush();
             em.clear();
 
@@ -103,7 +107,7 @@ public class SectionService {
                 !section1.getTitle().equals(section.getTitle()) ||
                 !section1.getDescription().equals(section.getDescription())
             )
-                throw new BusinessException(ResponseStatus.TASK_UPDATE_FAL);
+                throw new BusinessException(ResponseStatus.SECTION_UPDATE_FAL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
@@ -134,28 +138,20 @@ public class SectionService {
             AllTasks allTasks = commonService.findTasksBySectionId(SectionId, em);
 
             Section section = gson.fromJson(gson.toJson(em.find(Section.class, SectionId)), Section.class);
+            if (section == null) throw new BusinessException(ResponseStatus.SECTION_IS_NULL);
+
             section.setStatus(SectionStatus.DELETE);
             section.setDeleteDate(this.getThisTime());
             em.merge(section);
+
             for (TaskVO taskVO : allTasks.getTaskList()) {
                 Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
-                task1.setTaskStatusType(TaskStatusType.DELETE);
-                task1.setDeleteDate(this.getThisTime());
-                em.merge(task1);
+                if (task1 != null) {
+                    task1.setTaskStatusType(TaskStatusType.DELETE);
+                    task1.setDeleteDate(this.getThisTime());
+                    em.merge(task1);
+                }
             }
-
-//
-//            String queryString =
-//                    "select * from business_task where bs_index = '" + SectionId + "' and bt_status <> '" + TaskStatusType.DELETE + "';";
-//            List tasks = em.createNativeQuery(queryString, Section.class)
-//                    .getResultList();
-//
-//            for (Object task : tasks) {
-//                Task task1 = gson.fromJson(gson.toJson(task), Task.class);
-//                task1.setTaskStatusType(TaskStatusType.DELETE);
-//                task1.setDeleteDate(this.getThisTime());
-//                em.merge(task1);
-//            }
 
             em.flush();
             em.clear();
