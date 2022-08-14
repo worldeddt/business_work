@@ -8,7 +8,7 @@ import java.util.List;
 
 @Data
 public class ResponseProject {
-    public CommonResponse result;
+    public CommonResponse commonResponse;
     public Long index;
     public String title;
     public String description;

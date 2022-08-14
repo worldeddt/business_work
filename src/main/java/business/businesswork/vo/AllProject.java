@@ -8,6 +8,6 @@ import java.util.List;
 
 @Data
 public class AllProject {
-    public CommonResponse result;
+    public CommonResponse commonResponse;
     public List<Project> projectList;
 }

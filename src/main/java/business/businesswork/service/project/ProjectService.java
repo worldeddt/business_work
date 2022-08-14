@@ -188,7 +188,7 @@ public class ProjectService {
         Gson gson = new Gson();
         EntityManager em = emf.createEntityManager();
         try {
-            responseProject.setResult(commonResponse);
+            responseProject.setCommonResponse(commonResponse);
 
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
@@ -209,13 +209,13 @@ public class ProjectService {
             responseProject.setIndex(project.getIndex());
             responseProject.setRegisterDateTime(project.getRegisterDate());
             responseProject.setLastModifyDate(project.getLastModifyDate());
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
-            responseProject.setResult(commonResponse);
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
+            responseProject.setCommonResponse(commonResponse);
 
         } catch (Exception e) {
             logger.error("findProject exception error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            responseProject.setResult(commonResponse);
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            responseProject.setCommonResponse(commonResponse);
         } finally {
             em.close();
         }
@@ -255,14 +255,13 @@ public class ProjectService {
             }
 
             projectList.setProjectList(project3);
-            commonResponse.setResult(ResponseStatus.SUCCESS.getResultCode());
-            projectList.setResult(commonResponse);
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
+            projectList.setCommonResponse(commonResponse);
 
         } catch (Exception e) {
             logger.error("findAll (project) exection error : "+e);
-            commonResponse.setResult(ResponseStatus.SERVER_ERROR.getResultCode());
-            commonResponse.setMessage(e.getMessage());
-            projectList.setResult(commonResponse);
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            projectList.setCommonResponse(commonResponse);
         } finally {
             em.close();
         }
