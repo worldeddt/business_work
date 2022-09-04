@@ -18,6 +18,10 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.c3p0.min_size" value="5"/>
+            <property name="hibernate.c3p0.max_size" value="100"/>
+            <property name="hibernate.c3p0.max_statements" value="50"/>
+            <property name="hibernate.c3p0.idle_test_period" value="3000"/>
 <!--            <property name="hibernate.hbm2ddl.auto" value="create" />-->
         </properties>
     </persistence-unit>

@@ -3,6 +3,7 @@ package business.businesswork.service.task;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
+import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.exceptions.BusinessException;
 import business.businesswork.vo.CommonResponse;
@@ -10,13 +11,16 @@ import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import business.businesswork.vo.ResponseTask;
 import com.google.gson.Gson;
+import net.bytebuddy.dynamic.loading.ClassInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import sun.lwawt.macosx.CSystemTray;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Service
 public class TaskService {
@@ -56,6 +60,44 @@ public class TaskService {
         return commonResponse;
     }
 
+    public CommonResponse updateSection(ModifyTask modifyTask)
+    {
+        CommonResponse commonResponse = new CommonResponse(null);
+        EntityManager em = emf.createEntityManager();
+        Gson gson = new Gson();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        try {
+            Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
+
+            String queryString =
+                    "update business_task set bs_index = '"+modifyTask.getSectionId()+"' " +
+                            "where bt_index = '"+modifyTask.getIndex()+"';";
+            em.createNativeQuery(queryString).executeUpdate();
+
+            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, task.getIndex())),Task.class);
+
+            if (!task1.getSection().getIndex().equals(modifyTask.getSectionId()))
+                throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
+
+            commonResponse.setResponse(ResponseStatus.SUCCESS);
+            tx.commit();
+        } catch (Exception e) {
+            logger.error("update task exception error : "+e);
+            tx.rollback();
+            commonResponse.setResponse(ResponseStatus.SERVER_ERROR);
+            if (e instanceof BusinessException) {
+                commonResponse.setResult(((BusinessException) e).getResultCode());
+                commonResponse.setMessage(((BusinessException) e).getReason());
+            }
+        } finally {
+            em.close();
+        }
+
+        return commonResponse;
+    }
+
     public CommonResponse update(ModifyTask modifyTask)
     {
         CommonResponse commonResponse = new CommonResponse(null);
@@ -68,7 +110,7 @@ public class TaskService {
             Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
             Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifyTask.getSectionId())), Section.class);
 
-            if (task.getTaskStatusType() == TaskStatusType.DELETE)
+            if (Objects.equals(task.getTaskStatusType().toString(), "DELETE"))
                 throw new BusinessException(ResponseStatus.TASK_WAS_DELETE);
 
             task.setSection(section);

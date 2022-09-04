@@ -25,8 +25,13 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/update", method = {RequestMethod.POST})
-    public CommonResponse update(@RequestBody ModifyTask modifyTask) {
+    public CommonResponse update(@RequestBody ModifyTask modifyTask) throws Exception {
         return taskService.update(modifyTask);
+    }
+
+    @RequestMapping(value="/updateSection", method = {RequestMethod.POST})
+    public CommonResponse updateSection(@RequestBody ModifyTask modifyTask) throws Exception {
+        return taskService.updateSection(modifyTask);
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.GET})

@@ -28,9 +28,9 @@ class TaskControllerTest {
     void register() throws Exception {
         Gson gson = new Gson();
         RegisterTask registerTask = new RegisterTask();
-        registerTask.setDescription("할일1 ");
-        registerTask.setTitle("task test");
-        registerTask.setSectionId(3L);
+        registerTask.setDescription("할일1");
+        registerTask.setTitle("안녕 첫 번째 일이야");
+        registerTask.setSectionId(4L);
 
         this.mockMvc.perform(
                         post("/task/register")
@@ -44,10 +44,10 @@ class TaskControllerTest {
     void update() throws Exception {
         Gson gson = new Gson();
         ModifyTask modifyTask = new ModifyTask();
-        modifyTask.setIndex(1L);
+        modifyTask.setIndex(4L);
         modifyTask.setTitle("업데이트 데스크");
         modifyTask.setDescription("업데이트");
-        modifyTask.setSectionId(1L);
+        modifyTask.setSectionId(3L);
         modifyTask.setStatus(TaskStatusType.DOING);
 
         this.mockMvc.perform(post("/task/update").contentType(MediaType.APPLICATION_JSON)

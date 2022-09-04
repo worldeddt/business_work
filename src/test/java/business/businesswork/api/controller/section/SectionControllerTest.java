@@ -27,8 +27,8 @@ class SectionControllerTest {
     public void register() throws Exception {
         Gson gson = new Gson();
         RegisterSection registerSection = new RegisterSection();
-        registerSection.setDescription("첫 번째 섹션");
-        registerSection.setTitle("section title two");
+        registerSection.setDescription("두 번째 프로젝트 두 번째 섹션");
+        registerSection.setTitle("second section");
         registerSection.setProjectId(2L);
         registerSection.setSectionStatus(SectionStatus.ACTIVE);
 
@@ -53,10 +53,10 @@ class SectionControllerTest {
     public void update() throws Exception {
         Gson gson = new Gson();
         ModifySection modifySection = new ModifySection();
-        modifySection.setIndex(1L);
-        modifySection.setDescription("첫 번째 섹션");
-        modifySection.setTitle("나투더플라");
-        modifySection.setProjectId(1L);
+        modifySection.setIndex(4L);
+        modifySection.setDescription("두 번째 프로젝트 첫 번째 섹션");
+        modifySection.setTitle("두 번째 프로젝트 첫 번째 섹션");
+        modifySection.setProjectId(3L);
 
         this.mockMvc.perform(
                         post("/section/update")
