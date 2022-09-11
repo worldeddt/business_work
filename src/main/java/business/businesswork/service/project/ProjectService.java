@@ -101,18 +101,19 @@ public class ProjectService {
         CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
+        Gson gson = new Gson();
         tx.begin();
 
         try {
-            Project project = new Project();
-            project.setTitle(registProject.getTitle());
-            project.setDescription(registProject.getDescription());
-            project.setRegisterDate(this.getThisTime());
-            project.setStatus(ProjectStatus.ACTIVE);
-            em.persist(project);
-            em.flush();
+          String queryString = "insert into business_project(bp_title, bp_description, bp_status, register_date)" +
+                    "values(:title, :desc, :status, :register)";
+            Query nativeQuery = em.createNativeQuery(queryString)
+                    .setParameter("title", registProject.getTitle())
+                    .setParameter("desc", registProject.getDescription())
+                    .setParameter("status", ProjectStatus.ACTIVE.getProjectStatus())
+                    .setParameter("register", this.getThisTime());
+            nativeQuery.executeUpdate();
 
-            if (project.getIndex() == null) throw new BusinessException(ResponseStatus.PROJECT_REGISTER_FAIL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();

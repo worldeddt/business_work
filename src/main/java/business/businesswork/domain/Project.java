@@ -2,11 +2,9 @@ package business.businesswork.domain;
 
 import business.businesswork.enumerate.ProjectStatus;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Data
 @Entity
