@@ -6,6 +6,6 @@ import lombok.Data;
 public class ModifySection {
     private Long index;
     private String title;
-    private Long projectId;
+    private Integer projectId;
     private String description;
 }

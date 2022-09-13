@@ -212,7 +212,7 @@ public class SectionService {
         return responseSection;
     }
 
-    public AllSections findAllByProjectId(Long projectId)
+    public AllSections findAllByProjectId(Integer projectId)
     {
         AllSections responseSection = new AllSections();
         EntityManager em = emf.createEntityManager();

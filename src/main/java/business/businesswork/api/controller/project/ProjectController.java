@@ -31,12 +31,12 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/delete", method = {RequestMethod.POST})
-    public CommonResponse delete(@RequestParam(required = false ,name = "projectId") Long projectId) throws Exception {
+    public CommonResponse delete(@RequestParam(required = false ,name = "projectId") Integer projectId) throws Exception {
         return projectService.deleteProject(projectId);
     }
 
     @RequestMapping(value = "/template", method = {RequestMethod.POST})
-    public ResponseProject findOne(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+    public ResponseProject findOne(@RequestParam(required = false, name = "projectId") Integer projectId) throws Exception {
         return projectService.findProject(projectId);
     }
 
@@ -46,10 +46,10 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/", method = {RequestMethod.POST})
-    public ResponseProject findOneTemp(@RequestParam(required = false, name = "projectId") Long projectId) throws Exception {
+    public ResponseProject findOneTemp(@RequestParam(required = false, name = "projectId") Integer projectId) throws Exception {
         RestTemplate restTemplate = restTemplateBuilder.build();
 
-        MultiValueMap<String, Long> parameters = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Integer> parameters = new LinkedMultiValueMap<>();
         parameters.add("projectId", projectId);
 
         return restTemplate.postForObject("http://localhost:8090/project/template", parameters, ResponseProject.class);

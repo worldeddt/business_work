@@ -8,6 +8,6 @@ public class RegisterSection {
     private Long index;
     private String title;
     private String description;
-    private Long projectId;
+    private Integer projectId;
     private SectionStatus sectionStatus = SectionStatus.ACTIVE;
 }

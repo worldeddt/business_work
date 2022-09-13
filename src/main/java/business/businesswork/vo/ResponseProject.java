@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 public class ResponseProject {
     public CommonResponse commonResponse;
-    public Long index;
+    public Integer index;
     public String title;
     public String description;
     public ProjectStatus status;

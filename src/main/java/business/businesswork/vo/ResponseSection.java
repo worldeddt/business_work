@@ -11,7 +11,7 @@ public class ResponseSection {
     private Long index;
     private String title;
     private String Description = "";
-    private Long projectId;
+    private Integer projectId;
     private LocalDateTime registerDateTime;
     private LocalDateTime lastModifyDate;
     private SectionStatus sectionStatus;

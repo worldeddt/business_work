@@ -13,7 +13,7 @@ public class Project extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bp_index")
-    public Long index;
+    public Integer index;
 
     @Column(name = "bp_title", nullable = false)
     public String title;

@@ -29,7 +29,7 @@ class SectionControllerTest {
         RegisterSection registerSection = new RegisterSection();
         registerSection.setDescription("두 번째 프로젝트 두 번째 섹션");
         registerSection.setTitle("second section");
-        registerSection.setProjectId(2L);
+        registerSection.setProjectId(Integer.valueOf(2));
         registerSection.setSectionStatus(SectionStatus.ACTIVE);
 
         this.mockMvc.perform(
@@ -56,7 +56,7 @@ class SectionControllerTest {
         modifySection.setIndex(4L);
         modifySection.setDescription("두 번째 프로젝트 첫 번째 섹션");
         modifySection.setTitle("두 번째 프로젝트 첫 번째 섹션");
-        modifySection.setProjectId(3L);
+        modifySection.setProjectId(Integer.valueOf(3));
 
         this.mockMvc.perform(
                         post("/section/update")

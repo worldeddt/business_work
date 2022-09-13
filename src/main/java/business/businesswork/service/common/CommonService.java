@@ -27,7 +27,7 @@ public class CommonService {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("businessWork");
 
-    public AllSections findSectionByProjectId(Long projectId, EntityManager em)
+    public AllSections findSectionByProjectId(Integer projectId, EntityManager em)
     {
         AllSections responseSection = new AllSections();
         Gson gson = new Gson();

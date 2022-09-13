@@ -11,7 +11,6 @@ import business.businesswork.exceptions.BusinessException;
 import business.businesswork.service.common.CommonService;
 import business.businesswork.vo.*;
 import com.google.gson.Gson;
-import org.hibernate.query.criteria.internal.BasicPathUsageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,7 @@ public class ProjectService {
     @Autowired(required = false)
     private CommonService commonService;
 
-    public CommonResponse deleteProject(Long projectId)
+    public CommonResponse deleteProject(Integer projectId)
     {
         CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
@@ -181,7 +180,7 @@ public class ProjectService {
         return commonResponse;
     }
 
-    public ResponseProject findProject(Long projectId)
+    public ResponseProject findProject(Integer projectId)
     {
         CommonResponse commonResponse = new CommonResponse(null);
         ResponseProject responseProject = new ResponseProject();
