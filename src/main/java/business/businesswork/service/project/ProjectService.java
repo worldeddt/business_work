@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProjectService {
@@ -43,13 +44,20 @@ public class ProjectService {
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
+            String queryString =
+                    "update business_project set bp_status = '" + ProjectStatus.DELETE.getProjectStatus()+ "' " +
+                            "where bp_index = '"+projectId+"';";
+            em.createNativeQuery(queryString);
+
             if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
 
-            project.setStatus(ProjectStatus.DELETE);
-            project.setDeleteDate(this.getThisTime());
-            em.merge(project);
+//            project.setStatus(ProjectStatus.DELETE);
+//            project.setDeleteDate(this.getThisTime());
+//            em.merge(project);
 
             AllSections allSections = commonService.findSectionByProjectId(projectId, em);
+
+            System.out.println("allSections :"+allSections);
 
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
                 for (SectionVO sectionVo : allSections.getSectionList()) {
@@ -77,7 +85,12 @@ public class ProjectService {
 
             Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
-            if (!project.getStatus().equals(project1.getStatus()))
+            System.out.println("project.getStatus()"+project.getStatus());
+            System.out.println("project1.getStatus()"+project1.getStatus());
+
+            String status = String.valueOf(project1.getStatus());
+
+            if (Objects.equals(status, ProjectStatus.ACTIVE.getProjectStatus()))
                 throw new BusinessException(ResponseStatus.PROJECT_DELETE_FAIL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
@@ -112,7 +125,6 @@ public class ProjectService {
                     .setParameter("status", ProjectStatus.ACTIVE.getProjectStatus())
                     .setParameter("register", this.getThisTime());
             nativeQuery.executeUpdate();
-
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
