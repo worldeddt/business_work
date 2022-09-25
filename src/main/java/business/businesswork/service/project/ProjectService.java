@@ -47,7 +47,9 @@ public class ProjectService {
             String queryString =
                     "update business_project set bp_status = '" + ProjectStatus.DELETE.getProjectStatus()+ "' " +
                             "where bp_index = '"+projectId+"';";
-            em.createNativeQuery(queryString);
+
+            Query nativeQuery = em.createNativeQuery(queryString);
+            nativeQuery.executeUpdate();
 
             if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
 
@@ -84,10 +86,6 @@ public class ProjectService {
             em.clear();
 
             Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
-
-            System.out.println("project.getStatus()"+project.getStatus());
-            System.out.println("project1.getStatus()"+project1.getStatus());
-
             String status = String.valueOf(project1.getStatus());
 
             if (Objects.equals(status, ProjectStatus.ACTIVE.getProjectStatus()))
