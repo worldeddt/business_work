@@ -115,7 +115,7 @@ public class ProjectService {
         tx.begin();
 
         try {
-          String queryString = "insert into business_project(bp_title, bp_description, bp_status, register_date)" +
+            String queryString = "insert into business_project(bp_title, bp_description, bp_status, register_date)" +
                     "values(:title, :desc, :status, :register)";
             Query nativeQuery = em.createNativeQuery(queryString)
                     .setParameter("title", registProject.getTitle())

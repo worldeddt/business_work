@@ -17,7 +17,7 @@ public class Task extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bt_index")
+    @Column(name = "bt_index", nullable = false)
     public Long index;
 
     @Column(name="bt_description")

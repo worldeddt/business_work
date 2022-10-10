@@ -1,7 +1,9 @@
 package business.businesswork.service.task;
 
+import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
+import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
 import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
@@ -18,8 +20,10 @@ import org.springframework.stereotype.Service;
 import sun.lwawt.macosx.CSystemTray;
 
 import javax.persistence.*;
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -38,14 +42,24 @@ public class TaskService {
         tx.begin();
 
         try {
-            Section section = gson.fromJson(gson.toJson(em.find(Section.class, registerTask.getSectionId())), Section.class);
-            Task task = new Task();
-            task.setTitle(registerTask.getTitle());
-            task.setDescription(registerTask.getDescription());
-            task.setTaskStatusType(registerTask.getStatus());
-            task.setRegisterDate(getThisTime());
-            task.setSection(section);
-            em.persist(task);
+            String queryString = "insert into business_task(bt_title, bt_description, bs_index, bt_status, register_date)" +
+                    "values(:title, :desc, :bIndex, :status, :register)";
+            Query nativeQuery = em.createNativeQuery(queryString)
+                    .setParameter("title", registerTask.getTitle())
+                    .setParameter("desc", registerTask.getDescription())
+                    .setParameter("bIndex", registerTask.getSectionId())
+                    .setParameter("status", registerTask.getStatus().toString())
+                    .setParameter("register", getThisTime());
+            nativeQuery.executeUpdate();
+
+//            Section section = gson.fromJson(gson.toJson(em.find(Section.class, registerTask.getSectionId())), Section.class);
+//            Task task = new Task();
+//            task.setTitle(registerTask.getTitle());
+//            task.setDescription(registerTask.getDescription());
+//            task.setTaskStatusType(registerTask.getStatus());
+//            task.setRegisterDate(getThisTime());
+//            task.setSection(section);
+//            em.persist(task);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
@@ -69,16 +83,14 @@ public class TaskService {
         tx.begin();
 
         try {
-            Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
-
             String queryString =
                     "update business_task set bs_index = '"+modifyTask.getSectionId()+"' " +
                             "where bt_index = '"+modifyTask.getIndex()+"';";
             em.createNativeQuery(queryString).executeUpdate();
 
-            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, task.getIndex())),Task.class);
+            Task task3 = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
 
-            if (!task1.getSection().getIndex().equals(modifyTask.getSectionId()))
+            if (!task3.getSection().getIndex().equals(modifyTask.getSectionId()))
                 throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);

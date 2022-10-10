@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,23 +37,23 @@ public class SectionService {
         CommonResponse commonResponse = new CommonResponse(null);
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
+        Gson gson = new Gson();
         tx.begin();
 
         try {
-            Project project = em.find(Project.class, registerSection.getProjectId());
+            Project project = gson.fromJson(gson.toJson(em.find(Project.class, registerSection.getProjectId())), Project.class);
 
             if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
 
-            Section section = new Section();
-            section.setTitle(registerSection.getTitle());
-            section.setDescription(registerSection.getDescription());
-            section.setStatus(registerSection.getSectionStatus());
-            section.setRegisterDate(this.getThisTime());
-            section.setProject(project);
-            em.persist(section);
-            em.flush();
-
-            if (section.getIndex() == null) throw new BusinessException(ResponseStatus.SECTION_REGISTER_FAIL);
+            String queryString = "insert into business_section(bs_title, bs_description, bp_index, bs_status, register_date)" +
+                    "values(:title, :desc, :bIndex, :status, :register)";
+            Query nativeQuery = em.createNativeQuery(queryString)
+                    .setParameter("title", registerSection.getTitle())
+                    .setParameter("desc", registerSection.getDescription())
+                    .setParameter("bIndex", project.getIndex())
+                    .setParameter("status", registerSection.getSectionStatus().toString())
+                    .setParameter("register", getThisTime());
+            System.out.println("nativeQuery.executeUpdate()"+nativeQuery.executeUpdate());
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
