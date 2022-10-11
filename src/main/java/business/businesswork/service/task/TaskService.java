@@ -174,18 +174,25 @@ public class TaskService {
         tx.begin();
 
         try {
-            Task task = gson.fromJson(gson.toJson(em.find(Task.class, taskIndex)), Task.class);
-            task.setTaskStatusType(TaskStatusType.DELETE);
-            task.setDeleteDate(getThisTime());
-            em.merge(task);
 
-            em.flush();
-            em.clear();
+            String queryString = "update business_task set bt_status = '"+TaskStatusType.DELETE+"' where bt_index = "+taskIndex;
 
-            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskIndex)), Task.class);
+            System.out.println("string :"+queryString);
+            Query nativeQuery = em.createNativeQuery(queryString);
+            nativeQuery.executeUpdate();
 
-            if (!task.getTaskStatusType().equals(task1.getTaskStatusType()))
-                throw new BusinessException(ResponseStatus.TASK_DELETE_FAL);
+//            Task task = gson.fromJson(gson.toJson(em.find(Task.class, taskIndex)), Task.class);
+//            task.setTaskStatusType(TaskStatusType.DELETE);
+//            task.setDeleteDate(getThisTime());
+//            em.merge(task);
+//
+//            em.flush();
+//            em.clear();
+//
+//            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskIndex)), Task.class);
+
+//            if (!task.getTaskStatusType().equals(task1.getTaskStatusType()))
+//                throw new BusinessException(ResponseStatus.TASK_DELETE_FAL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
