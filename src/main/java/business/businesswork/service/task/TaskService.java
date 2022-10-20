@@ -119,34 +119,53 @@ public class TaskService {
         tx.begin();
 
         try {
-            Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
-            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifyTask.getSectionId())), Section.class);
+            System.out.println("====");
+            System.out.println("modifyTask.getIndex : "+modifyTask.getIndex());
+            System.out.println("modifyTask.getSectionId : "+modifyTask.getSectionId());
+//            Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
+//            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifyTask.getSectionId())), Section.class);
 
-            if (Objects.equals(task.getTaskStatusType().toString(), "DELETE"))
-                throw new BusinessException(ResponseStatus.TASK_WAS_DELETE);
+//            if (Objects.equals(task.getTaskStatusType().toString(), "DELETE"))
+//                throw new BusinessException(ResponseStatus.TASK_WAS_DELETE);
 
-            task.setSection(section);
-            task.setTaskStatusType(modifyTask.getStatus());
-            task.setDescription(modifyTask.getDescription());
-            task.setTitle(modifyTask.getTitle());
-            task.setLastModifyDate(getThisTime());
-            em.merge(task);
+            String queryString =
+                "update business_task set " +
+                    "bt_description = :desc, " +
+                    "bt_title = :title, " +
+                    "last_modify_date = :lastModify, " +
+                    "bt_status = :status " +
+                    "where bt_index = :index";
 
-            em.flush();
-            em.clear();
+            Query query = em.createNativeQuery(queryString)
+                .setParameter("desc", modifyTask.getDescription())
+                .setParameter("title", modifyTask.getTitle())
+                .setParameter("status", modifyTask.getStatus().toString())
+                .setParameter("index", modifyTask.getIndex())
+                .setParameter("lastModify", this.getThisTime());
 
-            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
+            query.executeUpdate();
+//            task.setSection(section);
+//            task.setTaskStatusType(modifyTask.getStatus());
+//            task.setDescription(modifyTask.getDescription());
+//            task.setTitle(modifyTask.getTitle());
+//            task.setLastModifyDate(getThisTime());
+//            em.merge(task);
+//
+//            em.flush();
+//            em.clear();
 
-            if (!task1.getSection().getIndex().equals(task.getSection().getIndex()))
-                throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
+//            Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
 
-            if
-            (
-                !task1.getTaskStatusType().equals(task.getTaskStatusType()) ||
-                !task1.getTitle().equals(task.getTitle()) ||
-                !task1.getDescription().equals(task.getDescription())
-            )
-                throw new BusinessException(ResponseStatus.TASK_UPDATE_FAL);
+//            if (!task1.getSection().getIndex().equals(task.getSection().getIndex()))
+//                throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
+
+//            if
+//            (
+//                !task1.getTaskStatusType().equals(task.getTaskStatusType()) ||
+//                !task1.getTitle().equals(task.getTitle()) ||
+//                !task1.getDescription().equals(task.getDescription())
+//            )
+//                throw new BusinessException(ResponseStatus.TASK_UPDATE_FAL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
@@ -177,7 +196,6 @@ public class TaskService {
 
             String queryString = "update business_task set bt_status = '"+TaskStatusType.DELETE+"' where bt_index = "+taskIndex;
 
-            System.out.println("string :"+queryString);
             Query nativeQuery = em.createNativeQuery(queryString);
             nativeQuery.executeUpdate();
 
