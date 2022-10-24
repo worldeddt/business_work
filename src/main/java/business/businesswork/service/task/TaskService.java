@@ -88,10 +88,10 @@ public class TaskService {
                             "where bt_index = '"+modifyTask.getIndex()+"';";
             em.createNativeQuery(queryString).executeUpdate();
 
-            Task task3 = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
-
-            if (!task3.getSection().getIndex().equals(modifyTask.getSectionId()))
-                throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
+//            Task task3 = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
+//
+//            if (!task3.getSection().getIndex().equals(modifyTask.getSectionId()))
+//                throw new BusinessException(ResponseStatus.TASK_SECTION_UPDATE_FAL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
@@ -119,9 +119,6 @@ public class TaskService {
         tx.begin();
 
         try {
-            System.out.println("====");
-            System.out.println("modifyTask.getIndex : "+modifyTask.getIndex());
-            System.out.println("modifyTask.getSectionId : "+modifyTask.getSectionId());
 //            Task task = gson.fromJson(gson.toJson(em.find(Task.class, modifyTask.getIndex())),Task.class);
 //            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifyTask.getSectionId())), Section.class);
 

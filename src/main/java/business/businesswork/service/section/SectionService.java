@@ -82,29 +82,42 @@ public class SectionService {
         tx.begin();
 
         try {
-            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
+//            Section section = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
 
-            if (section == null) throw new BusinessException(ResponseStatus.SECTION_IS_NULL);
+            String queryString =
+                    "update business_section set " +
+                            "bs_description = :desc, " +
+                            "bs_title = :title, " +
+                            "last_modify_date = :lastModify, " +
+                            "where bs_index = :index";
 
-            if (section.getStatus() == SectionStatus.DELETE)
-                throw new BusinessException(ResponseStatus.SECTION_WAS_DELETE);
+            Query query = em.createNativeQuery(queryString)
+                    .setParameter("desc", modifySection.getDescription())
+                    .setParameter("title", modifySection.getTitle())
+                    .setParameter("index", modifySection.getIndex())
+                    .setParameter("lastModify", this.getThisTime());
 
-            section.setTitle(modifySection.getTitle());
-            section.setDescription(modifySection.getDescription());
-            section.setLastModifyDate(this.getThisTime());
-            em.merge(section);
+            query.executeUpdate();
 
-            em.flush();
-            em.clear();
+//            if (section.getStatus() == SectionStatus.DELETE)
+//                throw new BusinessException(ResponseStatus.SECTION_WAS_DELETE);
+//
+//            section.setTitle(modifySection.getTitle());
+//            section.setDescription(modifySection.getDescription());
+//            section.setLastModifyDate(this.getThisTime());
+//            em.merge(section);
 
-            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
+//            em.flush();
+//            em.clear();
 
-            if (
-                !section1.getStatus().equals(section.getStatus()) ||
-                !section1.getTitle().equals(section.getTitle()) ||
-                !section1.getDescription().equals(section.getDescription())
-            )
-                throw new BusinessException(ResponseStatus.SECTION_UPDATE_FAL);
+//            Section section1 = gson.fromJson(gson.toJson(em.find(Section.class, modifySection.getIndex())), Section.class);
+//
+//            if (
+//                !section1.getStatus().equals(section.getStatus()) ||
+//                !section1.getTitle().equals(section.getTitle()) ||
+//                !section1.getDescription().equals(section.getDescription())
+//            )
+//                throw new BusinessException(ResponseStatus.SECTION_UPDATE_FAL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
@@ -132,6 +145,9 @@ public class SectionService {
         tx.begin();
 
         try {
+
+            /**
+
             AllTasks allTasks = commonService.findTasksBySectionId(SectionId, em);
 
             Section section = gson.fromJson(gson.toJson(em.find(Section.class, SectionId)), Section.class);
@@ -157,6 +173,8 @@ public class SectionService {
 
             if (!section.getStatus().equals(section1.getStatus()))
                 throw new BusinessException(ResponseStatus.SECTION_UPDATE_FAL);
+             *
+             */
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
