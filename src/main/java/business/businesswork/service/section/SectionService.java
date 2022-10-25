@@ -146,6 +146,10 @@ public class SectionService {
 
         try {
 
+            String queryString = "update business_section set bs_status = :status where bs_index = :index";
+
+
+
             /**
 
             AllTasks allTasks = commonService.findTasksBySectionId(SectionId, em);
