@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class Section extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "bs_index")
+    @Column(name = "bs_index", nullable = false)
     public Long index;
 
     @Column(name = "bs_title", nullable = false)

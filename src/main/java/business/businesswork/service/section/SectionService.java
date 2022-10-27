@@ -88,7 +88,7 @@ public class SectionService {
                     "update business_section set " +
                             "bs_description = :desc, " +
                             "bs_title = :title, " +
-                            "last_modify_date = :lastModify, " +
+                            "last_modify_date = :lastModify " +
                             "where bs_index = :index";
 
             Query query = em.createNativeQuery(queryString)
@@ -146,10 +146,35 @@ public class SectionService {
 
         try {
 
+            String queryStringForCheck =
+                    "select bs_index index, " +
+                    "bs_title title, " +
+                    "bs_description description, " +
+                    "bs_status status, " +
+                    "bp_index projectId from business_section where bs_index = '"+SectionId+"'";
+
+            System.out.println("SectionId"+SectionId);
+            System.out.println("query : "+queryStringForCheck);
+            Query query1 = em.createNativeQuery(queryStringForCheck, Section.class);
+            List resultList = query1.getResultList();
+            System.out.println("11");
+            for (Object section1 : resultList) {
+
+                Section section2 = gson.fromJson(gson.toJson(section1), Section.class);
+                System.out.println("section1"+section2);
+            }
+
+            System.out.println("11");
+
             String queryString = "update business_section set bs_status = :status where bs_index = :index";
 
-
-
+            Query query = em.createNativeQuery(queryString);
+            System.out.println("11");
+            query.setParameter("status", SectionStatus.DELETE.toString());
+            query.setParameter("index", SectionId);
+            System.out.println("11");
+            query.executeUpdate();
+            System.out.println("11");
             /**
 
             AllTasks allTasks = commonService.findTasksBySectionId(SectionId, em);
@@ -182,6 +207,7 @@ public class SectionService {
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
+            tx.rollback();
         } catch (Exception e) {
             logger.error("delete section exception error : "+e);
             tx.rollback();
