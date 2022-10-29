@@ -1,5 +1,6 @@
 package business.businesswork.service.common;
 
+import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
 import business.businesswork.enumerate.ResponseStatus;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,6 +107,31 @@ public class CommonService {
         }
 
         return responseTask;
+    }
+
+    public Project findProjectById(Long projectId)
+    {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+
+
+        tx.begin();
+
+        try {
+
+
+
+
+        } catch (Exception e) {
+            tx.rollback();
+        } finally {
+            em.close();
+        }
+
+        emf.close();
+
+        return new Project();
     }
 
 }

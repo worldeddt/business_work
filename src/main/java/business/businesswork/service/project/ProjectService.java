@@ -44,6 +44,8 @@ public class ProjectService {
         try {
             Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
 
+
+
             String queryString =
                     "update business_project set bp_status = '" + ProjectStatus.DELETE.getProjectStatus()+ "' " +
                             "where bp_index = '"+projectId+"';";
@@ -58,6 +60,7 @@ public class ProjectService {
 //            em.merge(project);
 
             AllSections allSections = commonService.findSectionByProjectId(projectId, em);
+            Project project1 = commonService.
 
             System.out.println("allSections :"+allSections);
 
