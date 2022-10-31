@@ -42,27 +42,26 @@ public class ProjectService {
         tx.begin();
 
         try {
-            Project project = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
-
-
-
             String queryString =
-                    "update business_project set bp_status = '" + ProjectStatus.DELETE.getProjectStatus()+ "' " +
-                            "where bp_index = '"+projectId+"';";
+                    "update business_project set bp_status = :status,  delete_date = :deleteTime " +
+                            "where bp_index = :index";
 
-            Query nativeQuery = em.createNativeQuery(queryString);
-            nativeQuery.executeUpdate();
+            em.createNativeQuery(queryString)
+                    .setParameter("status", ProjectStatus.DELETE.getProjectStatus())
+                    .setParameter("deleteTime", this.getThisTime())
+                    .setParameter("index", projectId)
+                    .executeUpdate();
 
-            if (project == null) throw new BusinessException(ResponseStatus.PROJECT_IS_NULL);
+            String queryString1 =
+                    "select bp_status from business_project where bp_index = :index";
 
-//            project.setStatus(ProjectStatus.DELETE);
-//            project.setDeleteDate(this.getThisTime());
-//            em.merge(project);
+            Query query1 = em.createNativeQuery(queryString1)
+                    .setParameter("index", projectId);
+
+            if (!Objects.equals(query1.getSingleResult(),ProjectStatus.DELETE.getProjectStatus()))
+                throw new BusinessException(ResponseStatus.PROJECT_DELETE_FAIL);
 
             AllSections allSections = commonService.findSectionByProjectId(projectId, em);
-            Project project1 = commonService.
-
-            System.out.println("allSections :"+allSections);
 
             if (allSections.getResult() == ResponseStatus.SUCCESS.getResultCode()) {
                 for (SectionVO sectionVo : allSections.getSectionList()) {
@@ -70,29 +69,27 @@ public class ProjectService {
 
                     if (section1 == null) continue;
 
-                    section1.setStatus(SectionStatus.DELETE);
-                    section1.setDeleteDate(this.getThisTime());
-                    em.merge(section1);
-                    if (sectionVo.getTaskList().size() == 0) continue;
-                    for (TaskVO taskVO : sectionVo.getTaskList()) {
-                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
+                    String sectionQueryString = "update business_section set bs_status = :status where bs_index = :index";
 
-                        if (task1 == null) continue;
-                        task1.setTaskStatusType(TaskStatusType.DELETE);
-                        task1.setDeleteDate(this.getThisTime());
-                        em.merge(task1);
+                    em.createNativeQuery(sectionQueryString)
+                            .setParameter("status", SectionStatus.DELETE.getSectionStatus())
+                            .setParameter("index", sectionVo.getIndex())
+                            .executeUpdate();
+
+                    if (sectionVo.getTaskList().size() == 0) continue;
+
+                    for (TaskVO taskVO : sectionVo.getTaskList()) {
+                        String taskQueryString = "update business_task set bt_status = :status where bt_index = :index";
+
+//                        Task task1 = gson.fromJson(gson.toJson(em.find(Task.class, taskVO.getIndex())), Task.class);
+
+                        em.createNativeQuery(taskQueryString)
+                                .setParameter("status", SectionStatus.DELETE.getSectionStatus())
+                                .setParameter("index", sectionVo.getIndex())
+                                .executeUpdate();
                     }
                 }
             }
-
-            em.flush();
-            em.clear();
-
-            Project project1 = gson.fromJson(gson.toJson(em.find(Project.class, projectId)), Project.class);
-            String status = String.valueOf(project1.getStatus());
-
-            if (Objects.equals(status, ProjectStatus.ACTIVE.getProjectStatus()))
-                throw new BusinessException(ResponseStatus.PROJECT_DELETE_FAIL);
 
             commonResponse.setResponse(ResponseStatus.SUCCESS);
             tx.commit();
