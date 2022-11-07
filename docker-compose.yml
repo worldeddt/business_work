@@ -1,0 +1,7 @@
+version: "1"
+
+services:
+  nginx:
+    build: "docker/spring"
+    depends_on:
+      - "spring"
