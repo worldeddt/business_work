@@ -1,11 +1,10 @@
-FROM nginx:1.22.1
-MAINTAINER Eddy
+FROM openjdk:11
+MAINTAINER Eddy eddy@teamo2.kr
 
 EXPOSE 8090
+CMD ["./mvnw", "clean", "package", "-DskipTests"]
 
-COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./default.conf /etc/nginx/conf.d/default.conf
+ARG JAR_FILE_PATH=target/*.jar
+COPY ${JAR_FILE_PATH} businessWork.jar
 
-RUN mvnw clean package
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["java", "-jar", "businessWork.jar"]
