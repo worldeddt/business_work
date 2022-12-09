@@ -1,11 +1,8 @@
 package business.businesswork.service.task;
 
-import business.businesswork.domain.Project;
 import business.businesswork.domain.Section;
 import business.businesswork.domain.Task;
-import business.businesswork.enumerate.ProjectStatus;
 import business.businesswork.enumerate.ResponseStatus;
-import business.businesswork.enumerate.SectionStatus;
 import business.businesswork.enumerate.TaskStatusType;
 import business.businesswork.exceptions.BusinessException;
 import business.businesswork.vo.CommonResponse;
@@ -13,18 +10,13 @@ import business.businesswork.vo.ModifyTask;
 import business.businesswork.vo.RegisterTask;
 import business.businesswork.vo.ResponseTask;
 import com.google.gson.Gson;
-import net.bytebuddy.dynamic.loading.ClassInjector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import sun.lwawt.macosx.CSystemTray;
 
 import javax.persistence.*;
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class TaskService {
