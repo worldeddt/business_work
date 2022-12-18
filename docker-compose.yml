@@ -5,3 +5,5 @@ services:
     build: "docker/spring"
     depends_on:
       - "spring"
+    ports:
+      - "${BUSINESS_PORT : 8090}":"80"

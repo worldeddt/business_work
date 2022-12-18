@@ -1,0 +1,15 @@
+language: java
+jdk:
+  - openjdk8
+
+sudo: required
+
+services:
+  - docker
+
+#before_install:
+#  - docker build -t eddydocdoc/react-test-app -f ./frontend/Dockerfile.dev ./frontend
+
+script:
+  - docker run -e CI=true eddydocdoc/react-test-app npm run test
+
