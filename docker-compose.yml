@@ -1,25 +1,25 @@
-version: "1.1"
+version: "2.2"
 
 services:
   spring:
-    build: "docker/spring"
+    build:
+      context: .
+      dockerfile: "./docker/spring/Dockerfile"
     depends_on:
-      - "spring"
+      - db
     ports:
-      - "${BUSINESS_PORT : 8090}":"80"
+      - "${BUSINESS_PORT:-8090}:8090"
   db:
-    build: "docker/postgres" # build할 때 필요한 속성 지정
-      context: "${DB_BUILD_CONTEXT}" # Dockerfile이 들어있는 경로 지정
-      dockerfile: Dockerfile-postgres # 빌드 시 사용할 Dockerfile 이름으로, Dockerfile이 아닌 다른 이름으로 생성할 경우 명시 필요
+    image: postgres
+    build:  # build할 때 필요한 속성 지정
+      context: . # Dockerfile이 들어있는 경로 지정
+      dockerfile: "${DB_BUILD_CONTEXT:-./docker/postgres/Dockerfile}" # 빌드 시 사용할 Dockerfile 이름으로, Dockerfile이 아닌 다른 이름으로 생성할 경우 명시 필요
     container_name: postgres # 컨테이너 이름(docker dashboard에 뜨는 이름)
     restart: always # 항상 재시작(명시되어 있지 않을 경우 no가 default이며 어떤 상황에서도 restart 안함)
     ports:
       - "5432:5432" # HOST_PORT:CONTAINER_PORT로 host의 5432 포트를 container의 5432 포트와 매핑
     environment:
-      POSTGRES_USER: "${DB_USER_ID}" # 선택 속성으로 POSTGRES_PASSWORD와 함께 사용되며, POSTGRES_USER명으로 superuser가 생성됨(작성하지 않을 경우 postgres 이름으로 superuser 생성)
-      POSTGRES_PASSWORD: "${DB_USER_PASSWORD}" # 필수 속성으로 postgreSQL의 superuser password(비어있거나 선언되지 않으면 안됨)
-      APP_DB_NAME: "${APP_DB_NAME}"
-      APP_DB_USER: "${APP_DB_USER}"
-      APP_DB_PASS: "${APP_DB_PASS}"
-    volumes:
-      - ${POSTGRES_HOME_DIR}/data:/var/lib/postgresql/data # ${POSTGRES_HOME_DIR}/data 부분이 실제
+      POSTGRES_USER: "${DB_USER_ID:-eddy}" # 선택 속성으로 POSTGRES_PASSWORD와 함께 사용되며, POSTGRES_USER명으로 superuser가 생성됨(작성하지 않을 경우 postgres 이름으로 superuser 생성)
+      POSTGRES_PASSWORD: "${DB_USER_PASSWORD:-eddy}" # 필수 속성으로 postgreSQL의 superuser password(비어있거나 선언되지 않으면 안됨)
+#    volumes:
+#      - ${POSTGRES_HOME_DIR}/data:/var/lib/postgresql/data # ${POSTGRES_HOME_DIR}/data 부분이 실제
