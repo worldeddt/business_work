@@ -1,3 +1,3 @@
 FROM postgres:11-alpine
+FROM nginx:1.20
 
-ENV LANG C.UTF-8

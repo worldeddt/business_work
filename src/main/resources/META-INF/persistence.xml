@@ -8,12 +8,12 @@
             <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
 <!--            <property name="javax.persistence.jdbc.user" value="sa"/>-->
 <!--            <property name="javax.persistence.jdbc.password" value=""/>-->
-            <property name="javax.persistence.jdbc.user" value="eddy"/>
-            <property name="javax.persistence.jdbc.password" value="eddy"/>
 <!--            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test"/>-->
 <!--            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/Desktop/study/h2/bin/test"/>-->
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/springboot"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL81Dialect"/>
+            <property name="javax.persistence.jdbc.user" value="eddy"/>
+            <property name="javax.persistence.jdbc.password" value="eddy"/>
             <!-- 옵션 -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
