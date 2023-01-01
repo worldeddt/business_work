@@ -8,8 +8,16 @@ services:
   - docker
 
 before_install:
-  - docker build -t eddydocdoc/react-test-app -f ./frontend/Dockerfile.dev ./frontend
+  - echo "start build business work"
+  - docker build -t eddydocdoc/business-backend -f ./docker/spring/Dockerfile .
 
 script:
-  - docker run -e CI=true eddydocdoc/react-test-app npm run test
+  - docker run -e CI=true eddydocdoc/business-backend
 
+after-success:
+  - docker build -t eddydocdoc/business-frontend ./docker/vue/Dockerfile .
+
+  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+
+  - docker push eddydocdoc/business-backend
+  - docker push eddydocdoc/business-frontend
