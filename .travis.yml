@@ -2,22 +2,29 @@ language: java
 jdk:
   - openjdk8
 
+branches:
+  only:
+    - main
+
 sudo: required
+
+cache:
+  directories:
+    - '$HOME/.target'
 
 services:
   - docker
 
 before_install:
   - echo "start build business work"
-  - docker build -t eddydocdoc/business-backend -f ./docker/spring/Dockerfile .
 
-script:
-  - docker run -e CI=true eddydocdoc/business-backend
+#  - docker run -e CI=true
 
 after-success:
-  - docker build -t eddydocdoc/business-frontend ./docker/vue/Dockerfile .
+  - docker build -t eddydocdoc/business-frontend ./docker/vue
+  - docker build -t eddydocdoc/business-backend ./docker/spring
 
-  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
-
-  - docker push eddydocdoc/business-backend
-  - docker push eddydocdoc/business-frontend
+#  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
+#
+#  - docker push eddydocdoc/business-backend
+#  - docker push eddydocdoc/business-frontend

@@ -1,0 +1,19 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "containerDefinitions": [
+    {
+      "name" : "spring",
+      "image": "eddydocdoc/business-backend",
+      "hostname": "backend",
+      "essential": false,
+      "memory": 128
+    },
+    {
+      "name" : "vue",
+      "image": "eddydocdoc/business-frontend",
+      "hostname": "frontend",
+      "essential": false,
+      "memory": 128
+    }
+  ]
+}

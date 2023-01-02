@@ -7,6 +7,6 @@ CMD ["npm", "install", "--save", "@babel/polyfill"]
 COPY ../../vue/business_work_front/business_work_front/ ./
 
 
-
-
 CMD ["npm", "run", "serve"]
+
+VOLUME ./vue/business_work_front/business_work_front ./app

@@ -1,5 +1,6 @@
 FROM openjdk:11
 MAINTAINER Eddy eddy@teamo2.kr
+
 CMD ["./mvnw", "clean", "package", "-DskipTests"]
 
 EXPOSE 8090
