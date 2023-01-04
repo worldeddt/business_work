@@ -23,6 +23,7 @@ before_install:
 after-success:
   - docker build -t eddydocdoc/business-frontend ./docker/vue
   - docker build -t eddydocdoc/business-backend ./docker/spring
+  - docker build -t eddydocdoc/business-db ./docker/postgres
 
 #  - echo "$DOCKER_HUB_PASSWORD" | docker login -u "$DOCKER_HUB_ID" --password-stdin
 #
