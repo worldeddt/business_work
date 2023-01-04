@@ -29,3 +29,31 @@ after-success:
 #
 #  - docker push eddydocdoc/business-backend
 #  - docker push eddydocdoc/business-frontend
+
+before_deploy:
+  # 현재 위치의 모든 파일을 springboot-test로 압축한다.
+  - zip -r springboot-test *
+  # deploy 디렉토리를 Travis가 실행 중인 위치에 생성한다.
+  - mkdir -p deploy
+  # 생성한 .zip 파일을 deploy 아래로 이동한다.
+  - mv springboot-test.zip deploy/springboot-test.zip
+
+# 외부 서비스와 연동할 행위들을 선언한다.
+deploy:
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY # Travis settings에 설정된 값
+    secret_access_key: $AWS_SECRET_KEY # Travis settings에 설정된 값
+    bucket: eddy-business-test-1 # S3 버킷
+    region: ap-northeast-2
+    skip_cleanup: true
+    acl: private # zip 파일 접근을 private으로
+    local_dir: deploy # before_deploy에서 생성한 디렉토리로 이동한다. 해당 위치의 파일만 이동시킨다.
+    wait-until-deployed: true
+    on:
+      branch: main
+
+# CI 실행 완료 시 작성한 이메일로 알람
+notifications:
+  email:
+    recipients:
+      - ktest92@gmail.com
