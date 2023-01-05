@@ -10,7 +10,7 @@
 <!--            <property name="javax.persistence.jdbc.password" value=""/>-->
 <!--            <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test"/>-->
 <!--            <property name="javax.persistence.jdbc.url" value="jdbc:h2:tcp://localhost/~/Desktop/study/h2/bin/test"/>-->
-            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://#{DB_HOST:-localhost:5432}/springboot"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://#{DB_HOST:-localhost:5433}/springboot"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL81Dialect"/>
             <property name="javax.persistence.jdbc.user" value="eddy"/>
             <property name="javax.persistence.jdbc.password" value="eddy"/>
