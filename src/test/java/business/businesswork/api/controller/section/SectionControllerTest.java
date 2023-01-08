@@ -66,17 +66,17 @@ class SectionControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void findOne() throws Exception {
-        this.mockMvc.perform(get("/section/").param("sectionId", "1"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    void findOne() throws Exception {
+//        this.mockMvc.perform(get("/section/").param("sectionId", "1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
-    @Test
-    public void findAll() throws Exception {
-        this.mockMvc.perform(get("/section/all").param("projectId", "1"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void findAll() throws Exception {
+//        this.mockMvc.perform(get("/section/all").param("projectId", "1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 }

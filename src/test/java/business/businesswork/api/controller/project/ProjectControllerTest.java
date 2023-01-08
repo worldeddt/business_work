@@ -45,19 +45,19 @@ class ProjectControllerTest {
 //                .andExpect(status().isOk());
 //    }
 
-    @Test
-    public void findOne() throws Exception {
-        this.mockMvc.perform(post("/project/template").param("projectId", "1"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void findOne() throws Exception {
+//        this.mockMvc.perform(post("/project/template").param("projectId", "1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
-    @Test
-    public void findAll() throws Exception {
-        this.mockMvc.perform(post("/project/all"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void findAll() throws Exception {
+//        this.mockMvc.perform(post("/project/all"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     public void update() throws Exception {

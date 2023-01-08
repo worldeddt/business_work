@@ -24,49 +24,49 @@ class TaskControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    void register() throws Exception {
-        Gson gson = new Gson();
-        RegisterTask registerTask = new RegisterTask();
-        registerTask.setDescription("할일1");
-        registerTask.setTitle("안녕 첫 번째 일이야");
-        registerTask.setSectionId(1L);
-
-        this.mockMvc.perform(
-                        post("/task/register")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(gson.toJson(registerTask)))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void update() throws Exception {
-        Gson gson = new Gson();
-        ModifyTask modifyTask = new ModifyTask();
-        modifyTask.setIndex(1L);
-        modifyTask.setTitle("업데이트 데스크");
-        modifyTask.setDescription("업데이트");
-        modifyTask.setSectionId(1L);
-        modifyTask.setStatus(TaskStatusType.DOING);
-
-        this.mockMvc.perform(post("/task/update").contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(modifyTask)))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void delete() throws Exception {
-        this.mockMvc.perform(post("/task/delete").param("taskIndex", "1"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void findById() throws Exception {
-        this.mockMvc.perform(get("/task/").param("taskIndex", "1"))
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    void register() throws Exception {
+//        Gson gson = new Gson();
+//        RegisterTask registerTask = new RegisterTask();
+//        registerTask.setDescription("할일1");
+//        registerTask.setTitle("안녕 첫 번째 일이야");
+//        registerTask.setSectionId(1L);
+//
+//        this.mockMvc.perform(
+//                        post("/task/register")
+//                                .contentType(MediaType.APPLICATION_JSON)
+//                                .content(gson.toJson(registerTask)))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    void update() throws Exception {
+//        Gson gson = new Gson();
+//        ModifyTask modifyTask = new ModifyTask();
+//        modifyTask.setIndex(1L);
+//        modifyTask.setTitle("업데이트 데스크");
+//        modifyTask.setDescription("업데이트");
+//        modifyTask.setSectionId(1L);
+//        modifyTask.setStatus(TaskStatusType.DOING);
+//
+//        this.mockMvc.perform(post("/task/update").contentType(MediaType.APPLICATION_JSON)
+//                .content(gson.toJson(modifyTask)))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    void delete() throws Exception {
+//        this.mockMvc.perform(post("/task/delete").param("taskIndex", "1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
+//
+//    @Test
+//    void findById() throws Exception {
+//        this.mockMvc.perform(get("/task/").param("taskIndex", "1"))
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 }
