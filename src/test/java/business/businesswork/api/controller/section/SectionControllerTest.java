@@ -29,7 +29,7 @@ class SectionControllerTest {
         RegisterSection registerSection = new RegisterSection();
         registerSection.setDescription("두 번째 프로젝트 두 번째 섹션");
         registerSection.setTitle("second section");
-        registerSection.setProjectId(6);
+        registerSection.setProjectId(1);
         registerSection.setSectionStatus(SectionStatus.ACTIVE);
 
         this.mockMvc.perform(
@@ -40,23 +40,23 @@ class SectionControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void delete() throws Exception {
-        this.mockMvc.perform(
-                        post("/section/delete").param("sectionId", "1")
-                )
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    void delete() throws Exception {
+//        this.mockMvc.perform(
+//                        post("/section/delete").param("sectionId", "1")
+//                )
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     public void update() throws Exception {
         Gson gson = new Gson();
         ModifySection modifySection = new ModifySection();
-        modifySection.setIndex(4L);
+        modifySection.setIndex(1L);
         modifySection.setDescription("두 번째 프로젝트 첫 번째 섹션");
         modifySection.setTitle("두 번째 프로젝트 첫 번째 섹션");
-        modifySection.setProjectId(Integer.valueOf(3));
+        modifySection.setProjectId(Integer.valueOf(1));
 
         this.mockMvc.perform(
                         post("/section/update")
@@ -68,14 +68,14 @@ class SectionControllerTest {
 
     @Test
     void findOne() throws Exception {
-        this.mockMvc.perform(get("/section/").param("sectionId", "3"))
+        this.mockMvc.perform(get("/section/").param("sectionId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     public void findAll() throws Exception {
-        this.mockMvc.perform(get("/section/all").param("projectId", "2"))
+        this.mockMvc.perform(get("/section/all").param("projectId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

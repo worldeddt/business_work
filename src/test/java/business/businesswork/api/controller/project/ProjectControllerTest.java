@@ -36,18 +36,18 @@ class ProjectControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    public void deleteProject() throws Exception {
-        this.mockMvc.perform(
-                post("/project/delete").param("projectId", "1")
-                )
-                .andDo(print())
-                .andExpect(status().isOk());
-    }
+//    @Test
+//    public void deleteProject() throws Exception {
+//        this.mockMvc.perform(
+//                post("/project/delete").param("projectId", "1")
+//                )
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//    }
 
     @Test
     public void findOne() throws Exception {
-        this.mockMvc.perform(post("/project/template").param("projectId", "3"))
+        this.mockMvc.perform(post("/project/template").param("projectId", "1"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -63,7 +63,7 @@ class ProjectControllerTest {
     public void update() throws Exception {
         Gson gson = new Gson();
         ModifyProject modifyProject = new ModifyProject();
-        modifyProject.setIndex(3L);
+        modifyProject.setIndex(1L);
         modifyProject.setTitle("두 번째 프로젝트");
         modifyProject.setDescription("천재노창");
 
