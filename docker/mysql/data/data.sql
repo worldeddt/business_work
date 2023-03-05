@@ -1,5 +1,5 @@
 create table business_project (
-      bp_index  serial not null,
+      bp_index bigint not null,
       delete_date timestamp,
       last_modify_date timestamp,
       register_date timestamp not null,
@@ -10,7 +10,7 @@ create table business_project (
 );
 
 create table business_section (
-      bs_index  bigserial not null,
+      bs_index BIGINT not null,
       delete_date timestamp,
       last_modify_date timestamp,
       register_date timestamp not null,
@@ -22,20 +22,20 @@ create table business_section (
 );
 
 create table business_task (
-       bt_index  bigserial not null,
+       bt_index bigint not null,
        delete_date timestamp,
        last_modify_date timestamp,
        register_date timestamp not null,
        bt_description varchar(255),
        bt_status varchar(255),
        bt_title varchar(255) not null,
-       bm_index int8,
-       bs_index int8,
+       bm_index int,
+       bs_index int,
        primary key (bt_index)
 );
 
 create table business_member (
-                                 bm_index  bigserial not null,
+                                 bm_index bigint not null,
                                  delete_date timestamp,
                                  last_modify_date timestamp,
                                  register_date timestamp not null,
@@ -46,12 +46,12 @@ create table business_member (
 );
 
 create table business_review (
-                                 br_index  bigserial not null,
+                                 br_index  bigint not null,
                                  delete_date timestamp,
                                  last_modify_date timestamp,
                                  register_date timestamp not null,
                                  br_opiinion varchar(500) default '' not null,
-                                 bm_index int8,
-                                 bt_index int8,
+                                 bm_index int,
+                                 bt_index int,
                                  primary key (br_index)
 );
