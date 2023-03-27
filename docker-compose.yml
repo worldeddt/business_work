@@ -10,31 +10,31 @@ services:
       - ./vue/business_work_front/business_work_front:/app
     ports:
       - "${BUSINESS_FRONT_PORT:-8082}:8082"
-    networks:
-      - business_work_network
-  mysqldb:
-    image: mysql:8
-    environment:
-      - MYSQL_USER:eddy
-      - MYSQL_ROOT_PASSWORD:eddy
-      - MYSQL_ALLOW_EMPTY_PASSWORD:"yes"
-      - MYSQL_DATABASE:springboot
-    container_name: business_mysql_db
-    ports:
-      - "3306:3306"
-    networks:
-      - business_work_network
+#    networks:
+#      - business_work_network
+#  mysqldb:
+#    image: mysql:8
+#    environment:
+#      - MYSQL_USER:eddy
+#      - MYSQL_ROOT_PASSWORD:eddy
+#      - MYSQL_ALLOW_EMPTY_PASSWORD:"yes"
+#      - MYSQL_DATABASE:springboot
+#    container_name: business_mysql_db
+#    ports:
+#      - "3306:3306"
+#    networks:
+#      - business_work_network
   spring:
     build:
       context: .
       dockerfile: "./docker/spring/Dockerfile"
-    container_name: business_spring
+    container_name: business_backend
     ports:
       - "${BUSINESS_PORT:-8090}:8090"
-    depends_on:
-      - mysqldb
-    networks:
-      - business_work_network
-networks:
-  business_work_network:
-    driver: bridge
+#    depends_on:
+#      - mysqldb
+#    networks:
+#      - business_work_network
+#networks:
+#  business_work_network:
+#    driver: bridge

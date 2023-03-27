@@ -13,6 +13,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="javax.persistence.jdbc.user" value="eddy"/>
             <property name="javax.persistence.jdbc.password" value="qmQpVVCg8jYvEvc"/>
+<!--            <property name="javax.persistence.jdbc.password" value="eddy"/>-->
             <!-- 옵션 -->
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
