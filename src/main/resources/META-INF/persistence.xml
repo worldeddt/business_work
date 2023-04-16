@@ -8,7 +8,7 @@
 <!--            <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>-->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
 <!--            <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/springboot"/>-->
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://business-work-db-seoul-2.cijrhh9cjq2i.ap-northeast-2.rds.amazonaws.com:3306/businessWork?serverTimezone=UTC"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://business-work-db-seoul-2.cijrhh9cjq2i.ap-northeast-2.rds.amazonaws.com/businessWork"/>
 <!--            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL81Dialect"/>-->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="javax.persistence.jdbc.user" value="eddy"/>
@@ -18,11 +18,12 @@
             <property name="hibernate.show_sql" value="true"/>
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.use_sql_comments" value="true"/>
+            <property name="hibernate.c3p0.acquire_increment" value="1"/>
             <property name="hibernate.c3p0.min_size" value="5"/>
             <property name="hibernate.c3p0.max_size" value="100"/>
             <property name="hibernate.c3p0.max_statements" value="50"/>
-            <property name="hibernate.c3p0.idle_test_period" value="3000"/>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            <property name="hibernate.c3p0.idle_test_period" value="120"/>
+            <property name="hibernate.hbm2ddl.auto" value="create" />
         </properties>
     </persistence-unit>
 </persistence>
